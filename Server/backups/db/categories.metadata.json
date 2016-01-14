@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"db.categories"},{"v":1,"unique":true,"key":{"title":1},"name":"title_1","ns":"db.categories","background":true,"safe":null}]}

@@ -1,0 +1,10 @@
+{
+    "title": "Olvasatlan",
+    "no_unread_topics": "Nincs olvasatlan témakör.",
+    "load_more": "Több betöltése",
+    "mark_as_read": "Olvasottnak jelölés",
+    "selected": "Kiválasztva",
+    "all": "Összes",
+    "all_categories": "All categories",
+    "topics_marked_as_read.success": "Témakör olvasottnak jelölve!"
+}

@@ -1,0 +1,56 @@
+"use strict";
+
+var	user = require('../user'),
+	notifications = require('../notifications'),
+	SocketNotifs = {};
+
+SocketNotifs.get = function(socket, data, callback) {
+	if (data && Array.isArray(data.nids) && socket.uid) {
+		user.notifications.getNotifications(data.nids, socket.uid, callback);
+	} else {
+		user.notifications.get(socket.uid, callback);
+	}
+};
+
+SocketNotifs.loadMore = function(socket, data, callback) {
+	if (!data || !parseInt(data.after, 10)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	if (!socket.uid) {
+		return;
+	}
+	var start = parseInt(data.after, 10);
+	var stop = start + 20;
+	user.notifications.getAll(socket.uid, start, stop, function(err, notifications) {
+		if (err) {
+			return callback(err);
+		}
+		callback(null, {notifications: notifications, nextStart: stop});
+	});
+};
+
+SocketNotifs.getCount = function(socket, data, callback) {
+	user.notifications.getUnreadCount(socket.uid, callback);
+};
+
+SocketNotifs.deleteAll = function(socket, data, callback) {
+	if (!socket.uid) {
+		return;
+	}
+
+	user.notifications.deleteAll(socket.uid, callback);
+};
+
+SocketNotifs.markRead = function(socket, nid, callback) {
+	notifications.markRead(nid, socket.uid, callback);
+};
+
+SocketNotifs.markUnread = function(socket, nid, callback) {
+	notifications.markUnread(nid, socket.uid, callback);
+};
+
+SocketNotifs.markAllRead = function(socket, data, callback) {
+	notifications.markAllRead(socket.uid, callback);
+};
+
+module.exports = SocketNotifs;
