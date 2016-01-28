@@ -1,8 +1,8 @@
 <div class="panel-body">
-    <div class="list-group">
+    <div class="list-group overflowablechilds">
         <a href="#" class="list-group-item">
             <i class="fa fa-bolt fa-fw"></i> Client Controller
-            <span class="pull-right text-muted small"><em>Running</em>
+                <span class="pull-right text-muted small"><em>Running</em>
             </span>
         </a>
         <a href="#" class="list-group-item">
@@ -17,22 +17,33 @@
         </a>
         <a href="#" class="list-group-item">
             <i class="fa fa-users fa-fw"></i> Total Smurfs Count
-            <span class="pull-right text-muted small"><em>43</em>
+            <span class="pull-right text-muted small"><em>{{user.userData.smurfs.length}}</em>
             </span>
         </a>
         <a href="#" class="list-group-item">
             <i class="fa fa-key fa-fw"></i> Client Hwid Status
-            <span class="pull-right text-muted small"><em>Locked</em>
+            <span class="pull-right text-muted small">
+                <em ng-if="user.userData.hwidCanChange > 0" class="text-danger">{{hwidRemains()}}</em>
+                <em ng-if="user.userData.hwidCanChange <= 0" class="text-success">Available</em>
             </span>
         </a>
         <a href="#" class="list-group-item">
             <i class="fa fa-shield fa-fw"></i> Account Type
-            <span class="pull-right text-muted small"><em>Multi Smurf</em>
+            <span class="pull-right text-muted small" ng-if="user.userData.type == 2">  <em>Multi Smurf</em>
+            </span>
+            <span class="pull-right text-muted small" ng-if="user.userData.type == 1">  <em>Single Smurf</em>
+            </span>
+            <span class="pull-right text-muted small" ng-if="user.userData.type == 0">
+                <em>Trial:</em>
+                <em ng-if="user.userData.trial < 0" class="text-danger">Expired</em>
+                <em ng-if="user.userData.trial >= 0" class="text-warning">{{trialRemains()}}</em>
             </span>
         </a>
         <a href="#" class="list-group-item">
             <i class="fa fa-check fa-fw"></i> User Email Confirmation
-            <span class="pull-right text-muted small"><em>Confirmed</em>
+            <span class="pull-right text-muted small">
+                <em ng-if="user.forumData['email:confirmed']" class="text-success">Confirmed</em>
+                <em ng-if="!user.forumData['email:confirmed']" class="text-danger">Not Confirmed</em>
             </span>
         </a>
     </div>

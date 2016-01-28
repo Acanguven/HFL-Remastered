@@ -11,19 +11,48 @@ angular.module('sbAdminApp')
     return {
         restrict: 'E',
         compile: function(element, attrs) {
-            if(attrs.minimap){
-                var htmlText = '<img class="img-circle" src="/img/champions/'+attrs.name+'.png" style="margin-bottom:10px;position:absolute;" height="25px;"/>';
+            if(!attrs.name && attrs.name == ""){
+                var htmlText = "";
             }else{
-                if(attrs.chat){
-                    var htmlText = '<img class="img-circle" src="/img/champions/'+attrs.name+'.png" style="margin-bottom:10px;cursor:pointer;" height="50px"/>';
+                if(attrs.minimap){
+                    var htmlText = '<img class="img-circle" src="/img/champions/'+attrs.name+'.png" style="margin-bottom:10px;position:absolute;" height="25px;"/>';
                 }else{
-                    var htmlText = '<img class="img-circle" src="/img/champions/'+attrs.name+'.png" style="margin-bottom:10px;cursor:pointer;" height="100px"/>';
+                    if(attrs.chat){
+                        var htmlText = '<img class="img-circle" src="/img/champions/'+attrs.name+'.png" style="margin-bottom:10px;cursor:pointer;" height="50px"/>';
+                    }else{
+                        var htmlText = '<img class="img-circle" src="/img/champions/'+attrs.name+'.png" style="margin-bottom:10px;cursor:pointer;" height="100px"/>';
+                    }
+                    
                 }
-                
             }
             element.replaceWith(htmlText);
         }
     };
+});
+
+angular.module('sbAdminApp')
+    .directive('herolist', function() {
+    return {
+        restrict : 'E',
+        template : '<a  ng-repeat="hero in list | filter:search" href="#/dashboard/items/{{hero}}"><img class="img-circle" src="/img/champions/{{hero}}.png" style="margin-bottom:10px;cursor:pointer;margin-right:11px;" height="100px"/></a>',
+        scope: {
+            list: "=",
+            search: "="
+        },
+        replace:true
+    }
 })
 
+
+angular.module('sbAdminApp')
+    .directive('heroscope', function() {
+    return {
+        restrict : 'E',
+        template : '<img class="img-circle" src="/img/champions/{{name}}.png" style="margin-bottom:10px;cursor:pointer;margin-right:11px;" height="100px"/>',
+        scope: {
+            name: "="
+        },
+        replace:true
+    }
+})
 

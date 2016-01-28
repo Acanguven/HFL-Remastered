@@ -1,26 +1,23 @@
 <div class="container">
-    <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-            <div class="login-panel panel panel-default">
+    <div class="row" style="margin-top:20px;">
+        <div class="col-md-10 col-md-offset-1">
+            <img src="/img/logo.png" style="float:left;"/>
+            <h1 style="float:left;">Hands Free Leveler</h1><h1 style="text-align:center;">Remote Client</h1>
+            <div class="login-panel panel panel-default" style="margin-top:30px;">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Please Sign In</h3>
+                    <h3 class="panel-title">Login using your HFL forum account</h3>
                 </div>
                 <div class="panel-body">
                     <form role="form">
                         <fieldset>
                             <div class="form-group">
-                                <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                                <input class="form-control" placeholder="Forum Username" name="username" type="username" autofocus ng-model="username">
                             </div>
                             <div class="form-group">
-                                <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                <input class="form-control" placeholder="Forum Password" name="password" type="password" ng-model="password">
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input name="remember" type="checkbox" value="Remember Me">Remember Me
-                                </label>
-                            </div>
-                            <!-- Change this to a button or input when using this as a form -->
-                            <a ui-sref="dashboard.home" class="btn btn-lg btn-success btn-block">Login</a>
+                            <a class="btn btn-lg btn-success btn-block" ng-click="login(username,password)">Login</a>
+                            <p class="text-danger" style="margin-top:5px;" ng-if="errMsg.length>0">{{errMsg}}</p>
                         </fieldset>
                     </form>
                 </div>

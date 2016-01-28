@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Import And Export</h1>
+    </div>  
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Import Settings
+            </div>
+            <div class="panel-body">
+                <textarea class="form-control" rows="3" placeholder="Paste here your copied settings"></textarea>
+            </div>
+            <div class="panel-footer">
+                <button type="button" class="btn btn-success">Import</button>
+                <small class="text-danger">Your settings will be deleted.</small>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Export Settings
+            </div>
+            <div class="panel-body">
+                <textarea class="form-control" rows="3"disabled="disabled" ng-model="exportedSettings"></textarea>
+            </div>
+            <div class="panel-footer">
+                <button type="button" class="btn btn-success" clipboard on-copied="copied()" on-error="copyfail(err)" text="exportedSettings">Copy</button>
+                <small>{{copyStatus}}</small>
+            </div>
+        </div>
+    </div>
+</div>

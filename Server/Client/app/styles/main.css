@@ -87,3 +87,25 @@ background-color: #eee;
   border: 1px solid #060e1c;
   background: #060d13;
 }
+
+.buildItem{
+  float: left;
+  height: 68px;
+}
+
+.lineConnect {
+    width: 50px;
+    height: 30px;
+    float: left;
+    border-bottom: 1px dotted #ccc;
+    transform: translate(0px, 5px);
+    -webkit-transform: translate(0px, 5px);
+    -moz-transform: translate(0px, 5px);
+    -o-transform: translate(0px, 5px);
+    -ms-transform: translate(0px, 5px);
+    position: relative;
+}
+
+.overflowablechilds a{
+  overflow: auto;
+}

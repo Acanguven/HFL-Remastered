@@ -1,0 +1,106 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header"><heroscope name="hero"></heroscope>{{hero}} Items</h1>
+    </div>
+</div>
+
+<div class="row">
+	<div class=" col-xs-12 col-sm-3 col-lg-3">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Item Build - <em ng-if="search.map==11">Summoners Rift</em><em ng-if="search.map==12">Aram</em>
+	        </div>
+	        <div class="panel-body">
+	        	<p class="text-info">This is your inventory, click items to sell them.</p>
+	        	<div class="col-xs-4" style="padding-left:5px;padding-right:5px;margin-bottom:3px;"><iteminventory item="heroBuild[search.map].endItems[0]"action="sellItem" slot="0"></iteminventory></div>
+	        	<div class="col-xs-4" style="padding-left:5px;padding-right:5px;margin-bottom:3px;"><iteminventory item="heroBuild[search.map].endItems[1]"action="sellItem" slot="1"></iteminventory></div>
+	        	<div class="col-xs-4" style="padding-left:5px;padding-right:5px;margin-bottom:3px;"><iteminventory item="heroBuild[search.map].endItems[2]" action="sellItem" slot="2"></iteminventory></div>
+	        	<div class="col-xs-4" style="padding-left:5px;padding-right:5px;margin-bottom:3px;"><iteminventory item="heroBuild[search.map].endItems[3]"action="sellItem" slot="3"></iteminventory></div>
+	        	<div class="col-xs-4" style="padding-left:5px;padding-right:5px;margin-bottom:3px;"><iteminventory item="heroBuild[search.map].endItems[4]"action="sellItem" slot="4"></iteminventory></div>
+	        	<div class="col-xs-4" style="padding-left:5px;padding-right:5px;margin-bottom:3px;"><iteminventory item="heroBuild[search.map].endItems[5]"action="sellItem" slot="5"></iteminventory></div>
+	        </div>
+	    </div>
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Hero Value - <em ng-if="search.map==11">Summoners Rift</em><em ng-if="search.map==12">Aram</em>
+	        </div>
+	        <div class="panel-body">
+			    <div class="list-group">
+			        <a href="#" class="list-group-item">
+			            <i class="fa fa-bolt fa-fw"></i> Total Transactions
+			            <span class="pull-right text-muted small"><em>{{heroBuild[search.map].queue.length}}</em>
+			            </span>
+			        </a>
+			        <a href="#" class="list-group-item">
+			            <i class="fa fa-bolt fa-fw"></i> Total Value
+			            <span class="pull-right text-muted small"><em>{{calcuteValue()}}</em>
+			            </span>
+			        </a>
+			    </div>
+			</div>
+	    </div>
+    </div>
+	<div class="col-xs-12 col-sm-9 col-lg-9">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	        	<div class="row">
+		        	<div class="col-lg-8">
+		            	<input type="text" class="form-control" value="" placeholder="Item Name" ng-model="search.name">
+		            </div>
+		            <div class="col-lg-4" style="margin-top:8px;" ng-init="search.map = 11">
+		            	<input type="radio" name="map" ng-model="search.map" value="12"></input><label style="margin-right:10px;">Aram</label>
+		            	<input type="radio" name="map" ng-model="search.map" value="11"></input><label>Summoners Rift</label>
+		            </div>
+	            </div>
+	        </div>
+	        <div class="panel-body" style="max-height:320px;overflow-y:scroll;">
+	        	<p class="text-info">These are the items that is buyable with the selected map, click them to buy.</p>
+	        	<itemlist list="itemList" search="search" action=addItem></itemlist>
+	        </div>
+	    </div>
+    </div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Aram Build
+	            <button type="button" class="btn btn-danger btn-circle" style="height:20px;float:right;margin-right:20px;padding:1px 0px;" ng-click="clear(12);"><i class="fa fa-times" ></i></button>
+	            <button type="button" class="btn btn-success btn-circle" style="height:20px;float:right;margin-right:20px;padding:1px 0px;"  ng-click="save(12);"><i class="fa fa-save"></i></button>
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-xs-12">
+		        		<div style="float:left;margin-bottom:20px;" ng-repeat="transaction in heroBuild[12].queue">
+				        	<div class="buildItem"><itemscope item="transaction.item" buy="transaction.buy"></itemscope></div>
+				        	<div class="lineConnect"></div>
+			        	</div>
+		        	</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Summoners Rift Build
+	            <button type="button" class="btn btn-danger btn-circle" style="height:20px;float:right;margin-right:20px;padding:1px 0px;"  ng-click="clear(11);"><i class="fa fa-times"></i></button>
+	            <button type="button" class="btn btn-success btn-circle" style="height:20px;float:right;margin-right:20px;padding:1px 0px;"  ng-click="save(11);"><i class="fa fa-save"></i></button>
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-xs-12">
+		        		<div style="float:left;margin-bottom:20px;" ng-repeat="transaction in heroBuild[11].queue">
+				        	<div class="buildItem"><itemscope item="transaction.item" buy="transaction.buy"></itemscope></div>
+				        	<div class="lineConnect"></div>
+			        	</div>
+		        	</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
