@@ -2,12 +2,13 @@
     <div class="list-group overflowablechilds">
         <a href="#" class="list-group-item">
             <i class="fa fa-bolt fa-fw"></i> Client Controller
-                <span class="pull-right text-muted small"><em>Running</em>
+                <span class="pull-right text-muted small" ng-if="controller"><em>Running</em>
+                <span class="pull-right text-error small" ng-if="!controller"><em>Not Running</em>
             </span>
         </a>
         <a href="#" class="list-group-item">
             <i class="fa fa-key fa-fw"></i> Client IP Address
-            <span class="pull-right text-muted small"><em>125.32.12.52</em>
+            <span class="pull-right text-muted small" ng-if="controller"><em>{{controller.ip}}</em>
             </span>
         </a>
         <a href="#" class="list-group-item">
@@ -23,8 +24,8 @@
         <a href="#" class="list-group-item">
             <i class="fa fa-key fa-fw"></i> Client Hwid Status
             <span class="pull-right text-muted small">
-                <em ng-if="user.userData.hwidCanChange > 0" class="text-danger">{{hwidRemains()}}</em>
-                <em ng-if="user.userData.hwidCanChange <= 0" class="text-success">Available</em>
+                <em ng-if="user.userData.hwidCanChange - user.date > 0" class="text-danger">{{hwidRemains()}}</em>
+                <em ng-if="user.userData.hwidCanChange - user.date <= 0" class="text-success">Available</em>
             </span>
         </a>
         <a href="#" class="list-group-item">
@@ -35,8 +36,8 @@
             </span>
             <span class="pull-right text-muted small" ng-if="user.userData.type == 0">
                 <em>Trial:</em>
-                <em ng-if="user.userData.trial < 0" class="text-danger">Expired</em>
-                <em ng-if="user.userData.trial >= 0" class="text-warning">{{trialRemains()}}</em>
+                <em ng-if="user.userData.trial - user.date  <= 0" class="text-danger">Expired</em>
+                <em ng-if="user.userData.trial - user.date > 0" class="text-warning">{{trialRemains()}}</em>
             </span>
         </a>
         <a href="#" class="list-group-item">

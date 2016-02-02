@@ -80,8 +80,29 @@
     <Compile Include="HFL\Smurf.cs" />
     <Compile Include="HFL\TrulyObservableCollection.cs" />
     <Compile Include="HFL\User.cs" />
+    <Compile Include="HFL\View\Account.xaml.cs">
+      <DependentUpon>Account.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HFL\View\AddSmurfWindow.xaml.cs">
+      <DependentUpon>AddSmurfWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HFL\View\Bol.xaml.cs">
+      <DependentUpon>Bol.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HFL\View\Language.xaml.cs">
+      <DependentUpon>Language.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HFL\View\LogWindow.xaml.cs">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HFL\View\ScriptStatus.xaml.cs">
+      <DependentUpon>ScriptStatus.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HFL\View\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HFL\View\SmurfListWindow.xaml.cs">
+      <DependentUpon>SmurfListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="HFL\View\Update.xaml.cs">
       <DependentUpon>Update.xaml</DependentUpon>
@@ -213,11 +234,47 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="HFL\View\Account.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HFL\View\AddSmurfWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HFL\View\Bol.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HFL\View\Dashboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="HFL\View\Dashboard.xaml.cs">
+      <DependentUpon>Dashboard.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="HFL\View\Language.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HFL\View\LogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HFL\View\ScriptStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="HFL\View\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="HFL\View\SmurfListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

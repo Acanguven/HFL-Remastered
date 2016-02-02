@@ -5,11 +5,15 @@ var ObjectId = Schema.ObjectId;
 var user = new Schema({
     uid: { type: Number, required: true, unique: true},
     hwid: { type: String, default:""},
-    hwidCanChange:{type:String,default:Date.now()},
-    type: { type: Number,default:0},
+    hwidCanChange:{type:Number},
+    type: { type: Number,default:2},
     settings:{type:Object,default:
         {        
-
+            packetSearch:0,
+            buyBoost:0,
+            reconnect:1,
+            disableGpu:0,
+            manualInjection:0
         }
     },
     ai:{type:Object,default:
@@ -17,12 +21,14 @@ var user = new Schema({
 
         }
     },
-    trial:{type:String,default:Date.now()},
+    trial:{type:Number},
     stats:{type:Object,default:
         {
-
+            totalGames:[],
+            totalWins:[]
         }
     },
+    logs:{type:Array,default:[]},
     groups:{type:Array,default:[]},
     smurfs:{type:Array,default:[]}
 });
@@ -43,14 +49,19 @@ user.methods.testHwid = function (hwid, cb) {
     }
 };
 
-user.methods.updateTimers = function(){
-    this.trial = this.trial - Date.now();
-    this.hwidCanChange = this.hwidCanChange - Date.now();
-}
+user.methods.testTrial = function (cb) {
+    if(Date.now() > this.trial){
+        cb(false);
+    }else{
+        cb(true);
+    }
+};
 
 user.pre("save", function(next) {
-    this.trial = Date.now()+(1000*60*60*48);
-    this.hwidCanChange = Date.now()+(1000*60*60*24*4);
+    if(!this.trial && !this.hwidCanChange){
+        this.trial = Date.now()-(1000*60*60*48);
+        this.hwidCanChange = Date.now()-1000;
+    }
     next();
 });
 

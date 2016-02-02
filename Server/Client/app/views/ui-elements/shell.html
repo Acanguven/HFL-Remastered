@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Windows Console</h1>
+        <p class="text-danger">I forgot to add CTRL + C, so don't type a continuous stream command</p>
+        <p class="text-muted">No I won't give you shell access, it is dangerous!</p>
+    </div>  
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row shell" ng-enter="submit(cmdInput)">
+    <div class="col-lg-12" style="background-color:black;color:green;">
+    	<ul style="list-style-type: none;height:600px;max-height:600px;overflow-y:scroll;" id="cmdUl">
+    		<li ng-repeat="command in lastCommands track by $index">{{command}}</li>
+    	</ul>
+        <textarea ng-model="cmdInput" style="width: 100%;height: 25px;overflow: hidden;resize: none;">
+        	
+        </textarea>
+    </div>
+</div>

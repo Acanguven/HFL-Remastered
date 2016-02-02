@@ -1,0 +1,23 @@
+﻿<Window x:Class="HandsFreeLeveler.SmurfListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Smurf List" Height="326" Width="755" Icon="/HandsFreeLeveler;component/Resources/hfl_256px.ico" ResizeMode="NoResize" SizeToContent="Height" Topmost="True" WindowStartupLocation="CenterOwner">
+    <Grid Margin="0,0,0,5">
+        <DataGrid x:Name="smurfLister" IsReadOnly="True"  Height="240" VerticalAlignment="Top" Margin="257,30,22,0" RowHeaderWidth="0" CanUserAddRows="false" CanUserDeleteRows="True" CellEditEnding="rowEditedEvent" PreviewKeyDown="DataGrid_PreviewKeyDown">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="FontWeight"  Value="Bold" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+        </DataGrid>
+        <Button x:Name="addNewSmurfButton" Content="Add New Smurf" HorizontalAlignment="Left" Margin="10,258,0,0" VerticalAlignment="Top" Width="142" Height="30" Click="addNewSmurfButton_Click"/>
+        <Label Content="Smurf List" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Tahoma" FontSize="14"/>
+        <Label Content="Total Smurfs:" Name="totalSmurfCount" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="clear" Content="Clear List" HorizontalAlignment="Left" Margin="157,258,0,0" VerticalAlignment="Top" Width="95" Height="30" Click="clear_Click"/>
+        <Label Content="Total Ram Usage: " Name="totalRamCount" HorizontalAlignment="Left" Margin="10,73,0,0" VerticalAlignment="Top"/>
+        <Label Content="Host Smurfs: " Name="totalHostCount" HorizontalAlignment="Left" Margin="10,104,0,0" VerticalAlignment="Top" ToolTip="Host Smurfs can create custom games. It is better to have 1 in your smurf list."/>
+        <Label Content="Running Smurfs: " Name="totalRunningCount" HorizontalAlignment="Left" Margin="10,135,0,0" VerticalAlignment="Top" ToolTip="Host Smurfs can create custom games. It is better to have 1 in your smurf list."/>
+    </Grid>
+</Window>

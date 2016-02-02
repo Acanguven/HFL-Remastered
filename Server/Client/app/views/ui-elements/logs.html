@@ -6,12 +6,7 @@
 </div>
 <div class="row">
     <div class="col-lg-12">
-		<button type="button" class="btn btn-outline btn-default">Smurf 1</button>
-		<button type="button" class="btn btn-outline btn-default">Smurf 2</button>
-		<button type="button" class="btn btn-outline btn-default">Smurf 3</button>
-		<button type="button" class="btn btn-outline btn-default">Smurf 4</button>
-		<button type="button" class="btn btn-outline btn-default">Smurf 5</button>
-		<button type="button" class="btn btn-outline btn-default">Smurf 6</button>
+		<button type="button" class="btn btn-inline btn-default" ng-repeat="smurf in smurfsFromLogs()" ng-click="show(smurf)">{{smurf}}</button>
     </div>
 </div>
 <hr>
@@ -23,24 +18,27 @@
             </div>
             <div class="panel-body" style="height:600px;padding-left:3px;padding-top:0px;overflow-y:auto;">
                 <ol style="margin-left:10px;">
-				  	<li><small style="margin-right:20px;">3:30 pm 08/20/2014</small><span class="text-success">Smurf 3 has leveled up.</span></li>
-				  	<li><small style="margin-right:20px;">3:30 pm 08/20/2014</small><span class="text-info">Smurf 3 has leveled up.</span></li>
-				  	<li><small style="margin-right:20px;">3:30 pm 08/20/2014</small><span class="text-info">Smurf 3 has leveled up.</span></li>
-				  	<li><small style="margin-right:20px;">3:30 pm 08/20/2014</small><span class="text-danger">Smurf 3 has leveled up.</span></li>
+				  	<li ng-repeat="log in systemLogs() | reverse">
+				  		<small style="margin-right:20px;">{{log.date}}</small>
+				  		<span ng-class="'text-'+log.code">{{log.text}}</span>
+				  	</li>
 				</ol>
             </div>
         </div>
 	</div>
-	<div class="col-lg-6">
+	<div class="col-lg-6" ng-if="logSmurf">
 	    <div class="row">
 			<div class="col-lg-12">
 		        <div class="panel panel-default">
 		            <div class="panel-heading">
-		                Smurf Logs - Smurf 1
+		                {{logSmurf}}
 		            </div>
 		            <div class="panel-body" style="height:600px;padding-left:3px;padding-top:0px;overflow-y:auto;">
 		                <ol style="margin-left:10px;">
-						  	<li><small style="margin-right:20px;">3:30 pm 08/20/2014</small><span class="text-success">Smurf 3 has leveled up.</span></li>
+						  	<li ng-repeat="log in smurfLogs() | reverse">
+							  	<small style="margin-right:20px;">{{log.date}}</small>
+							  	<span ng-class="'text-'+log.code">{{log.text}}</span>
+						  	</li>
 						</ol>
 		            </div>
 		        </div>

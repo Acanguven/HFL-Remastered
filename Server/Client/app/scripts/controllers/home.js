@@ -6,12 +6,14 @@
  * # MainCtrl
  * Controller of the sbAdminApp
  */
-angular.module('sbAdminApp').controller('Home', function($scope, $position, $stateParams, $state, $http) {
+angular.module('sbAdminApp').controller('Home', function(Websocket ,$scope, $position, $stateParams, $state, $http) {
 	$scope.trialRemains = function(){
-		return Math.round($scope.user.userData.trial / 60000) + " minutes remain";
+		var remaining = $scope.user.userData.trial - $scope.user.date;
+		return Math.round(remaining / 60000) + " minutes remain";
 	}
 
 	$scope.hwidRemains = function(){
-		return "Available in " + Math.round($scope.user.userData.hwidCanChange / 60000) + " minutes";
+		var remaining = $scope.user.userData.hwidCanChange - $scope.user.date;
+		return "Available in " + Math.round(remaining / 60000) + " minutes";
 	}
 });

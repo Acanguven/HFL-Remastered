@@ -109,3 +109,12 @@ background-color: #eee;
 .overflowablechilds a{
   overflow: auto;
 }
+
+.shell *::-webkit-scrollbar {
+    width: 2px;  /* remove scrollbar space */
+    background: black;  /* optional: just make scrollbar invisible */
+}
+/* optional: show position indicator in red */
+.shell *::-webkit-scrollbar-thumb {
+    background: green;
+}

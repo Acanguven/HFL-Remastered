@@ -1,0 +1,9 @@
+﻿<Application x:Class="HFL_Remastered.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Startup="igniter">
+    <Application.Resources>
+        <sys:String x:Key="version">1.0</sys:String>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,94 @@
+﻿<Window x:Class="HFL_Remastered.Main"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hands Free Leveler" Height="205" Width="364" Icon="Resources/logo.png" ResizeMode="NoResize" Closing="Window_Closing" IsVisibleChanged="Window_IsVisibleChanged" StateChanged="Window_StateChanged">
+    <Window.Resources>
+        <ContextMenu x:Key="NotifierContextMenu"
+                    Placement="MousePoint">
+            <MenuItem Header="{Binding Text}"/>
+            <MenuItem Header="Show" Click="Menu_Open"/>
+            <MenuItem Header="Exit" Click="Menu_Close"/>
+        </ContextMenu>
+    </Window.Resources>
+    <Grid Background="Black">
+        <StatusBar Height="25" Margin="0" VerticalAlignment="Bottom" Padding="0" Background="{x:Null}" Foreground="#CCCCCCCC" BorderThickness="0 0.5 0 0" BorderBrush="AliceBlue">
+            <StatusBarItem>
+                <TextBlock Text="Remote Server:"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="status" Foreground="{Binding Foreground}" Text="{Binding Text}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="Version 1.0" HorizontalAlignment="Right" Margin="0 0 3 0"/>
+            </StatusBarItem>
+        </StatusBar>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Username:" VerticalAlignment="Top" Margin="10,10,0,0" Foreground="#CCCCCCCC" Name="username"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Account Type:" VerticalAlignment="Top" Margin="10,31,0,0" Foreground="#CCCCCCCC" Name="acc"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Hwid reset:" VerticalAlignment="Top" Margin="10,52,0,0" Foreground="#CCCCCCCC" Name="hwid"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Trial:" VerticalAlignment="Top" Margin="10,94,0,0" Foreground="#CCCCCCCC" Name="trial"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding Remotes}" VerticalAlignment="Top" Margin="10,73,0,0" Foreground="#CCCCCCCC" Name="rmtct"/>
+        <Button Margin="0,8,12,0" Foreground="#CCCCCCCC" Height="37" HorizontalAlignment="Right" VerticalAlignment="Top" Width="55" Click="Button_Click">Remote
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+
+                    <Border CornerRadius="4" BorderBrush="white" BorderThickness="1">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Background" Value="black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#FF87A5B9" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="{TemplateBinding Content}" 
+                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Margin="0,50,12,0" Foreground="#CCCCCCCC" Height="37" HorizontalAlignment="Right" VerticalAlignment="Top" Width="55" Click="Button_Click_1">Forum
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+
+                    <Border CornerRadius="4" BorderBrush="white" BorderThickness="1">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Background" Value="black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#FF87A5B9" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="{TemplateBinding Content}" 
+                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Margin="0,91,12,0" Foreground="#CCD6C44F" Height="37" HorizontalAlignment="Right" VerticalAlignment="Top" Width="55" Content="BUY HFL">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+
+                    <Border CornerRadius="4" BorderBrush="white" BorderThickness="1">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Background" Value="black" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#FF87A5B9" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="{TemplateBinding Content}" 
+                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+    </Grid>
+</Window>

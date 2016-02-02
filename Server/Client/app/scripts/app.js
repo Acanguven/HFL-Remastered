@@ -14,6 +14,7 @@ angular
         'ui.bootstrap',
         'angular-loading-bar',
         'angular-clipboard',
+        'ngWebSocket'
     ])
     .factory('httpRequestInterceptor',['$rootScope', function($rootScope){
         return {
@@ -26,6 +27,16 @@ angular
 
             requestError: function(config) {
                 return config;
+            },
+
+            response: function(response){
+                if(response.headers('Authorization')){
+                    $rootScope.token = response.headers('Authorization');
+                }
+                if(response.data && response.data.type && response.data.type == "dead"){
+                    location.reload();
+                }
+                return response;
             }
         };
     }])
@@ -38,6 +49,24 @@ angular
             }
 
             return input;
+        };
+    })
+    .directive('ngEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 13) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.ngEnter);
+                    });
+     
+                    event.preventDefault();
+                }
+            });
+        };
+    })
+    .filter('reverse', function() {
+        return function(items) {
+            return items.slice().reverse();
         };
     })
     .config(['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', "$httpProvider" , function($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider) {
@@ -131,6 +160,9 @@ angular
                 templateUrl: 'views/pages/login.html',
                 controller: 'login',
                 url: '/login',
+                params: {
+                    redirect: true
+                },
                 resolve: {
                     loadMyFile: function($ocLazyLoad) {
                         return $ocLazyLoad.load({
@@ -224,9 +256,35 @@ angular
                     }
                 }
             })
+            .state('dashboard.shell', {
+                controller: "shell",
+                templateUrl: 'views/ui-elements/shell.html',
+                url: '/shell',
+                resolve: {
+                    loadMyFiles: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/shell.js',
+                            ]
+                        })
+                    }
+                }
+            })
             .state('dashboard.settings', {
                 templateUrl: 'views/ui-elements/settings.html',
-                url: '/settings'
+                controller: 'settings',
+                url: '/settings',
+                resolve: {
+                    loadMyFiles: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/settings.js',
+                            ]
+                        })
+                    }
+                }
             })
             .state('dashboard.chat', {
                 templateUrl: 'views/ui-elements/chat.html',
@@ -259,7 +317,18 @@ angular
                 }
             }).state('dashboard.logs', {
                 templateUrl: 'views/ui-elements/logs.html',
-                url: '/logs'
+                url: '/logs',
+                resolve: {
+                    loadMyFiles: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/logger.js',
+                            ]
+                        })
+                    }
+                },
+                controller : 'logger'
             }).state('dashboard.items', {
                 resolve: {
                     loadMyFile: function($ocLazyLoad) {

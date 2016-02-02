@@ -6,7 +6,11 @@
  * # MainCtrl
  * Controller of the sbAdminApp
  */
-angular.module('sbAdminApp').controller('login', function($scope,$http,$state) {
+angular.module('sbAdminApp').controller('login', function(Websocket,$scope,$http,$state,$stateParams) {
+	console.log($stateParams)	
+	if(!$stateParams.redirect){
+		top.location.href = "/";
+	}
 	$scope.errMsg = "";
 	$scope.login = function(username,password){
 		if(username.length > 3 && password.length > 3){
@@ -14,6 +18,7 @@ angular.module('sbAdminApp').controller('login', function($scope,$http,$state) {
 				if(res.data.message){
 					$scope.errMsg = res.data.message;
 				}else{
+					Websocket.send({type:"login",token:res.data.token});
 					$state.go('dashboard.home',{user:res.data});
 				}
 			});

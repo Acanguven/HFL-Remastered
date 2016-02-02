@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 D:\HFL Remastered\Pc Client\HandsFreeLeveler\App.xaml
-4-1959151136
+12-1020773345
 
-1431846468522
+151-1156501404
 17764378596
-HFL\View\GameMask.xaml;HFL\View\SettingsWindow.xaml;HFL\View\Update.xaml;HFL\View\Login.xaml;
+HFL\View\GameMask.xaml;HFL\View\Account.xaml;HFL\View\AddSmurfWindow.xaml;HFL\View\Bol.xaml;HFL\View\Dashboard.xaml;HFL\View\Language.xaml;HFL\View\LogWindow.xaml;HFL\View\ScriptStatus.xaml;HFL\View\SettingsWindow.xaml;HFL\View\SmurfListWindow.xaml;HFL\View\Update.xaml;HFL\View\Login.xaml;
 hfl\view\splashscreenloader.png
 False
 

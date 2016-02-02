@@ -1,6 +1,9 @@
 <div class="navbar-default sidebar" role="navigation">
-    <div class="alert alert-danger" style="border-radius:0px;margin-bottom:0px;">
-        <i class="fa fa-bolt fa-fw"></i>Remote Client not connected
+    <div class="alert alert-danger" style="border-radius:0px;margin-bottom:0px;" ng-if="!controller">
+        <i class="fa fa-bolt fa-fw"></i>Controller not connected
+    </div>
+    <div class="alert alert-success" style="border-radius:0px;margin-bottom:0px;" ng-if="controller">
+        <i class="fa fa-bolt fa-fw"></i>Connected to controller
     </div>
     <div class="sidebar-nav navbar-collapse">
         
@@ -22,6 +25,9 @@
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="dashboard.logs"><i class="fa fa-info fa-fw"></i> Logs<span></span></a>
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.shell"><i class="fa fa-terminal fa-fw"></i> Windows Console<span></span></a>
             </li>
             <li ui-sref-active="active" style="display:none;">
                 <a ui-sref="dashboard.chat"><i class="fa fa-wechat fa-fw"></i> Chat<span></span></a>

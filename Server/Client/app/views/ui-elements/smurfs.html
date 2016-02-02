@@ -77,9 +77,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="smurf in user.userData.smurfs">
-                                <td><input class="form-control" ng-model="smurf.username"></td>
-                                <td><input class="form-control" ng-model="smurf.password"></td>
+                            <tr ng-repeat="smurf in user.userData.smurfs" ng-class="{'success':(smurf.isRunning && !smurf.isError), 'info':(!smurf.isRunning && !smurf.isError), 'danger':(smurf.isError)}">
+                                <td><input class="form-control" ng-model="smurf.username" ng-disable="disableEditorLiveSmurf(smurf)"></td>
+                                <td><input class="form-control" ng-model="smurf.password" ng-disable="disableEditorLiveSmurf(smurf)"></td>
                                 <td>{{smurf.currentLevel?smurf.currentLevel:'?'}}</td>
                                 <td class="center">
 	                                <select ng-disabled="smurf.group" class="form-control" ng-model="smurf.desiredLevel">
@@ -116,11 +116,13 @@
 					                </select>
                                 </td>
                                 <td class="center">
-                                	<button type="button" class="btn btn-success btn-circle" style="margin-left:20px;" ng-disabled="smurf.group"><i class="fa fa-play"></i>
+                                	<button type="button" class="btn btn-success btn-circle" style="margin-left:20px;" ng-disabled="smurf.group" ng-if="showSmurfAction(smurf,'play')" ng-click="startSmurf(smurf)"><i class="fa fa-play"></i>
 		                            </button>
-		                            <button type="button" class="btn btn-warning btn-circle" ng-disabled="smurf.group"><i class="fa fa-stop"></i>
+
+		                            <button type="button" class="btn btn-warning btn-circle" ng-disabled="smurf.group" ng-if="showSmurfAction(smurf,'stop')" ng-click="stopSmurf(smurf)"><i class="fa fa-stop"></i>
 		                            </button>
-		                            <button type="button" class="btn btn-danger btn-circle" style="margin-left:20px;" ng-disabled="smurf.group"><i class="fa fa-times"></i>
+
+		                            <button type="button" class="btn btn-danger btn-circle" style="margin-left:20px;" ng-disabled="smurf.group" ng-click="removeSmurf(smurf)"><i class="fa fa-times"></i>
                                 </td>
                             </tr>
                         </tbody>
@@ -167,8 +169,10 @@
 		                </select>
 	                </div>
 	                <div class="col-lg-5">
-	                    <button type="button" class="btn btn-warning btn-circle" style="margin-left:2px;float:right;"><i class="fa fa-stop"></i></button>
-	                	<button type="button" class="btn btn-success btn-circle" style="margin-left:2px;float:right;"><i class="fa fa-play"></i></button>
+	                    <button ng-if="smurf.username" type="button" class="btn btn-warning btn-circle" style="margin-left:2px;float:right;" ng-click="stopGroup(group)"><i class="fa fa-stop"></i></button>
+
+	                	<button type="button" class="btn btn-success btn-circle" style="margin-left:2px;float:right;" ng-click="starGroup(group)"><i class="fa fa-play"></i></button>
+
 	                	<button type="button" class="btn btn-danger btn-circle" style="margin-left:2px;float:right;" ng-click="removeGroup(group)"><i class="fa fa-times"></i></button>
 	                </div>
                 </div>
