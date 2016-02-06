@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LoLLauncher.RiotObjects.Platform.Gameinvite.Contract
 {
@@ -9,13 +7,14 @@ namespace LoLLauncher.RiotObjects.Platform.Gameinvite.Contract
     {
         public override string TypeName
         {
-            get
-            {
-                return this.type;
-            }
+            get { return this.type; }
         }
 
         private string type = "com.riotgames.platform.gameinvite.contract.LobbyStatus";
+
+        public LobbyStatus()
+        {
+        }
 
         public LobbyStatus(Callback callback)
         {
@@ -37,8 +36,22 @@ namespace LoLLauncher.RiotObjects.Platform.Gameinvite.Contract
             callback(this);
         }
 
-        [InternalName("gameMetaData")]
-        public Dictionary<string, object> GameMetaData { get; set; }
+        [InternalName("chatKey")]
+        public String ChatKey { get; set; }
 
+        [InternalName("gameMetaData")]
+        public String GameData { get; set; }
+
+        [InternalName("owner")]
+        public Player Owner { get; set; }
+
+        [InternalName("members")]
+        public List<dynamic> Members { get; set; }
+
+        [InternalName("invitees")]
+        public List<Invitee> Invitees { get; set; }
+
+        [InternalName("invitationId")]
+        public String InvitationID { get; set; }
     }
 }

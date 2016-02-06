@@ -24,6 +24,7 @@ namespace HFL_Remastered
             string buffer = logPacket.ToString(Formatting.None);
 
             App.mainwindow.net.sendLog(buffer);
+            log = null;
         }
 
         public class Log

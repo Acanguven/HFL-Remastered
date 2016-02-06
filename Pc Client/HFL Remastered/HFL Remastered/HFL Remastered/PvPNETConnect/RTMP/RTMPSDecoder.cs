@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Web.Script.Serialization;
-
 namespace LoLLauncher
 {
     public class RTMPSDecoder

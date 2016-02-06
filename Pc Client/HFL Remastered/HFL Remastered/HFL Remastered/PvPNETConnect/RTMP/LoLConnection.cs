@@ -9,15 +9,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
+using HFL_Remastered;
 using LoLLauncher.RiotObjects;
 using LoLLauncher.RiotObjects.Platform.Game;
+using LoLLauncher.RiotObjects.Platform.Gameinvite.Contract;
 using LoLLauncher.RiotObjects.Platform.Game.Message;
 using LoLLauncher.RiotObjects.Platform.Matchmaking;
-using Microsoft.Win32;
 using LoLLauncher.RiotObjects.Platform.Messaging;
 
 namespace LoLLauncher
@@ -130,45 +128,33 @@ namespace LoLLauncher
                     if (!GetIpAddress())
                         return;
 
-                    var ar = (IAsyncResult)null;
-                    try
-                    {
-                        sslStream = new SslStream(client.GetStream(), false, AcceptAllCertificates);
-                        ar = sslStream.BeginAuthenticateAsClient(server, null, null);
-                    }
-                    catch (Exception ex)
-                    {
-                        Disconnect();
-                    }
-                    if (ar == null)
-                    {
-                        Disconnect();
-                        //HandsFreeLeveler.App.smurfList.First(smurf => (smurf.username == user)).start();
-                    }
-                    else
-                    {
-
-
-                        using (ar.AsyncWaitHandle) //Burda manyama var
+                    sslStream = new SslStream(client.GetStream(), false, AcceptAllCertificates);
+                    try { 
+                        var ar = sslStream.BeginAuthenticateAsClient(server, null, null);
+                        using (ar.AsyncWaitHandle)
                         {
                             if (ar.AsyncWaitHandle.WaitOne(-1))
                             {
                                 sslStream.EndAuthenticateAsClient(ar);
                             }
                         }
-
-                        if (!Handshake())
-                            return;
-
-                        BeginReceive();
-
-                        if (!SendConnect())
-                            return;
-
-                        if (!Login())
-                            return;
-                        StartHeartbeat();
                     }
+                    catch (Exception ex)
+                    {
+                        Disconnect();
+                    }
+
+                    if (!Handshake())
+                        return;
+
+                    BeginReceive();
+
+                    if (!SendConnect())
+                        return;
+
+                    if (!Login())
+                        return;
+                    StartHeartbeat();
                 });
 
                 t.Start();
@@ -404,7 +390,7 @@ namespace LoLLauncher
                 }
                 else if (e.Message == "The remote server returned an error: (403) Forbidden.")
                 {
-                    Error("usernamepassfail", ErrorType.Password);
+                    Error("Your username or password is incorrect!", ErrorType.Password);
                     Disconnect();
                 }
                 else
@@ -575,20 +561,9 @@ namespace LoLLauncher
             result = GetResult(id);
             if (result["result"].Equals("_error"))
             {
-                //newVersion
                 string newVersion = (string)result.GetTO("data").GetTO("rootCause").GetArray("substitutionArguments")[1];
-                /*HandsFreeLeveler.Smurf owner = HandsFreeLeveler.App.smurfList.First(smurf => (smurf.username == cred.Username));
-                owner.log("Region information updated, restarting...");
-                if (owner != null)
-                {
-                    owner.reconnect = true;
-                    owner.clientMask = newVersion;
-                }
                 Disconnect();
-                if (owner != null)
-                {
-                    owner.start();
-                }*/
+                SmurfManager.smurfs.First(smurf => (smurf.username == user)).updateRegion(newVersion);
                 return false;
             }
 
@@ -634,7 +609,7 @@ namespace LoLLauncher
                 {
                     try
                     {
-                        long hbTime = (long)(DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
+                        long hbTime = (long)DateTime.Now.TimeOfDay.TotalMilliseconds;
                         string result = await PerformLCDSHeartBeat(accountID, sessionToken, heartbeatCount, DateTime.Now.ToString("ddd MMM d yyyy HH:mm:ss 'GMT-0700'"));
                         //int id = Invoke("loginService", "performLCDSHeartBeat", new object[] { accountID, sessionToken, heartbeatCount, DateTime.Now.ToString("ddd MMM d yyyy HH:mm:ss 'GMT-0700'") });
                         //Cancel(id); // Ignore result for now
@@ -642,7 +617,7 @@ namespace LoLLauncher
                         heartbeatCount++;
 
                         // Quick sleeps to shutdown the heartbeat quickly on a reconnect
-                        while ((long)(DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond) - hbTime < 120000)
+                        while ((long)DateTime.Now.TimeOfDay.TotalMilliseconds - hbTime < 120000)
                             Thread.Sleep(100);
                     }
                     catch
@@ -682,11 +657,12 @@ namespace LoLLauncher
                 results.Clear();
 
                 client = null;
-                //sslStream = null;
+                sslStream = null;
 
                 if (OnDisconnect != null)
                     OnDisconnect(this, EventArgs.Empty);
             });
+
             t.Start();
         }
         #endregion
@@ -718,8 +694,7 @@ namespace LoLLauncher
             {
                 int id = NextInvokeID();
                 pendingInvokes.Add(id);
-                //AHANDA BURDA MEMORY LEAK
-                //Console.Out.Write("Added pending invoke");
+
                 try
                 {
                     RTMPSEncoder encoder = new RTMPSEncoder();
@@ -856,9 +831,8 @@ namespace LoLLauncher
                         if (!currentPackets.ContainsKey(channel))
                         {
                             currentPackets.Add(channel, new Packet());
-
                         }
-                        //Console.Out.WriteLine("Packet:" + currentPackets.Count);
+
                         Packet p = currentPackets[channel];
                         p.AddToRaw(basicHeaderStorage.ToArray());
 
@@ -1061,8 +1035,12 @@ namespace LoLLauncher
                                                 MessageReceived(new SearchingForMatchNotification(body));
                                             else if (body.type.Equals("com.riotgames.platform.messaging.StoreFulfillmentNotification"))
                                                 MessageReceived(new StoreFulfillmentNotification(body));
-                                            else if (body.type.Equals("com.riotgames.platform.messaging.StoreFulfillmentNotification"))
+                                            else if (body.type.Equals("com.riotgames.platform.messaging.StoreAccountBalanceNotification"))
                                                 MessageReceived(new StoreAccountBalanceNotification(body));
+                                            else if (body.type.Equals("com.riotgames.platform.gameinvite.contract.LobbyStatus"))
+                                                MessageReceived(new LobbyStatus(body));
+                                            else if (body.type.Equals("com.riotgames.platform.gameinvite.contract.InvitationRequest"))
+                                                MessageReceived(new InvitationRequest(body));
                                             else
                                                 MessageReceived(body);
                                         })).Start();

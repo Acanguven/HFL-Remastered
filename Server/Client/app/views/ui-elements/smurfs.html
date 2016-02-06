@@ -33,7 +33,7 @@
 	                            <select class="form-control" ng-model="newSmurf.queue">
                                     <option value="2">Summoners Rift</option>
                                     <option value="8">Twisted Treeline</option>
-                                 	<option value="100">Aram</option>
+                                 	<option value="65">Aram</option>
                                  	<option value="31">AI Intro</option>
                                  	<option value="32">AI Beginner</option>
                                  	<option value="33">AI Intermediate</option>
@@ -119,7 +119,7 @@
                                 	<button type="button" class="btn btn-success btn-circle" style="margin-left:20px;" ng-disabled="smurf.group" ng-if="showSmurfAction(smurf,'play')" ng-click="startSmurf(smurf)"><i class="fa fa-play"></i>
 		                            </button>
 
-		                            <button type="button" class="btn btn-warning btn-circle" ng-disabled="smurf.group" ng-if="showSmurfAction(smurf,'stop')" ng-click="stopSmurf(smurf)"><i class="fa fa-stop"></i>
+		                            <button type="button" class="btn btn-warning btn-circle" ng-disabled="smurf.group" style="margin-left:20px;" ng-if="showSmurfAction(smurf,'stop')" ng-click="stopSmurf(smurf)"><i class="fa fa-stop"></i>
 		                            </button>
 
 		                            <button type="button" class="btn btn-danger btn-circle" style="margin-left:20px;" ng-disabled="smurf.group" ng-click="removeSmurf(smurf)"><i class="fa fa-times"></i>
@@ -140,7 +140,12 @@
 </div>
 <div class="row">
     <div class="col-lg-12" style="margin-bottom:10px;">
-        <p class="text-muted">These group members will queue together, first one will be the lobby leader and he will add others as friends.<br><b class="text-danger">This part is under beta test and it is useless now!</b></p>
+        <p class="text-muted">These group members will queue together, first one will be the lobby leader and he will add others as friends.<br>
+        <b class="text-danger">This part is under beta there can be mistakes!</b></p>
+        <ul>
+        	<li>All accounts must be valid for the queue type you selected. Dont forget the to look their levels!</li>
+        	<li>All accounts must be ready to queue and doesnt have leaver busted time</li>
+        </ul>
         <button type="button" class="btn btn-success" ng-click="addGroup()">Add New</button>
     </div>  
 </div>
@@ -169,9 +174,9 @@
 		                </select>
 	                </div>
 	                <div class="col-lg-5">
-	                    <button ng-if="smurf.username" type="button" class="btn btn-warning btn-circle" style="margin-left:2px;float:right;" ng-click="stopGroup(group)"><i class="fa fa-stop"></i></button>
+	                    <button ng-if="showGroupAction(group,'stop')" type="button" class="btn btn-warning btn-circle" style="margin-left:2px;" ng-click="stopGroup(group)"><i class="fa fa-stop"></i></button>
 
-	                	<button type="button" class="btn btn-success btn-circle" style="margin-left:2px;float:right;" ng-click="starGroup(group)"><i class="fa fa-play"></i></button>
+	                	<button type="button" class="btn btn-success btn-circle" style="margin-left:2px;" ng-click="startGroup(group)" ng-if="showGroupAction(group,'play')"><i class="fa fa-play"></i></button>
 
 	                	<button type="button" class="btn btn-danger btn-circle" style="margin-left:2px;float:right;" ng-click="removeGroup(group)"><i class="fa fa-times"></i></button>
 	                </div>

@@ -11,7 +11,7 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 		return false;
 	}
 
-	$http.get("http://localhost:3000/api/getSmurfs").then(function(res){
+	$http.get("http://handsfreeleveler.com:4446/api/getSmurfs").then(function(res){
 		$scope.user.userData.smurfs = res.data.smurfs;
 		$scope.user.userData.groups = res.data.groups;
 		$scope.user.userData.smurfs.forEach(function(smurf){
@@ -102,7 +102,8 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 				smurf.group = smurf.group.toString();
 			}
 		});
-		$http.post("http://localhost:3000/api/updateSmurfs", {userData:$scope.user.userData}).then(function(res){
+		$scope.user.userData.logs = [];
+		$http.post("http://handsfreeleveler.com:4446/api/updateSmurfs", {userData:$scope.user.userData}).then(function(res){
 			//console.log(res.data);
 		});
 	},true);
@@ -111,13 +112,33 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 		if($rootScope.controller){
 			if(type == "play"){
 				if($rootScope.liveData.smurfs[smurf.username]){
-					return !$rootScope.liveData.smurfs[smurf.username].isRunning;
+					return false;
 				}else{
 					return true;
 				}
 			}else if(type == "stop"){
 				if($rootScope.liveData.smurfs[smurf.username]){
-					return $rootScope.liveData.smurfs[smurf.username].isRunning;
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			return false;
+		}
+	}
+
+	$scope.showGroupAction = function(group,type){
+		if($rootScope.controller){
+			if(type == "play"){
+				if($rootScope.liveData.groups[group.name]){
+					return false;
+				}else{
+					return true;
+				}
+			}else if(type == "stop"){
+				if($rootScope.liveData.groups[group.name]){
+					return true;
 				}else{
 					return false;
 				}
@@ -129,7 +150,7 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 
 	$scope.disableEditorLiveSmurf = function(smurf){
 		if ($rootScope.liveData.smurfs[smurf.username]){
-			return $rootScope.liveData.smurfs[smurf.username].isRunning;
+			return true;
 		}else{
 			return false;
 		}
@@ -148,7 +169,7 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 	}
 
 	$scope.startGroup = function(group){
-		Websocket.send({type:"group",group:group,action:"stop"});
+		Websocket.send({type:"group",group:group,action:"start"});
 	}
 
 	$scope.refresher();

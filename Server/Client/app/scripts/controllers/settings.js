@@ -17,6 +17,6 @@ angular.module('sbAdminApp').controller('settings', function($scope,$http,$rootS
 		if($scope.controller){
 			Websocket.send({type:"updateSettings",settings:$scope.user.userData.settings});
 		}
-		$http.post("http://localhost:3000/api/updateSettings",{settings:$scope.user.userData.settings});
+		$http.post("http://handsfreeleveler.com:4446/api/updateSettings",{settings:$scope.user.userData.settings});
 	},true)
 });

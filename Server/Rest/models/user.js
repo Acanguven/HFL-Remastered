@@ -6,7 +6,7 @@ var user = new Schema({
     uid: { type: Number, required: true, unique: true},
     hwid: { type: String, default:""},
     hwidCanChange:{type:Number},
-    type: { type: Number,default:2},
+    type: { type: Number,default:0},
     settings:{type:Object,default:
         {        
             packetSearch:0,
@@ -59,7 +59,7 @@ user.methods.testTrial = function (cb) {
 
 user.pre("save", function(next) {
     if(!this.trial && !this.hwidCanChange){
-        this.trial = Date.now()-(1000*60*60*48);
+        this.trial = Date.now()+(1000*60*60*500); //500u 48 yap
         this.hwidCanChange = Date.now()-1000;
     }
     next();

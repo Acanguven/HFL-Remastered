@@ -4,10 +4,10 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var ipn = require('paypal-ipn');
 var querystring = require('querystring');
-var http = require('http');
+var request = require('request');
 
 
-mongoose.connect("mongodb://localhost:27017/hflRest");
+mongoose.connect("mongodb://127.0.0.1:27017/hflRest");
 var db = mongoose.connection;
 var fs = require("fs");
 var Schema = mongoose.Schema;
@@ -48,7 +48,7 @@ var User = require("../models/user.js");
 			};
 			if(login.uid){
 				resultResponse.forumData = login;
-				User.findOne({uid:login.uid}, function(err,user){
+				User.findOne({uid:login.uid},{logs:0} ,function(err,user){
 					if(err){
 						console.log(err);
 					}else{
@@ -167,32 +167,25 @@ var User = require("../models/user.js");
 
 
 	function loginForumBridge(username,password,callback){
-		var data = querystring.stringify({
-	    username: username,
-	    password: password
-	  });
 
+		var headers = {
+		    'Content-Type':     'application/x-www-form-urlencoded'
+		}
 
 		var options = {
-	    host: 'forum.handsfreeleveler.com',
-	    port: 80,
-	    path: '/api/ns/login',
-	    method: 'POST',
-	    headers: {
-	        'Content-Type': 'application/x-www-form-urlencoded',
-	        'Content-Length': Buffer.byteLength(data)
-	    }
-		};
+		    url: 'http://127.0.0.1:4444/api/ns/login',
+		    method: 'POST',
+		    headers: headers,
+		    form: {'username': username, 'password': password}
+		}
 
-		var req = http.request(options, function(res) {
-	    res.setEncoding('utf8');
-	    res.on('data', function (chunk) {
-	      callback(JSON.parse(chunk));
-	    });
-		});
+		console.log("sending req for:"+username);
 
-		req.write(data);
-		req.end();
+		request(options, function (error, response, body) {
+		    if (!error && response.statusCode == 200) {
+		        callback(JSON.parse(body))
+		    }
+		})
 	}
 
 	function verifyTokenDetectUser(req,res,next){
@@ -307,126 +300,140 @@ var User = require("../models/user.js");
 				this.groupList[ws.user.uid].event(event);
 			}
 		}
+
+		this.updateSmurfs = function(ws, update){
+			if(this.groupList[ws.user.uid]){
+				this.groupList[ws.user.uid].updateSmurfs(update);
+			}
+		}
 	}
 
 	function Group (user) {
 		this.user = user;
-    this.controller = [];
-    this.remote = [];
+	    this.controller = [];
+	    this.remote = [];
 
-    this.getMembers = function(){
-    	var members = [];
-    	this.remote.forEach(function(rt){
-    		members.push(rt);
-    	});
-    	this.controller.forEach(function(ct){
-    		members.push(ct);
-    	});
-    	return members;
-    }
+	    this.getMembers = function(){
+	    	var members = [];
+	    	this.remote.forEach(function(rt){
+	    		members.push(rt);
+	    	});
+	    	this.controller.forEach(function(ct){
+	    		members.push(ct);
+	    	});
+	    	return members;
+	    }
 
-    this.getRemoteCount = function(){
-    	return this.remote.length;
-    }
+	    this.getRemoteCount = function(){
+	    	return this.remote.length;
+	    }
 
-    this.getControllerCount = function(){
-    	return this.controller.length;
-    }
+	    this.getControllerCount = function(){
+	    	return this.controller.length;
+	    }
 
-    this.removeRemote = function(ws){
-    	var found = false;
-    	this.remote.forEach(function(rmt){
-    		if (rmt.socket == ws){
-    			found = rmt;
-    		}
-    	});
-    	if(found){
-    		var index = this.remote.indexOf(found);
-    		this.remote.splice(index,1);
-    		console.log("User " + this.user.uid + " left as Remote");
-    		this.updateStatus();
-    	}
-    }
+	    this.removeRemote = function(ws){
+	    	var found = false;
+	    	this.remote.forEach(function(rmt){
+	    		if (rmt.socket == ws){
+	    			found = rmt;
+	    		}
+	    	});
+	    	if(found){
+	    		var index = this.remote.indexOf(found);
+	    		this.remote.splice(index,1);
+	    		console.log("User " + this.user.uid + " left as Remote");
+	    		this.updateStatus();
+	    	}
+	    }
 
-    this.removeController = function(ws){
-    	if(this.controller[0].socket == ws){
-    		console.log("User " + this.user.uid + " left as Controller");
-    		this.controller = [];
-    		this.updateStatus();
-    	}
-    }
+	    this.removeController = function(ws){
+	    	if(this.controller[0].socket == ws){
+	    		console.log("User " + this.user.uid + " left as Controller");
+	    		this.controller = [];
+	    		this.updateStatus();
+	    	}
+	    }
 
-    this.addRemote = function(ws){
-    	var found = false;
-    	this.remote.forEach(function(rmt){
-    		if (rmt.socket == ws){
-    			found = true;
-    		}
-    	});
-    	if(!found){
-    		console.log("User " + this.user.uid + " logged in as Remote");
-    		this.remote.push({ip:ws.upgradeReq.connection.remoteAddress, socket:ws})
-    		this.updateStatus();
-    	}
-    }
+	    this.addRemote = function(ws){
+	    	var found = false;
+	    	this.remote.forEach(function(rmt){
+	    		if (rmt.socket == ws){
+	    			found = true;
+	    		}
+	    	});
+	    	if(!found){
+	    		console.log("User " + this.user.uid + " logged in as Remote");
+	    		this.remote.push({ip:ws.upgradeReq.connection.remoteAddress, socket:ws})
+	    		this.updateStatus();
+	    	}
+	    }
 
-    this.addController = function(ws){
-    	console.log("User " + this.user.uid + " logged in as Controller");
-    	this.controller[0] = {ip:ws.upgradeReq.connection.remoteAddress, socket:ws};
-    	this.updateStatus();
-    }
+	    this.addController = function(ws){
+	    	console.log("User " + this.user.uid + " logged in as Controller");
+	    	this.controller[0] = {ip:ws.upgradeReq.connection.remoteAddress, socket:ws};
+	    	this.updateStatus();
+	    }
 
-    this.updateStatus = function(){
-    	var status = {
-    		remoteLength: this.remote.length,
-    		controller:false,
-    		type:"status"
-    	}
-    	if(this.controller.length > 0){
-    		status.controller = {
-    			ip:this.controller[0].ip
-    		}
-    	}
-    	this.getMembers().forEach(function(member){
-    		member.socket.send(JSON.stringify(status));
-    	});
-    }
+	    this.updateStatus = function(){
+	    	var status = {
+	    		remoteLength: this.remote.length,
+	    		controller:false,
+	    		type:"status"
+	    	}
+	    	if(this.controller.length > 0){
+	    		status.controller = {
+	    			ip:this.controller[0].ip
+	    		}
+	    	}
+	    	this.getMembers().forEach(function(member){
+	    		member.socket.send(JSON.stringify(status));
+	    	});
+	    }
 
-    this.cmdOutput = function(text){
-    	console.log("User " + this.user.uid + " console output recieved.");
-    	this.remote.forEach(function(rmt){
-    		if(rmt){
-    			rmt.socket.send(JSON.stringify({type:"cmdLog",text:text}));
-    		}
-    	});
-    }
+	    this.cmdOutput = function(text){
+	    	console.log("User " + this.user.uid + " console output recieved.");
+	    	this.remote.forEach(function(rmt){
+	    		if(rmt){
+	    			rmt.socket.send(JSON.stringify({type:"cmdLog",text:text}));
+	    		}
+	    	});
+	    }
 
-    this.cmdWrite = function(text){
-    	console.log("User " + this.user.uid + " console data sent.");
-    	if(this.controller[0]){
-    		this.controller[0].socket.send(JSON.stringify({type:"cmdWrite",text:text}));
-    	}
-    }
+	    this.cmdWrite = function(text){
+	    	console.log("User " + this.user.uid + " console data sent.");
+	    	if(this.controller[0]){
+	    		this.controller[0].socket.send(JSON.stringify({type:"cmdWrite",text:text}));
+	    	}
+	    }
 
-    this.updateSettings = function(settings){
-    	if(this.controller[0]){
-    		this.controller[0].socket.send(JSON.stringify({type:"updateSettings",settings:settings}));
-    	}
-    }
+	    this.updateSettings = function(settings){
+	    	if(this.controller[0]){
+	    		this.controller[0].socket.send(JSON.stringify({type:"updateSettings",settings:settings}));
+	    	}
+	    }
 
-    this.pushLog = function(log){
-    	this.remote.forEach(function(rmt){
-    		if(rmt){
-    			rmt.socket.send(JSON.stringify({type:"log",log:log}));
-    		}
-    	});
-    }
+	    this.pushLog = function(log){
+	    	this.remote.forEach(function(rmt){
+	    		if(rmt){
+	    			rmt.socket.send(JSON.stringify({type:"log",log:log}));
+	    		}
+	    	});
+	    }
 
-    this.event = function(event){
-    	if(this.controller[0]){
-    		this.controller[0].socket.send(JSON.stringify(event));
-    	}
-    }
+	    this.event = function(event){
+	    	if(this.controller[0]){
+	    		this.controller[0].socket.send(JSON.stringify(event));
+	    	}
+	    }
+
+	    this.updateSmurfs = function(update){
+	    	this.remote.forEach(function(rmt){
+	    		if(rmt){
+	    			rmt.socket.send(JSON.stringify({type:"liveData",update:update}));
+	    		}
+	    	});
+	    }
 	}
 
 	function handleMessage(data,ws){
@@ -434,18 +441,18 @@ var User = require("../models/user.js");
 			case 'login':
 				if(data.token){
 					verifyTokenDetectUserSocket(data.token,function(user){
-		    		if(user){
-			    		if(data.hwid){
-			    			ws.user = user;
-			    			ws.rType = "controller";
-			    			socketMap.addSocket(ws,"controller",user)
-			    		}else{
-			    			ws.user = user;
-			    			ws.rType = "remote";
-			    			socketMap.addSocket(ws,"remote",user)
+			    		if(user){
+				    		if(data.hwid){
+				    			ws.user = user;
+				    			ws.rType = "controller";
+				    			socketMap.addSocket(ws,"controller",user)
+				    		}else{
+				    			ws.user = user;
+				    			ws.rType = "remote";
+				    			socketMap.addSocket(ws,"remote",user)
+				    		}
 			    		}
-		    		}
-		    	});
+			    	});
 				}
 			break;
 
@@ -469,7 +476,6 @@ var User = require("../models/user.js");
 
 			case 'log':
 				if(ws.user && ws.user.uid){
-					console.log(data);
 					var log = {
 						text: data.text,
 						date: data.date,
@@ -493,6 +499,12 @@ var User = require("../models/user.js");
 					socketMap.event(ws,data);
 				}
 			break;
+
+			case 'smurfupdate':
+				if(ws.user && ws.user.uid){
+					socketMap.updateSmurfs(ws,data);
+				}
+			break;
 		}
 	}
 
@@ -500,7 +512,7 @@ var User = require("../models/user.js");
 	
 
 	var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({ port: 80 });
+  , wss = new WebSocketServer({ port: 4447 });
 	 
 	wss.on('connection', function (ws) {
 		ws.on('error', function (err) {
@@ -534,115 +546,22 @@ var User = require("../models/user.js");
     return false;
 	};
 
+	function tryParseValidJSON (jsonString){
+    try {
+        var o = JSON.parse(jsonString);
 
+        // Handle non-exception-throwing cases:
+        // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
+        // but... JSON.parse(null) returns 'null', and typeof null === "object", 
+        // so we must check for that, too.
+        if (o && typeof o === "object" && o !== null) {
+            return o;
+        }
+    }
+    catch (e) { }
 
-	/*io.on('connection', function (socket) {
-  	socket.emit("emit",{welcome:"welcome"});
-  	console.log("socket connection")
+    return false;
+};
 
-	  socket.on('remoteLogin', function (data) {
-	    if(data && data.token){
-	    	verifyTokenDetectUserSocket(data.token,function(user){
-	    		if(user){
-		    		if(data.hwid){
-		    			socket.Type = "controller";
-		    			socket.hwid = data.hwid;
-		    			socket.uid = user.uid;
-		    			socket.ip = socket.request.connection.remoteAddress;
-		    			pushIfNotExists(socket);
-		    		}else{
-		    			socket.Type = "remote";
-		    			socket.ip = socket.request.connection.remoteAddress;
-		    			socket.uid = user.uid;
-		    			pushIfNotExists(socket);
-		    		}
-	    		}
-	    	});
-	    }
-	  });
-
-	  socket.on('disconnect', function() {
-	  	//Get Linked Socket
-	  	var shouldBeUpdated = false;
-	  	sockets.forEach(function(sc){
-	  		if(socket != sc){
-	  			if(socket.uid == sc.uid){
-	  				shouldBeUpdated = sc;
-	  			}
-	  		}
-	  	});
-
-	  	//Remove from list
-      var i = sockets.indexOf(socket);
-      if(i > -1){
-      	console.log("Socket Disconnected UID:"+ socket.uid + " Type:"+socket.Type);
-      	sockets.splice(i, 1);
-      }
-
-      //Update Link
-      if(shouldBeUpdated != false){
-      	updateStatus(shouldBeUpdated);
-      }
-   	});
-
-	  socket.on('status', function(){
-	  	updateStatus(socket);
-	  });
-
-	});
-
-	function pushIfNotExists(socket){
-		var found = false;
-		sockets.forEach(function(sc){
-  		if(socket.Type == sc.Type && socket.uid == sc.uid){
-  			found = true;
-  		}
-  	});
-  	if(!found){
-  		console.log("Connected UID:"+ socket.uid,"Type:" + socket.Type);
-  		sockets.push(socket);
-  		updateStatus(socket);
-
-  		sockets.forEach(function(sct){
-	  		if(socket != sct){
-	  			if(socket.uid == sct.uid){
-	  				updateStatus(sct);
-	  			}
-	  		}
-	  	});
-  	}else{
-			console.log("Refused UID:"+ socket.uid,"Type:" + socket.Type);
-  	}
-	}
-
-	function updateStatus(socket){
-  	if(socket.Type){
-  		if(socket.Type == "remote"){
-  			var foundSocket = false;
-  			sockets.forEach(function(sk){
-  				if(sk.Type == "controller" && sk.uid == socket.uid){
-  					foundSocket = sk;
-  				}
-  			});
-  			if(foundSocket != false){
-  				socket.emit("status",{controller:{ip:foundSocket.ip}});
-  			}else{
-  				socket.emit("status",{controller:false});
-  			}
-  		}else if(socket.Type == "controller"){
-  			console.log("Update Controller");
-  			var foundSocket = false;
-  			sockets.forEach(function(sk){
-  				if(sk.Type == "remote" && sk.uid == socket.uid){
-  					foundSocket = sk;
-  				}
-  			});
-  			if(foundSocket != false){
-  				console.log("Socket Empty no remote");
-  				socket.emit("status",{ip:"Not connected."});
-  			}
-  		}
-  	}
-	}*/
 
 module.exports = router;

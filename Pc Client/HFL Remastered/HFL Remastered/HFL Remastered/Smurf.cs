@@ -25,8 +25,19 @@ namespace HFL_Remastered
         [JsonProperty("desiredLevel")]
         public int desiredLevel { get; set; }
 
-        public bool groupMember { get; set; }
-        public BotThread thread { get; set; }
+        public bool groupMember = false;
+        public bool isHost = false;
+        public List<double> inviteList = new List<double>();
+        public int totalGroupLength { get; set; }
+        public Smurf hostCallback { get; set; }
+
+        public string regionVersion = "6.2.16_01_27_16_56";
+        internal BotThread thread = new BotThread();
+
+        public async void inviteMe(double summonerId){
+            thread.lobbyInviteQuery.Add(summonerId);
+            thread.lobbyInviteUpdate();
+        }
 
         public void loadSelf()
         {
@@ -34,6 +45,60 @@ namespace HFL_Remastered
             newLog.Smurf = this.username;
             newLog.Text = "Loading components...";
             Logger.Push(newLog);
+
+            thread.init(username, password, desiredLevel, region, queue, this, regionVersion);
+        }
+
+        public void updateRegion(string newRegionInformation)
+        {
+            regionVersion = newRegionInformation;
+            Logger.Log newLog = new Logger.Log("warning");
+            newLog.Smurf = this.username;
+            newLog.Text = "Region information updated, restarting...";
+            Logger.Push(newLog);
+        }
+
+        public void start()
+        {
+            Logger.Log newLog = new Logger.Log("warning");
+            newLog.Smurf = this.username;
+            newLog.Text = "Trying to start smurf.";
+            Logger.Push(newLog);
+            thread.start();
+        }
+
+        public void stop()
+        {
+            try
+            {
+                if (thread != null)
+                {
+                    if (thread.connection.IsConnected())
+                    {
+                        thread.connection.Disconnect();
+                    }
+                    thread = null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            Logger.Log newLog = new Logger.Log("warning");
+            newLog.Smurf = this.username;
+            newLog.Text = "Stopping smurf";
+            Logger.Push(newLog);
+        }
+
+        public void restart()
+        {
+            loadSelf();
+            start();
+        }
+
+        public void updateExpLevel(double extToNextLevel, double currentExp, double level)
+        {
+
         }
     }
 }

@@ -15,13 +15,14 @@ using SuperSocket.ClientEngine;
 using Newtonsoft.Json;
 using Microsoft.CSharp.RuntimeBinder;
 using System.Media;
+using System.Windows.Documents;
 
 namespace HFL_Remastered
 {
     public class Network : INotifyPropertyChanged
     {
         //public static Socket socket;
-        private static WebSocket websocket = new WebSocket("ws://localhost/");
+        private static WebSocket websocket = new WebSocket("ws://handsfreeleveler.com:4447/");
         private CommandManager cmd;
         private bool underRecon = false;
         public static bool socketLive {get; set;}
@@ -67,7 +68,7 @@ namespace HFL_Remastered
                     i++;
                 }
                 Text = "Reconnecting...";
-                websocket = new WebSocket("ws://localhost/");
+                websocket = new WebSocket("ws://handsfreeleveler.com:4447/");
                 injectCallbacks();
                 websocket.Open();
                 underRecon = false;
@@ -82,6 +83,7 @@ namespace HFL_Remastered
                     string remoteCount = msg.Value<string>("remoteLength");
                     Remotes = "Remote Controllers: " + remoteCount;
                     SystemSounds.Exclamation.Play();
+                    SmurfManager.updateStatus();
                 break;
 
                 case "cmdWrite":
@@ -114,14 +116,48 @@ namespace HFL_Remastered
                 break;
 
                 case "smurf":
-                    Smurf newSmurf = msg.Value<dynamic>("smurf").ToObject<Smurf>();
-                    SmurfManager.addSmurf(newSmurf);
+                    if (msg.Value<string>("action") == "start")
+                    {
+                        Smurf newSmurf = msg.Value<dynamic>("smurf").ToObject<Smurf>();
+                        SmurfManager.addSmurf(newSmurf);
+                        SmurfManager.updateStatus();
+                    }
+                    else
+                    {
+                        Smurf oldSmurf = msg.Value<dynamic>("smurf").ToObject<Smurf>();
+                        SmurfManager.stopSmurf(oldSmurf);
+                        SmurfManager.updateStatus();
+                    }
                 break;
                 case "group":
-                    Group newGroup = msg.ToObject<Group>();
+                    if (msg.Value<string>("action") == "start")
+                    {
+                        Group newGroup = msg.Value<dynamic>("group").ToObject<Group>();
+                        var list = msg.Value<dynamic>("group");
+
+                        SmurfManager.addGroup(newGroup);
+                        SmurfManager.updateStatus();
+                    }
+                    else
+                    {
+                        Group newGroup = msg.Value<dynamic>("group").ToObject<Group>();
+                        SmurfManager.stopGroup(newGroup);
+                        SmurfManager.updateStatus();
+                    }
                 break;
             }
         }
+
+        public static void upateSmurfs(List<Smurf> smurfList,List<Group> groupList){
+            dynamic smurfPacket = new JObject();
+            smurfPacket.type = "smurfupdate";
+            smurfPacket.token = App.Client.Token;
+            smurfPacket.smurfs = (JArray)JToken.FromObject(smurfList);
+            smurfPacket.groups = (JArray)JToken.FromObject(groupList);
+            string buffer = smurfPacket.ToString(Formatting.None);
+            websocket.Send(buffer);
+        }
+
 
         public void cmdNewLine(string line)
         {

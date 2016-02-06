@@ -1,5 +1,5 @@
 angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootScope) {
-  var ws = $websocket("ws://localhost/");
+  var ws = $websocket("ws://handsfreeleveler.com:4447/");
   var reconnecting = false;
   injectStuff();
 
@@ -29,7 +29,7 @@ angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootSco
 		    	ws.onErrorCallbacks = [];
 		    	ws.onOpenCallbacks = [];
 		    	ws.onCloseCallbacks = [];
-		      ws = $websocket("ws://localhost/");
+		      ws = $websocket("ws://handsfreeleveler.com:4447/");
 		      injectStuff();
 		    },500)
 	    }
@@ -82,6 +82,10 @@ angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootSco
   };
 })
 .run(function(Websocket,$rootScope){
+	$rootScope.liveData = {
+		groups:[],
+		smurfs:[]
+	}
 	Websocket.on('status', function (data) {
 		if(data.controller){
 			$rootScope.controller = {
@@ -90,6 +94,18 @@ angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootSco
 		}else{
 			$rootScope.controller = false;
 		}
-  });
+  	});
+  	Websocket.on('liveData', function (data) {
+		$rootScope.liveData.smurfs = [];
+
+		data.update.smurfs.forEach(function(smrf){
+			$rootScope.liveData.smurfs[smrf.username] = smrf;
+		})
+
+		$rootScope.liveData.groups = [];
+		data.update.groups.forEach(function(grp){
+			$rootScope.liveData.groups[grp.name] = grp;
+		})
+  	});
 })
     

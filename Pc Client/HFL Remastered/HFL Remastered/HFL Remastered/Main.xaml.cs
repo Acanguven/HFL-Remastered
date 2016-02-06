@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using WinForms = System.Windows.Forms;
 
 namespace HFL_Remastered
@@ -31,9 +32,11 @@ namespace HFL_Remastered
         public string text { get; set; }
         public Main()
         {
+            FileManager.checkPaths();
             InitializeComponent();
             updateHome();
             net.init(remainingTrial, App.Client.UserData.Type);
+            
         }
 
         private WindowState m_storedWindowState = WindowState.Normal;
@@ -129,6 +132,12 @@ namespace HFL_Remastered
 
         public void updateHome()
         {
+            if (Properties.Settings.Default.startup)
+            {
+                startUp.IsChecked = true;
+            }
+            HandleCK(startUp);
+
             this.DataContext = net;
             this.Visibility = Visibility.Visible;
             this.trial.Visibility = Visibility.Hidden;
@@ -190,6 +199,33 @@ namespace HFL_Remastered
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://forum.handsfreeleveler.com/");
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            HandleCK(sender as CheckBox);
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            HandleCK(sender as CheckBox);
+        }
+
+        private void HandleCK(CheckBox checkBox)
+        {
+            bool flag = checkBox.IsChecked.Value;
+            RegistryKey rk = Registry.CurrentUser.OpenSubKey
+                ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+            if (flag){
+                rk.SetValue(System.AppDomain.CurrentDomain.FriendlyName, System.Reflection.Assembly.GetExecutingAssembly().Location);
+            }
+            else{
+                rk.DeleteValue(System.AppDomain.CurrentDomain.FriendlyName, false);           
+            }
+
+            Properties.Settings.Default.startup = flag;
+            Properties.Settings.Default.Save();
         }
     }
 }

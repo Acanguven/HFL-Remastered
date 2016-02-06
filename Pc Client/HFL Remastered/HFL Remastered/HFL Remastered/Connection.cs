@@ -22,14 +22,18 @@ namespace HFL_Remastered
             var values = new Dictionary<string, string>();
             values.Add("username", username);
             values.Add("password", password);
-            values.Add("hwid", "osman");
+            values.Add("hwid", HWID.Generate());
             var content = new FormUrlEncodedContent(values);
 
             using (var client = new HttpClient())
             {
                 try
                 {
-                    var httpResponseMessage = await client.PostAsync("http://localhost:3000/api/remotelogin", content);
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0");
+                    client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "ISO-8859-1");
+                    var httpResponseMessage = await client.PostAsync("http://handsfreeleveler.com:4446/api/remotelogin", content);
 
                     if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                     {

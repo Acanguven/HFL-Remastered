@@ -11,7 +11,7 @@ namespace HFL_Remastered
     public class Group
     {
         [JsonProperty("name")]
-        public QueueTypes name { get; set; }
+        public string name { get; set; }
 
         [JsonProperty("queue")]
         public QueueTypes queue { get; set; }

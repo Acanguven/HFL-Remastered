@@ -12,7 +12,7 @@ angular.module('sbAdminApp').controller('logger', function($scope, $http, $rootS
 	}
 	$scope.logSmurf = false;
 
-	$http.get("http://localhost:3000/api/getLogs").then(function(res){
+	$http.get("http://handsfreeleveler.com:4446/api/getLogs").then(function(res){
 		$scope.user.userData.logs = res.data.logs;
 	});
 

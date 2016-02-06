@@ -13,6 +13,7 @@ using LoLLauncher.RiotObjects.Platform.Game.Practice;
 using LoLLauncher.RiotObjects.Platform.Harassment;
 using LoLLauncher.RiotObjects.Platform.Leagues.Client.Dto;
 using LoLLauncher.RiotObjects.Platform.Login;
+using LoLLauncher.RiotObjects.Platform.Gameinvite.Contract;
 using LoLLauncher.RiotObjects.Platform.Matchmaking;
 using LoLLauncher.RiotObjects.Platform.Reroll.Pojo;
 using LoLLauncher.RiotObjects.Platform.Statistics;
@@ -128,6 +129,7 @@ namespace LoLLauncher
             int Id = Invoke("inventoryService", "getAvailableChampions", new object[] { });
             while (!results.ContainsKey(Id))
                 await Task.Delay(10);
+            var arr = results[Id].GetTO("data").GetArray("body");
             ChampionDTO[] result = new ChampionDTO[results[Id].GetTO("data").GetArray("body").Length];
             for (int i = 0; i < results[Id].GetTO("data").GetArray("body").Length; i++)
             {
@@ -617,6 +619,49 @@ namespace LoLLauncher
             return result;
         }
 
+        /// <summary>
+        /// Used for inviting players to lobby
+        /// </summary>
+        /// <param name="id">Account id of the summoner</param>
+        /// <returns></returns>
+        public async Task Invite(double id)
+        {
+            Invoke("lcdsGameInvitationService", "invite", new object[] { id });
+        }
+
+        public async Task attachTeamToQueue(MatchMakerParams qqq)
+        {
+            Invoke("matchmakerService", "attachTeamToQueue", new object[] { qqq.GetBaseTypedObject() });
+        }
+        
+
+        /// <summary>
+        /// Creates lobby for the team
+        /// </summary>
+        /// <param name="queueId">The id of selected queue</param>
+        /// <returns>LobbyStatus</returns>
+        public async Task<LobbyStatus> CreateArrangedTeamLobby(double queueId)
+        {
+            int Id = Invoke("lcdsGameInvitationService", "createArrangedTeamLobby", new object[] { queueId });
+            while (!results.ContainsKey(Id))
+                await Task.Delay(10);
+            TypedObject messageBody = results[Id].GetTO("data").GetTO("body");
+            LobbyStatus result = new LobbyStatus(messageBody);
+            results.Remove(Id);
+            return result;
+        }
+
+        public async Task<LobbyStatus> createArrangedBotTeamLobby(double queueId, string botDif)
+        {
+            int Id = Invoke("lcdsGameInvitationService", "createArrangedBotTeamLobby", new object[] { queueId, botDif });
+            while (!results.ContainsKey(Id))
+                await Task.Delay(10);
+            TypedObject messageBody = results[Id].GetTO("data").GetTO("body");
+            LobbyStatus result = new LobbyStatus(messageBody);
+            results.Remove(Id);
+            return result;
+        }
+
 
         /// 32.)
         public void KickPlayer(Double summonerId, TeamId teamId, TeamDTO.Callback callback)
@@ -717,6 +762,25 @@ namespace LoLLauncher
         {
             SearchingForMatchNotification cb = new SearchingForMatchNotification(callback);
             InvokeWithCallback("matchmakerService", "attachToQueue", new object[] { matchMakerParams.GetBaseTypedObject() }, cb);
+        }
+
+        public async Task<SearchingForMatchNotification> AttachToLowPriorityQueue(MatchMakerParams matchMakerParams, string accessToken)
+        {
+            TypedObject typedObject = new TypedObject(null);
+            typedObject.Add("LEAVER_BUSTER_ACCESS_TOKEN", accessToken);
+            int key = this.Invoke("matchmakerService", "attachToQueue", new object[]
+			{
+				matchMakerParams.GetBaseTypedObject(),
+				typedObject
+			});
+            while (!this.results.ContainsKey(key))
+            {
+                await Task.Delay(10);
+            }
+            TypedObject tO = this.results[key].GetTO("data").GetTO("body");
+            SearchingForMatchNotification result = new SearchingForMatchNotification(tO);
+            this.results.Remove(key);
+            return result;
         }
 
         public async Task<SearchingForMatchNotification> AttachToQueue(MatchMakerParams matchMakerParams)
@@ -921,7 +985,7 @@ namespace LoLLauncher
         {
             int Id = Invoke("gameService", "startChampionSelection", new object[] { gameId, optomisticLock });
             while (!results.ContainsKey(Id))
-							await Task.Delay(10);
+                await Task.Delay(10);
             TypedObject messageBody = results[Id].GetTO("data").GetTO("body");
             StartChampSelectDTO result = new StartChampSelectDTO(messageBody);
             results.Remove(Id);
@@ -1063,9 +1127,9 @@ namespace LoLLauncher
             return result;
         }
 
-        public async Task<object> AcceptInviteForMatchmakingGame(double gameId)
+        public async Task<object> AcceptInviteForMatchmakingGame(string gameId)
         {
-            int Id = Invoke("matchmakerService", "acceptInviteForMatchmakingGame", new object[] { gameId });
+            int Id = Invoke("lcdsGameInvitationService", "accept", new object[] { gameId });
             while (!results.ContainsKey(Id))
                 await Task.Delay(10);
             results.Remove(Id);
@@ -1130,26 +1194,5 @@ namespace LoLLauncher
             results.Remove(Id);
             return result;
         }
-
-        public async Task<SearchingForMatchNotification> AttachToLowPriorityQueue(MatchMakerParams matchMakerParams, string accessToken)
-        {
-            TypedObject typedObject = new TypedObject(null);
-            typedObject.Add("LEAVER_BUSTER_ACCESS_TOKEN", accessToken);
-            int key = this.Invoke("matchmakerService", "attachToQueue", new object[]
-			{
-				matchMakerParams.GetBaseTypedObject(),
-				typedObject
-			});
-            while (!this.results.ContainsKey(key))
-            {
-                await Task.Delay(10);
-            }
-            TypedObject tO = this.results[key].GetTO("data").GetTO("body");
-            SearchingForMatchNotification result = new SearchingForMatchNotification(tO);
-            this.results.Remove(key);
-            return result;
-        }
-
     }
-
 }

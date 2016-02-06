@@ -58,5 +58,41 @@ namespace HFL_Remastered.Properties {
                 this["token"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string lolPath {
+            get {
+                return ((string)(this["lolPath"]));
+            }
+            set {
+                this["lolPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string bolPath {
+            get {
+                return ((string)(this["bolPath"]));
+            }
+            set {
+                this["bolPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool startup {
+            get {
+                return ((bool)(this["startup"]));
+            }
+            set {
+                this["startup"] = value;
+            }
+        }
     }
 }

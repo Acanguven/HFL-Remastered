@@ -81,9 +81,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BasicInject.cs" />
     <Compile Include="BotThread.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="Connection.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="FileManager.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Hwid.cs" />
     <Compile Include="Logger.cs" />
@@ -107,7 +110,17 @@
     <Compile Include="PvPNETConnect\RiotObjects\Platform\Catalog\Runes\Rune.cs" />
     <Compile Include="PvPNETConnect\RiotObjects\Platform\Catalog\Runes\RuneType.cs" />
     <Compile Include="PvPNETConnect\RiotObjects\Platform\Clientfacade\Domain\LoginDataPacket.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\invatitionGameMetaData.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\InvitationRequest.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\Invitee.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\InvitePrivileges.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\Inviter.cs" />
     <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\LobbyStatus.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\Member.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\Members.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\Owner.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\Player.cs" />
+    <Compile Include="PvPNETConnect\RiotObjects\Platform\Gameinvite\Contract\TeamMatchMakerParams.cs" />
     <Compile Include="PvPNETConnect\RiotObjects\Platform\Game\BannedChampion.cs" />
     <Compile Include="PvPNETConnect\RiotObjects\Platform\Game\BotParticipant.cs" />
     <Compile Include="PvPNETConnect\RiotObjects\Platform\Game\ChampionBanInfoDTO.cs" />
