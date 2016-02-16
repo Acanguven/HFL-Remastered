@@ -271,6 +271,21 @@ angular
                     }
                 }
             })
+            .state('dashboard.account', {
+                controller: "account",
+                templateUrl: 'views/ui-elements/account.html',
+                url: '/account',
+                resolve: {
+                    loadMyFiles: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/account.js',
+                            ]
+                        })
+                    }
+                }
+            })
             .state('dashboard.settings', {
                 templateUrl: 'views/ui-elements/settings.html',
                 controller: 'settings',

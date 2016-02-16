@@ -1,34 +1,34 @@
 <div class="panel-body">
     <div class="list-group overflowablechilds">
-        <a href="#" class="list-group-item">
+        <a class="list-group-item">
             <i class="fa fa-bolt fa-fw"></i> Client Controller
                 <span class="pull-right text-muted small" ng-if="controller"><em>Running</em>
                 <span class="pull-right text-error small" ng-if="!controller"><em>Not Running</em>
             </span>
         </a>
-        <a href="#" class="list-group-item">
+        <a class="list-group-item">
             <i class="fa fa-key fa-fw"></i> Client IP Address
             <span class="pull-right text-muted small" ng-if="controller"><em>{{controller.ip}}</em>
             </span>
         </a>
-        <a href="#" class="list-group-item">
+        <a class="list-group-item">
             <i class="fa fa-users fa-fw"></i> Running Smurfs Count
             <span class="pull-right text-muted small"><em>2</em>
             </span>
         </a>
-        <a href="#" class="list-group-item">
+        <a class="list-group-item">
             <i class="fa fa-users fa-fw"></i> Total Smurfs Count
             <span class="pull-right text-muted small"><em>{{user.userData.smurfs.length}}</em>
             </span>
         </a>
-        <a href="#" class="list-group-item">
+        <a class="list-group-item">
             <i class="fa fa-key fa-fw"></i> Client Hwid Status
             <span class="pull-right text-muted small">
                 <em ng-if="user.userData.hwidCanChange - user.date > 0" class="text-danger">{{hwidRemains()}}</em>
                 <em ng-if="user.userData.hwidCanChange - user.date <= 0" class="text-success">Available</em>
             </span>
         </a>
-        <a href="#" class="list-group-item">
+        <a class="list-group-item">
             <i class="fa fa-shield fa-fw"></i> Account Type
             <span class="pull-right text-muted small" ng-if="user.userData.type == 2">  <em>Multi Smurf</em>
             </span>
@@ -40,7 +40,7 @@
                 <em ng-if="user.userData.trial - user.date > 0" class="text-warning">{{trialRemains()}}</em>
             </span>
         </a>
-        <a href="#" class="list-group-item">
+        <a class="list-group-item">
             <i class="fa fa-check fa-fw"></i> User Email Confirmation
             <span class="pull-right text-muted small">
                 <em ng-if="user.forumData['email:confirmed']" class="text-success">Confirmed</em>

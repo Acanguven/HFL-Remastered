@@ -155,7 +155,7 @@ namespace LoLLauncher
             {"RANKED_TEAM-3x3", 41},
             {"RANKED_TEAM-5x5", 42},
             {"BOT_TT-3x3", 52},
-            {"ARAM-5x5", 100}
+            {"ARAM-5x5", 65}
         };
     }
     public enum QueueTypes

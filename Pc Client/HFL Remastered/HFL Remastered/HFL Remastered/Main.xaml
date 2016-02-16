@@ -19,7 +19,7 @@
                 <TextBlock Name="status" Foreground="{Binding Foreground}" Text="{Binding Text}"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="Version 1.0" HorizontalAlignment="Right" Margin="0 0 3 0"/>
+                <TextBlock  HorizontalAlignment="Right" Margin="0 0 3 0" Name="uiversion"/>
             </StatusBarItem>
         </StatusBar>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Username:" VerticalAlignment="Top" Margin="10,10,0,0" Foreground="#CCCCCCCC" Name="username"/>
@@ -69,7 +69,7 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button Margin="0,91,12,0" Foreground="#CCD6C44F" Height="37" HorizontalAlignment="Right" VerticalAlignment="Top" Width="55" Content="BUY HFL">
+        <Button Margin="0,91,12,0" Foreground="#CCD6C44F" Height="37" HorizontalAlignment="Right" VerticalAlignment="Top" Width="55" Content="BUY HFL" Click="Button_Click_2">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
 

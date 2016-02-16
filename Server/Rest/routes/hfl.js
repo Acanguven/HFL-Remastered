@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken');
 var ipn = require('paypal-ipn');
 var querystring = require('querystring');
 var request = require('request');
+var Table = require('cli-table2');
 
 
 mongoose.connect("mongodb://127.0.0.1:27017/hflRest");
@@ -25,11 +26,11 @@ var User = require("../models/user.js");
 
 	router.post('/ipn', function(req, res, next) {
 		ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, mes) {
-		  if (err) {
-		    console.error(err);
-		  } else {
+		  	if (err) {
+		    	console.error(err);
+		  	} else {
 		    if (req.body.payment_status == 'Completed') {
-		      // Payment has been confirmed as completed 
+		      	console.log(req.body)
 		    }
 		  }
 		});
@@ -50,7 +51,7 @@ var User = require("../models/user.js");
 				resultResponse.forumData = login;
 				User.findOne({uid:login.uid},{logs:0} ,function(err,user){
 					if(err){
-						console.log(err);
+						res.end("err");
 					}else{
 						if(user){
 							if(req.body.hwid){
@@ -111,7 +112,7 @@ var User = require("../models/user.js");
 								if(req.body.hwid){
 									User.findOne({hwid:req.body.hwid}, function(err,hwidDup){
 										if(err){
-											console.log(err);
+											//console.log(err);
 										}else{
 											if(user){
 												res.json({err:"This hwid is belongs to another account."});
@@ -179,7 +180,6 @@ var User = require("../models/user.js");
 		    form: {'username': username, 'password': password}
 		}
 
-		console.log("sending req for:"+username);
 
 		request(options, function (error, response, body) {
 		    if (!error && response.statusCode == 200) {
@@ -342,14 +342,14 @@ var User = require("../models/user.js");
 	    	if(found){
 	    		var index = this.remote.indexOf(found);
 	    		this.remote.splice(index,1);
-	    		console.log("User " + this.user.uid + " left as Remote");
+	    		//console.log("User " + this.user.uid + " left as Remote");
 	    		this.updateStatus();
 	    	}
 	    }
 
 	    this.removeController = function(ws){
 	    	if(this.controller[0].socket == ws){
-	    		console.log("User " + this.user.uid + " left as Controller");
+	    		//console.log("User " + this.user.uid + " left as Controller");
 	    		this.controller = [];
 	    		this.updateStatus();
 	    	}
@@ -363,14 +363,14 @@ var User = require("../models/user.js");
 	    		}
 	    	});
 	    	if(!found){
-	    		console.log("User " + this.user.uid + " logged in as Remote");
+	    		//console.log("User " + this.user.uid + " logged in as Remote");
 	    		this.remote.push({ip:ws.upgradeReq.connection.remoteAddress, socket:ws})
 	    		this.updateStatus();
 	    	}
 	    }
 
 	    this.addController = function(ws){
-	    	console.log("User " + this.user.uid + " logged in as Controller");
+	    	//console.log("User " + this.user.uid + " logged in as Controller");
 	    	this.controller[0] = {ip:ws.upgradeReq.connection.remoteAddress, socket:ws};
 	    	this.updateStatus();
 	    }
@@ -392,7 +392,7 @@ var User = require("../models/user.js");
 	    }
 
 	    this.cmdOutput = function(text){
-	    	console.log("User " + this.user.uid + " console output recieved.");
+	    	//console.log("User " + this.user.uid + " console output recieved.");
 	    	this.remote.forEach(function(rmt){
 	    		if(rmt){
 	    			rmt.socket.send(JSON.stringify({type:"cmdLog",text:text}));
@@ -401,7 +401,7 @@ var User = require("../models/user.js");
 	    }
 
 	    this.cmdWrite = function(text){
-	    	console.log("User " + this.user.uid + " console data sent.");
+	    	//console.log("User " + this.user.uid + " console data sent.");
 	    	if(this.controller[0]){
 	    		this.controller[0].socket.send(JSON.stringify({type:"cmdWrite",text:text}));
 	    	}
@@ -434,6 +434,24 @@ var User = require("../models/user.js");
 	    		}
 	    	});
 	    }
+	}
+
+	var cliTable = new Table({
+	    head: ['#', 'User Id','Controller','Remote','Account Type', 'Trial'],
+	  	colWidths: [3,35,15,15,20,20]
+	});
+
+	var updateTable = function(){
+		console.log('\033[2J');
+		var x = 1;
+		cliTable.splice(0,cliTable.length)
+		for(var gr in socketMap.groupList){
+			if(gr){
+				cliTable.push([x,socketMap.groupList[gr].user.id,socketMap.groupList[gr].getControllerCount(),socketMap.groupList[gr].getRemoteCount(),socketMap.groupList[gr].user.type,socketMap.groupList[gr].user.trial]);
+				x++;
+			}
+		}
+		console.log(cliTable.toString());
 	}
 
 	function handleMessage(data,ws){
@@ -512,28 +530,28 @@ var User = require("../models/user.js");
 	
 
 	var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({ port: 4447 });
+  	, wss = new WebSocketServer({ port: 4447 });
 	 
 	wss.on('connection', function (ws) {
 		ws.on('error', function (err) {
-	    return false;
-	  });
+	    	return false;
+	  	});
 
-	  ws.on('message', function (message) {
-	    var res = tryParseJSON(message);
-	    if(res != false){
-	    	handleMessage(res,ws);
-	    }
-	  });
+	  	ws.on('message', function (message) {
+	    	var res = tryParseJSON(message);
+	    	if(res != false){
+	    		handleMessage(res,ws);
+	    	}
+	    	updateTable();
+	  	});
 
-	  ws.on('close', function () {
-	  	if(ws.user){
-	    	socketMap.removeSocket(ws,ws.rType,ws.user);
-	    }
-	  });
+	  	ws.on('close', function () {
+	  		if(ws.user){
+		    	socketMap.removeSocket(ws,ws.rType,ws.user);
+	    	}
+	    	updateTable();
+	  	});
 	});
-
-	
 
 	function tryParseJSON (jsonString){
     try {

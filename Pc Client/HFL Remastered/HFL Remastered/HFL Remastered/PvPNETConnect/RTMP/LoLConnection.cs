@@ -452,7 +452,7 @@ namespace LoLLauncher
             byte[] handshakePacket = new byte[1537];
             rand.NextBytes(handshakePacket);
             handshakePacket[0] = (byte)0x03;
-            sslStream.Write(handshakePacket);
+            sslStream.Write(handshakePacket); // TODO add reconnction to here
 
             byte S0 = (byte)sslStream.ReadByte();
             if (S0 != 0x03)

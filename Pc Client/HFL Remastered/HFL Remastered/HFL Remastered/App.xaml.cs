@@ -21,19 +21,35 @@ namespace HFL_Remastered
         public static User Client;
         public static Main mainwindow;
         public Login loginWindow = new Login();
+        public static string version = "1.6";
 
         private async void igniter(object sender, StartupEventArgs e)
         {
-            if (!await loginWindow.storageLogin())
+            if (File.Exists("HFL Remasteredold.exe"))
             {
-                loginWindow.Show();
+                File.Delete("HFL Remasteredold.exe");
+                Changelog ch = new Changelog();
+                ch.Show();
+            }
+            bool updateExists = await Connection.updateCheck();
+            if (updateExists)
+            {
+                Update updater = new Update();
+                updater.Show();
             }
             else
             {
-                mainwindow = new Main();
-                mainwindow.Show();
-                loginWindow.cont = true;
-                loginWindow.Close();
+                if (!await loginWindow.storageLogin())
+                {
+                    loginWindow.Show();
+                }
+                else
+                {
+                    mainwindow = new Main();
+                    mainwindow.Show();
+                    loginWindow.cont = true;
+                    loginWindow.Close();
+                }
             }
         }
     }

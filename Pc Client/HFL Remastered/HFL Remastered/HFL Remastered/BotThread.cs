@@ -104,6 +104,7 @@ namespace HFL_Remastered
         public MatchMakerParams lastMatchParams { get; set; }
         public List<double> lobbyInviteQuery = new List<double>();
         public bool lobbyReady = false;
+        public ProcessStartInfo lastStarter = null;
 
         public void init(string _username, string _password, int _desiredLevel, Region _region, QueueTypes _queue, Smurf _smurf, string _regionVersion)
         {
@@ -148,10 +149,28 @@ namespace HFL_Remastered
         #region OnError
         private void connection_OnError(object sender, LoLLauncher.Error error)
         {
-            Logger.Log errorLog = new Logger.Log("warning");
-            errorLog.Smurf = username;
-            errorLog.Text = "Unhandled error message recieved from server:" + error.Message;
-            Logger.Push(errorLog);
+            if (error.Message.Contains("Wrong client version for server"))
+            {
+                connection.Disconnect();
+            }
+            else if (error.Message.Contains("The given key was not present in the dictionary."))
+            {
+                // TODO Solve this error
+            }
+            else if (error.Message.Contains("Game was not found!"))
+            {
+                Logger.Log errorLog = new Logger.Log("warning");
+                errorLog.Smurf = username;
+                errorLog.Text = "Somebody broke the game queue.";
+                Logger.Push(errorLog);
+            }
+            else
+            {
+                Logger.Log errorLog = new Logger.Log("warning");
+                errorLog.Smurf = username;
+                errorLog.Text = "Unhandled error message recieved from server:" + error.Message;
+                Logger.Push(errorLog);
+            }
         }
         #endregion
         #region OnLogin
@@ -345,13 +364,16 @@ namespace HFL_Remastered
                             spell2 = Enums.spellToId("HEAL");
                         }
                         await connection.SelectSpells(spell1, spell2);
-                        await connection.ChampionSelectCompleted();
+                        if (mustQueue != QueueTypes.ARAM)
+                        {
+                            await connection.ChampionSelectCompleted();
+                        }
                     }
                     break;
                 case "POST_CHAMP_SELECT":
                     Logger.Log newLogPOST_CHAMP_SELECT = new Logger.Log("info");
                     newLogPOST_CHAMP_SELECT.Smurf = username;
-                    newLogPOST_CHAMP_SELECT.Text = "Last 10 seconds to start game.";
+                    newLogPOST_CHAMP_SELECT.Text = "Waiting for game to start";
                     Logger.Push(newLogPOST_CHAMP_SELECT);
                     break;
                 case "PRE_CHAMP_SELECT":
@@ -423,6 +445,7 @@ namespace HFL_Remastered
             gameStarterLog.Smurf = username;
             gameStarterLog.Text = "Starting game";
             Logger.Push(gameStarterLog);
+            lastStarter = startInfo;
             startProcessor(startInfo);
         }
 
@@ -462,7 +485,7 @@ namespace HFL_Remastered
         private async void handleInvitationRequest(object message)
         {
             if (smurf.groupMember) {
-                Logger.Log parttInviteLog = new Logger.Log("warning");
+                Logger.Log parttInviteLog = new Logger.Log("info");
                 parttInviteLog.Smurf = username;
                 parttInviteLog.Text = "Recieved party from group host, accepting.";
                 Logger.Push(parttInviteLog);
@@ -481,13 +504,13 @@ namespace HFL_Remastered
         private async void handleLobbyStatus(object message)
         {
             LobbyStatus lobby = message as LobbyStatus;
-            Logger.Log parttInviteLog = new Logger.Log("warning");
+            Logger.Log parttInviteLog = new Logger.Log("info");
             parttInviteLog.Smurf = username;
             int totalMembers = (lobby.Invitees.FindAll(member => member.InviteeState == "ACCEPTED").Count + 1);
             parttInviteLog.Text = "Lobby just updated, accepted members:" + totalMembers;
             Logger.Push(parttInviteLog);
 
-            if (totalMembers == smurf.totalGroupLength + 1)
+            if (totalMembers == smurf.totalGroupLength)
             {
                 Logger.Log readyQueue = new Logger.Log("warning");
                 readyQueue.Smurf = username;
@@ -819,12 +842,30 @@ namespace HFL_Remastered
                     if (!taintedWarning)
                     { 
                         double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
-                        Logger.Log leaveTimeLeft = new Logger.Log("warning");
-                        leaveTimeLeft.Smurf = username;
-                        leaveTimeLeft.Text = "Waiting out queue buster: " + minutes + " minutes!";
-                        Logger.Push(leaveTimeLeft);
-                        Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
-                        this.joinQueue();
+                        if (minutes <= 0)
+                        {
+                            try { 
+                                exeProcess.Exited -= exeProcess_Exited;
+                                exeProcess.Kill();
+                            }
+                            catch(Exception ex)
+                            {
+                                
+                            }
+                            if (lastStarter != null)
+                            {
+                                startProcessor(lastStarter);
+                            }
+                        }
+                        else
+                        {
+                            Logger.Log leaveTimeLeft = new Logger.Log("warning");
+                            leaveTimeLeft.Smurf = username;
+                            leaveTimeLeft.Text = "Waiting out queue buster: " + minutes + " minutes!";
+                            Logger.Push(leaveTimeLeft);
+                            Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
+                            this.joinQueue();
+                        }
                     }
                 }
 

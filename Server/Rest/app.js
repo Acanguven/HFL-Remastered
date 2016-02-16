@@ -14,7 +14,7 @@ var hfl = require('./routes/hfl');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 //app.use(express.session({secret: 'MyscretHFLMAsTE-r.'}));
@@ -29,6 +29,7 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Max-Age",  60 * 60 * 24);
   next();
 });
+
 app.use('/api', hfl);
 
 

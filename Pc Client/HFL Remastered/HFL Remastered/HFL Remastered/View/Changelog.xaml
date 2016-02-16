@@ -1,0 +1,10 @@
+﻿<Window x:Class="HFL_Remastered.Changelog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Changelog" Height="813" Width="420" Icon="/HFL Remastered;component/Resources/favicon.ico" Closing="Window_Closing">
+    <Grid Background="Black">
+        <ScrollViewer>
+            <TextBlock Margin="10,10,40,10" TextWrapping="Wrap" Text="Loading..." Foreground="#FFCCCCCC" Name="logText"/>
+        </ScrollViewer>
+    </Grid>
+</Window>

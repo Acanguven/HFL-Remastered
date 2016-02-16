@@ -35,7 +35,9 @@ namespace HFL_Remastered
             {
                 cmd = new CommandManager();
                 injectCallbacks();
-                websocket.Open();
+                if (websocket.State != WebSocketState.Open) { 
+                    websocket.Open();
+                }
             }
             else
             {

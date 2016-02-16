@@ -114,7 +114,13 @@ namespace LoLLauncher
         [LoginQueueValue("https://lq.la2.lol.riotgames.com/")]
         [LocaleValue("en_US")]
         [UseGarenaValue(false)]
-        LAS
+        LAS,
+
+        [ServerValue("prod.eun1.lol.riotgames.com")]
+        [LoginQueueValue("https://lq.eun1.lol.riotgames.com/")]
+        [LocaleValue("en_GB")]
+        [UseGarenaValue(false)]
+        EUNE
     }
 
     public static class RegionInfo

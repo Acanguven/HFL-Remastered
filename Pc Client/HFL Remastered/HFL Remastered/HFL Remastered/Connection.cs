@@ -75,17 +75,17 @@ namespace HFL_Remastered
         public static async Task<bool> updateCheck()
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri("http://handsfreeleveler.com/");
+            client.BaseAddress = new Uri("http://remote.handsfreeleveler.com/");
             client.DefaultRequestHeaders.Accept.Clear();
 
             // HTTP GET
             try
             {
-                HttpResponseMessage response = await client.GetAsync("client_version.txt");
+                HttpResponseMessage response = await client.GetAsync("version.txt");
                 if (response.IsSuccessStatusCode)
                 {
                     String data = await response.Content.ReadAsStringAsync();
-                    if (data == Application.Current.FindResource("version").ToString())
+                    if (data == App.version)
                     {
                         return false;
                     }

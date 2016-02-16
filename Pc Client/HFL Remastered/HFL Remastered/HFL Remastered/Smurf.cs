@@ -31,7 +31,7 @@ namespace HFL_Remastered
         public int totalGroupLength { get; set; }
         public Smurf hostCallback { get; set; }
 
-        public string regionVersion = "6.2.16_01_27_16_56";
+        public string regionVersion = "6.3.16_02_03_18_43";
         internal BotThread thread = new BotThread();
 
         public async void inviteMe(double summonerId){
@@ -56,6 +56,10 @@ namespace HFL_Remastered
             newLog.Smurf = this.username;
             newLog.Text = "Region information updated, restarting...";
             Logger.Push(newLog);
+            stop();
+            thread = new BotThread();
+            loadSelf();
+            start();
         }
 
         public void start()

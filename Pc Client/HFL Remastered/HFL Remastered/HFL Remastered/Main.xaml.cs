@@ -36,7 +36,7 @@ namespace HFL_Remastered
             InitializeComponent();
             updateHome();
             net.init(remainingTrial, App.Client.UserData.Type);
-            
+            uiversion.Text = "Version " + App.version;
         }
 
         private WindowState m_storedWindowState = WindowState.Normal;
@@ -79,13 +79,19 @@ namespace HFL_Remastered
             }
             else
             {
-                this.Show();
-                this.Activate();
-                WindowState = m_storedWindowState;
-                this.WindowState = WindowState.Normal;
-                this.Visibility = Visibility.Visible;
-                this.Focus();
-                ShowWindow(new WindowInteropHelper(this).Handle, SW_RESTORE);
+                try { 
+                    this.Show();
+                    this.Activate();
+                    WindowState = m_storedWindowState;
+                    this.WindowState = WindowState.Normal;
+                    this.Visibility = Visibility.Visible;
+                    this.Focus();
+                    ShowWindow(new WindowInteropHelper(this).Handle, SW_RESTORE);
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
 
@@ -106,7 +112,14 @@ namespace HFL_Remastered
 
         private void Menu_Close(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            try {
+                m_notifyIcon.Visible = false;
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         void CheckTrayIcon()
@@ -142,7 +155,7 @@ namespace HFL_Remastered
             this.Visibility = Visibility.Visible;
             this.trial.Visibility = Visibility.Hidden;
             m_notifyIcon = new System.Windows.Forms.NotifyIcon();
-            m_notifyIcon.BalloonTipText = "HFL has been minimised. Click the tray icon to show.";
+            m_notifyIcon.BalloonTipText = "HFL has been minimized. Click the tray icon to show.";
             m_notifyIcon.BalloonTipTitle = "Hands Free Leveler";
             m_notifyIcon.Text = "Hands Free Leveler";
             Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/Resources/favicon.ico")).Stream;
@@ -226,6 +239,11 @@ namespace HFL_Remastered
 
             Properties.Settings.Default.startup = flag;
             Properties.Settings.Default.Save();
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://forum.handsfreeleveler.com/topic/24/how-to-buy-payment-methods");
         }
     }
 }
