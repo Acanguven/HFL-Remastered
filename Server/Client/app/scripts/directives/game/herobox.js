@@ -15,7 +15,7 @@ angular.module('sbAdminApp')
                 var htmlText = "";
             }else{
                 if(attrs.minimap){
-                    var htmlText = '<img class="img-circle" src="/img/champions/'+attrs.name.toLowerCase()+'.png" style="margin-bottom:10px;position:absolute;" height="25px;"/>';
+                    var htmlText = '<img class="img-circle" id="heroMarker" src="/img/champions/'+attrs.name.toLowerCase()+'.png" style="margin-bottom:10px;position:absolute;" height="25px;"/>';
                 }else{
                     if(attrs.chat){
                         var htmlText = '<img class="img-circle" src="/img/champions/'+attrs.name.toLowerCase()+'.png" style="margin-bottom:10px;cursor:pointer;" height="50px"/>';
@@ -55,4 +55,3 @@ angular.module('sbAdminApp')
         replace:true
     }
 })
-

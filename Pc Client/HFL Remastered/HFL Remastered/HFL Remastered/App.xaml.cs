@@ -21,7 +21,7 @@ namespace HFL_Remastered
         public static User Client;
         public static Main mainwindow;
         public Login loginWindow = new Login();
-        public static string version = "1.6";
+        public static string version = "1.7";
 
         private async void igniter(object sender, StartupEventArgs e)
         {

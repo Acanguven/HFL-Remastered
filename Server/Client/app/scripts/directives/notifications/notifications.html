@@ -1,9 +1,15 @@
 <div class="panel-body">
     <div class="list-group overflowablechilds">
         <a class="list-group-item">
+            <i class="fa fa-user fa-fw"></i> Bol Username
+                <span class="pull-right text-muted small" ng-if="user.userData.bol != ''"><em>{{user.userData.bol}}</em></span>
+                <span class="pull-right text-danger small" ng-if="user.userData.bol == ''"><em>Not Set</em></span>
+            </span>
+        </a>
+        <a class="list-group-item">
             <i class="fa fa-bolt fa-fw"></i> Client Controller
                 <span class="pull-right text-muted small" ng-if="controller"><em>Running</em>
-                <span class="pull-right text-error small" ng-if="!controller"><em>Not Running</em>
+                <span class="pull-right text-danger small" ng-if="!controller"><em>Not Running</em>
             </span>
         </a>
         <a class="list-group-item">

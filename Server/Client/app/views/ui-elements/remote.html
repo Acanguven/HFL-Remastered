@@ -7,15 +7,16 @@
 <!-- /.row -->
 <div class="row">
 	<div class="col-lg-12">
-		<hero name="draven"></hero>
-		<hero name="vayne"></hero>
-		<hero name="alistar"></hero>
-		<hero name="annie"></hero>
-		<hero name="katarina"></hero>
+		<img ng-repeat="script in liveData.remote" class="img-circle" src="/img/champions/{{script.champion}}.png" style="margin-bottom:10px;cursor:pointer;" height="100px" ng-click="selectR(script.gameid)"/>
 	</div>
 </div>
-<hr>
-<div class="row">
+<hr ng-if="liveData.remote.length != 0">
+<div class="row" ng-if="liveData.remote.length == 0">
+	<div class="col-lg-12" ng-if="!selectedRemote">
+		<p class="text-warning">No smurfs running, be sure you enabled HFL Remastered.lua in bot of legends client.</p>
+	</div>
+</div>
+<div class="row" ng-if="selectedRemote">
 	<div class="col-lg-4">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -26,43 +27,43 @@
                 <div class="list-group">
 			        <a class="list-group-item">
 			            <i class="fa fa-clock-o fa-fw"></i> Game Time
-			            <span class="pull-right text-muted small"><em>12:43</em>
+			            <span class="pull-right text-muted small"><em>{{secondsConverter(selectedRemote.data[0])}}</em>
 			            </span>
 			        </a>
 			        <a class="list-group-item">
 			            <i class="fa fa-child fa-fw"></i> Level
-			            <span class="pull-right text-muted small"><em>13</em>
+			            <span class="pull-right text-muted small"><em>{{selectedRemote.data[1]}}</em>
 			            </span>
 			        </a>                
 			        <a class="list-group-item">
 			            <i class="fa fa-legal fa-fw"></i> Kills
-			            <span class="pull-right text-muted small"><em>10</em>
+			            <span class="pull-right text-muted small"><em>{{selectedRemote.data[2]}}</em>
 			            </span>
 			        </a>
 			        <a class="list-group-item">
 			            <i class="fa fa-frown-o fa-fw"></i> Deaths
-			            <span class="pull-right text-muted small"><em>1</em>
+			            <span class="pull-right text-muted small"><em>{{selectedRemote.data[3]}}</em>
 			            </span>
 			        </a>
 			        <a class="list-group-item">
 			            <i class="fa fa-eye fa-fw"></i> Assists
-			            <span class="pull-right text-muted small"><em>5</em>
+			            <span class="pull-right text-muted small"><em>{{selectedRemote.data[4]}}</em>
 			            </span>
 			        </a>
 			        <a class="list-group-item">
-			            <i class="fa fa-money fa-fw"></i> Total Value
-			            <span class="pull-right text-muted small"><em>2367</em>
+			            <i class="fa fa-money fa-fw"></i> Minions Killed
+			            <span class="pull-right text-muted small"><em>{{selectedRemote.data[5]}}</em>
 			            </span>
 			        </a>
 			        <a class="list-group-item">
 			            <i class="fa fa-usd fa-fw"></i> Money
-			            <span class="pull-right text-muted small"><em>167</em>
+			            <span class="pull-right text-muted small"><em>{{floor(selectedRemote.data[6])}}</em>
 			            </span>
 			        </a>
 			    </div>
             </div>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default" style="display:none;">
             <div class="panel-heading">
             	<i class="fa fa-bar-chart-o fa-fw"></i>
                 Live Items
@@ -85,14 +86,104 @@
             </div>
             <div class="panel-body">
                 <div style="position:relative;">
-                  	<img src="http://ddragon.leagueoflegends.com/cdn/6.1.1/img/map/map11.png" width="100%" id="currentmap"/>
+                  	<img ng-if="selectedRemote.data[9] == 'summonerRift'" id="currentmap" src="http://ddragon.leagueoflegends.com/cdn/6.1.1/img/map/map11.png" width="100%" id="currentmap"/>
+
+                  	<img ng-if="selectedRemote.data[9] == 'howlingAbyss'" id="currentmap" src="http://ddragon.leagueoflegends.com/cdn/6.1.1/img/map/map12.png" width="100%" id="currentmap"/>
                   	<!--<img src="/img/aram.png" width="100%" id="currentmap"/>-->
-                  	<hero name="draven" minimap="minimap"></hero>
+                  	<img class="img-circle" id="heroMarker" src="/img/champions/{{selectedRemote.champion}}.png" style="margin-bottom:10px;position:absolute;" height="25px;"/>
                 </div>
             </div>
         </div>
 	</div>
     <div class="col-lg-4">
-        <chatsmurf></chatsmurf>
+        <div class="chat-panel panel panel-default">
+		    <div class="panel-heading">
+		        <i class="fa fa-comments fa-fw"></i>
+		        Chat
+		    </div>
+		    <!-- /.panel-heading -->
+		    <div class="panel-body" style="height:450px;">
+		    	<p>This feature will be released when Bol fixed</p>	
+		        <ul class="chat" style="display:none;">
+		            <li class="left clearfix">
+		                <span class="chat-img pull-left">
+		                    <hero name="draven" chat="chat"></hero>
+		                </span>
+		                <div class="chat-body clearfix">
+		                    <div class="header" style="margin-bottom:10px;">
+		                        <strong class="primary-font">You</strong>
+		                    </div>
+		                    <p>
+		                        Lol I am testing my remote chat at the moment :D
+		                    </p>
+		                </div>
+		            </li>
+		            <li class="right clearfix">
+		                <span class="chat-img pull-right">
+		                    <hero name="vayne" chat="chat"></hero>
+		                </span>
+		                <div class="chat-body clearfix">
+		                    <div class="header" style="height:22px;margin-bottom:10px;">
+		                        <strong class="pull-right primary-font">thelawtest48</strong>
+		                    </div>
+		                    <p>
+		                        Wtf is that?
+		                    </p>
+		                </div>
+		            </li>
+		            <li class="left clearfix">
+		                <span class="chat-img pull-left">
+		                    <hero name="draven" chat="chat"></hero>
+		                </span>
+		                <div class="chat-body clearfix">
+		                    <div class="header" style="margin-bottom:10px;">
+		                        <strong class="primary-font">You</strong>
+		                    </div>
+		                    <p>
+		                        You will see soon
+		                    </p>
+		                </div>
+		            </li>
+		            <li class="left clearfix">
+		                <span class="chat-img pull-left">
+		                    <hero name="draven" chat="chat"></hero>
+		                </span>
+		                <div class="chat-body clearfix">
+		                    <div class="header" style="margin-bottom:10px;">
+		                        <strong class="primary-font">You</strong>
+		                    </div>
+		                    <p>
+		                        :)
+		                    </p>
+		                </div>
+		            </li>
+		            <li class="right clearfix">
+		                <span class="chat-img pull-right">
+		                    <hero name="vayne" chat="chat"></hero>
+		                </span>
+		                <div class="chat-body clearfix">
+		                    <div class="header" style="height:22px;margin-bottom:10px;">
+		                        <strong class="pull-right primary-font">thelawtest48</strong>
+		                    </div>
+		                    <p>
+		                        Hahaha
+		                    </p>
+		                </div>
+		            </li>
+		        </ul>
+		    </div>
+		                <!-- /.panel-body -->
+		    <div class="panel-footer">
+		        <div class="input-group">
+		            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
+		            <span class="input-group-btn">
+		                <button class="btn btn-warning btn-sm" id="btn-chat">
+		                    Send
+		                </button>
+		            </span>
+		        </div>
+		    </div>
+		    <!-- /.panel-footer -->
+		</div>
     </div>
 </div>

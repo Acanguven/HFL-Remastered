@@ -30,9 +30,9 @@ var user = new Schema({
     },
     logs:{type:Array,default:[]},
     groups:{type:Array,default:[]},
-    smurfs:{type:Array,default:[]}
+    smurfs:{type:Array,default:[]},
+    bol:{type:String,default:""}
 });
-
 user.methods.testHwid = function (hwid, cb) {
     if(this.hwid == hwid){
         cb(true);

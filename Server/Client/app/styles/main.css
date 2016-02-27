@@ -118,3 +118,31 @@ background-color: #eee;
 .shell *::-webkit-scrollbar-thumb {
     background: green;
 }
+
+.itemhover{
+  height: auto;
+  background-color: #E80;
+  display: inline-flex;
+  position: absolute;
+  border: 1px solid #ccc;
+  z-index: 999;
+  margin-left: -20px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.hovernext{
+  position: absolute;
+  background-color: steelblue;
+  border: 1px solid #ccc;
+  height: auto;
+  width: 68px;
+  margin-top:-15px;
+  margin-left: -11px;
+  padding-left: 8px;
+  padding-top: 5px;
+}
+#force-show{
+  display: block;
+}

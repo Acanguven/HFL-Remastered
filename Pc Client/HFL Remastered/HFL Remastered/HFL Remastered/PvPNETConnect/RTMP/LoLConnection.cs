@@ -129,7 +129,8 @@ namespace LoLLauncher
                         return;
 
                     sslStream = new SslStream(client.GetStream(), false, AcceptAllCertificates);
-                    try { 
+                    try
+                    {
                         var ar = sslStream.BeginAuthenticateAsClient(server, null, null);
                         using (ar.AsyncWaitHandle)
                         {
@@ -449,46 +450,57 @@ namespace LoLLauncher
 
         private bool Handshake()
         {
-            byte[] handshakePacket = new byte[1537];
-            rand.NextBytes(handshakePacket);
-            handshakePacket[0] = (byte)0x03;
-            sslStream.Write(handshakePacket); // TODO add reconnction to here
-
-            byte S0 = (byte)sslStream.ReadByte();
-            if (S0 != 0x03)
+            try
             {
-                Error("Server returned incorrect version in handshake: " + S0, ErrorType.Handshake);
-                Disconnect();
-                return false;
-            }
+                byte[] handshakePacket = new byte[1537];
+                rand.NextBytes(handshakePacket);
+                handshakePacket[0] = (byte)0x03;
+
+                sslStream.Write(handshakePacket); // TODO add reconnction to here
 
 
-            byte[] responsePacket = new byte[1536];
-            sslStream.Read(responsePacket, 0, 1536);
-            sslStream.Write(responsePacket);
 
-            // Wait for response and discard result
-            byte[] S2 = new byte[1536];
-            sslStream.Read(S2, 0, 1536);
-
-            // Validate handshake
-            bool valid = true;
-            for (int i = 8; i < 1536; i++)
-            {
-                if (handshakePacket[i + 1] != S2[i])
+                byte S0 = (byte)sslStream.ReadByte();
+                if (S0 != 0x03)
                 {
-                    valid = false;
-                    break;
+                    Error("Server returned incorrect version in handshake: " + S0, ErrorType.Handshake);
+                    Disconnect();
+                    return false;
                 }
-            }
 
-            if (!valid)
+
+                byte[] responsePacket = new byte[1536];
+                sslStream.Read(responsePacket, 0, 1536);
+                sslStream.Write(responsePacket);
+
+                // Wait for response and discard result
+                byte[] S2 = new byte[1536];
+                sslStream.Read(S2, 0, 1536);
+
+                // Validate handshake
+                bool valid = true;
+                for (int i = 8; i < 1536; i++)
+                {
+                    if (handshakePacket[i + 1] != S2[i])
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+
+                if (!valid)
+                {
+                    Error("Server returned invalid handshake", ErrorType.Handshake);
+                    Disconnect();
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
             {
-                Error("Server returned invalid handshake", ErrorType.Handshake);
                 Disconnect();
                 return false;
             }
-            return true;
         }
 
         private bool SendConnect()

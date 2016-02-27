@@ -46,11 +46,13 @@ angular.module('sbAdminApp')
     .directive('itemlist', function() {
     return {
         restrict : 'E',
-        template : '<a ng-repeat="(key,value) in list | filter:{name:search.name} | filtermap:search.map" ng-click="action(value)"><img title="{{value.name}}" class="img-circle" src="http://ddragon.leagueoflegends.com/cdn/6.1.1/img/item/{{value.image.full}}" style="margin-bottom:10px;cursor:pointer;margin-right:11px;" height="50px"/></a>',
+        template : '<a ng-repeat="(key,value) in list | filtermap:search.map"  ng-mouseover="hover(value)" ng-mouseleave="out(value)" ng-show="value.name.toLowerCase().indexOf(search.name.toLowerCase()) != -1"><img title="{{value.name}}" id="item_{{value.id}}" class="img-circle" src="http://ddragon.leagueoflegends.com/cdn/6.3.1/img/item/{{value.image.full}}" style="margin-bottom:10px;cursor:pointer;margin-right:11px;" height="50px" ng-click="action(value)"/></a>',
         scope: {
             list: "=",
             search: "=",
-            action: "="
+            action: "=",
+            hover:"=",
+            out:"=",
         },
         replace:true
     }

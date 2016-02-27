@@ -10,6 +10,7 @@ angular.module('sbAdminApp').controller('settings', function($scope,$http,$rootS
 	if(!$scope.user){
 		return false;
 	}
+	console.log($scope.user)
 
 	$scope.$watch(function(){
 		return $scope.user.userData.settings;

@@ -75,7 +75,7 @@ angular
 
         $ocLazyLoadProvider.config({
             debug: false,
-            events: true,
+            events: false,
         });
 
         $urlRouterProvider.otherwise('/login');
@@ -271,16 +271,46 @@ angular
                     }
                 }
             })
-            .state('dashboard.account', {
-                controller: "account",
-                templateUrl: 'views/ui-elements/account.html',
-                url: '/account',
+            .state('dashboard.subscription', {
+                controller: "subscription",
+                templateUrl: 'views/ui-elements/subscription.html',
+                url: '/subscription',
                 resolve: {
                     loadMyFiles: function($ocLazyLoad) {
                         return $ocLazyLoad.load({
                             name: 'sbAdminApp',
                             files: [
-                                'scripts/controllers/account.js',
+                                'scripts/controllers/subscription.js',
+                            ]
+                        })
+                    }
+                }
+            })
+            .state('dashboard.bol', {
+                controller: "bol",
+                templateUrl: 'views/ui-elements/bol.html',
+                url: '/bol',
+                resolve: {
+                    loadMyFiles: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/bol.js',
+                            ]
+                        })
+                    }
+                }
+            })
+            .state('dashboard.banners', {
+                controller: "banners",
+                templateUrl: 'views/ui-elements/banners.html',
+                url: '/banners',
+                resolve: {
+                    loadMyFiles: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/banners.js',
                             ]
                         })
                     }
@@ -318,11 +348,13 @@ angular
             .state('dashboard.remote', {
                 templateUrl: 'views/ui-elements/remote.html',
                 url: '/remote',
+                controller: 'remote',
                 resolve: {
                     loadMyFiles: function($ocLazyLoad) {
                         return $ocLazyLoad.load({
                             name: 'sbAdminApp',
                             files: [
+                                'scripts/controllers/remote.js',
                                 'scripts/directives/chat/chat.js',
                                 'scripts/directives/game/herobox.js',
                                 'scripts/directives/game/item.js',

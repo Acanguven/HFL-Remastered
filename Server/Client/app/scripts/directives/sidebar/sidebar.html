@@ -9,10 +9,22 @@
         
         <ul class="nav in" id="side-menu">
             <li ui-sref-active="active">
-                <a ui-sref="dashboard.account"><i class="fa fa-user fa-fw"></i> Account</a>
-            </li>
-            <li ui-sref-active="active">
                 <a ui-sref="dashboard.home"><i class="fa fa-home fa-fw"></i> Dashboard</a>
+            </li>
+            <li ng-class="{active: collapseVar==2}">{{dropDown}}
+                <a href="" ng-click="check(2)"><i class="fa fa-user fa-fw"></i> Account<span
+                        class="fa arrow"></span></a>
+                <ul class="nav nav-second-level" collapse="collapseVar!=2">
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.subscription">Package Information</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.bol">BoL Account</a>
+                    </li>
+                    <li ui-sref-active="active" style="display:none;">
+                        <a ui-sref="dashboard.banners">Banners</a>
+                    </li>
+                </ul>
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="dashboard.remote"><i class="fa fa-rocket fa-fw"></i> Remote Controller</a>
@@ -23,7 +35,7 @@
             <li ui-sref-active="active">
                 <a ui-sref="dashboard.settings"><i class="fa fa-gear fa-fw"></i> Settings</a>
             </li>
-            <li ui-sref-active="active">
+            <li ui-sref-active="active" style="display:none;">
                 <a ui-sref="dashboard.home"><i class="fa fa-bar-chart-o fa-fw"></i> Stats - <span>Disabled for Beta</span></a>
             </li>
             <li ui-sref-active="active">

@@ -25,6 +25,15 @@ namespace HFL_Remastered
         [JsonProperty("desiredLevel")]
         public int desiredLevel { get; set; }
 
+        [JsonProperty("currentLevel")]
+        public dynamic currentLevel { get; set; }
+
+        [JsonProperty("currentip")]
+        public dynamic currentip { get; set; }
+
+        [JsonProperty("currentrp")]
+        public dynamic currentrp { get; set; }
+
         public bool groupMember = false;
         public bool isHost = false;
         public List<double> inviteList = new List<double>();
@@ -64,7 +73,7 @@ namespace HFL_Remastered
 
         public void start()
         {
-            Logger.Log newLog = new Logger.Log("warning");
+            Logger.Log newLog = new Logger.Log("info");
             newLog.Smurf = this.username;
             newLog.Text = "Trying to start smurf.";
             Logger.Push(newLog);
@@ -100,9 +109,9 @@ namespace HFL_Remastered
             start();
         }
 
-        public void updateExpLevel(double extToNextLevel, double currentExp, double level)
+        public void updateSelfOnRemote()
         {
-
+            Network.updateSmurfData(this);
         }
     }
 }

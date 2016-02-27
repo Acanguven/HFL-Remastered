@@ -160,6 +160,19 @@ namespace HFL_Remastered
             websocket.Send(buffer);
         }
 
+        public static void updateSmurfData(Smurf smurf)
+        {
+            dynamic smurfPacket = new JObject();
+            smurfPacket.type = "smurfdbupdate";
+            smurfPacket.token = App.Client.Token;
+            smurfPacket.smurf = JToken.FromObject(smurf);
+            smurfPacket.smurf.currentLevel = smurf.currentLevel;
+            smurfPacket.smurf.currentip = smurf.currentip;
+            smurfPacket.smurf.currentrp = smurf.currentrp;
+            string buffer = smurfPacket.ToString(Formatting.None);
+            websocket.Send(buffer);
+        }
+
 
         public void cmdNewLine(string line)
         {

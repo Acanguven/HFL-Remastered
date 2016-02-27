@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LoL Static Data To Lua</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.2.0/ZeroClipboard.min.js"></script>
+	<script src="http://remote.handsfreeleveler.com/bower_components/angular-clipboard/angular-clipboard.js"></script>
+	<script>
+		var app = angular.module("items", ['angular-clipboard'])
+			.controller("codeSpawner", function($scope,$http){
+				$scope.versions = [];
+				$scope.copyStatus = "";
+				$scope.apiType = "staticItemsVersion"
+				$scope.codeGenerated = "";
+
+				$http.get("http://handsfreeleveler.com:4446/api/getStaticVersions").then(function(res){
+					$scope.versions = res.data;
+					var index = res.data.indexOf("lolpatch_6.3");
+					if(index > 0){
+						$scope.versions.length = index;
+					}
+					$scope.ver = $scope.versions[0];
+				});
+
+				var noJsonTransform = function(data) { return data; }; 
+				$scope.$watch(function(){
+					return $scope.ver + $scope.apiType;
+				}, function(){
+					if($scope.ver && $scope.apiType){
+						$http.get("http://handsfreeleveler.com:4446/api/"+$scope.apiType+"/"+$scope.ver, 
+							{transformResponse: noJsonTransform}).then(function(res){
+							$scope.codeGenerated = res.data;
+						});
+					}
+				});
+
+				$scope.copied = function(){
+					$scope.copyStatus = "Copied successfully!"	
+				}
+				$scope.copyfail = function(err){
+					$scope.copyStatus = err;
+				}
+			});
+	</script>
+	<style>
+		.checkbox div{
+			float: left;
+			clear: left;
+		}
+	</style>
+</head>
+<body ng-app="items" ng-controller="codeSpawner">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>LoL Static Data to Lua</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-12">
+						<form role="form">
+							<label class="primary">Select from list to modify lua code</label>
+							<select class="form-control" ng-options="vers for vers in versions" ng-model="ver"></select>
+							<div class="col-md-12">
+								<label class="radio">
+									<input type="radio" ng-model="apiType" value="staticItemsVersion">
+									Items
+								</label>
+								<label class="radio">
+									<input type="radio" ng-model="apiType" value="staticMasteryVersion">
+									Mastery
+								</label>
+								<label class="radio">
+									<input type="radio" ng-model="apiType" value="staticRuneVersion">
+									Rune
+								</label>
+								<label class="radio">
+									<input type="radio" ng-model="apiType" value="staticSummonerVersion">
+									Summoner
+								</label>
+								<label class="radio">
+									<input type="radio" ng-model="apiType" value="staticChampionVersion">
+									Champion
+								</label>
+							</div>
+						</form>
+				  	</div>
+				  	<div class="col-md-12">
+					  	<div style="clear:both;margin-top:10px;">
+							<blockquote>
+						    	<p id="thanks">I created this tool for the Bot Of Legends Community</p>
+						    	<footer><a href="http://forum.botoflegends.com/user/127916-the-law/" style="color:green;" target="_blank">The Law</a></footer>
+						  	</blockquote>
+					  	</div>
+				  	</div>
+				</div>
+			</div>
+			<div class="col-md-8">
+			 	<button type="button" class="btn btn-success" clipboard on-copied="copied()" on-error="copyfail(err)" text="codeGenerated">Copy</button>&nbsp;&nbsp;<span class="text-info">{{copyStatus}}</span>
+			    <pre id="lastCode" style="margin-top:15px;">{{codeGenerated}}</pre>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header"><heroscope name="hero"></heroscope>{{hero}} Items</h1>
+        <h1 class="page-header" style="text-transfrom:capitalize"><heroscope name="hero"></heroscope>{{hero}} Items</h1>
     </div>
 </div>
 
@@ -44,8 +44,8 @@
 	    <div class="panel panel-default">
 	        <div class="panel-heading">
 	        	<div class="row">
-		        	<div class="col-lg-8">
-		            	<input type="text" class="form-control" value="" placeholder="Item Name" ng-model="search.name">
+		        	<div class="col-lg-8" >
+		            	<input type="text" class="form-control" value="" placeholder="Item Name" ng-model="search.name" ng-init="search.name = ''">
 		            </div>
 		            <div class="col-lg-4" style="margin-top:8px;" ng-init="search.map = 11">
 		            	<input type="radio" name="map" ng-model="search.map" value="12"></input><label style="margin-right:10px;">Aram</label>
@@ -53,9 +53,9 @@
 		            </div>
 	            </div>
 	        </div>
-	        <div class="panel-body" style="max-height:320px;overflow-y:scroll;">
+	        <div class="panel-body">
 	        	<p class="text-info">These are the items that is buyable with the selected map, click them to buy.</p>
-	        	<itemlist list="itemList" search="search" action=addItem></itemlist>
+	        	<itemlist list="itemList" search="search" action="addItem" hover="hover" out="out"></itemlist>
 	        </div>
 	    </div>
     </div>
@@ -73,7 +73,7 @@
 		        <div class="row">
 		        	<div class="col-xs-12">
 		        		<div style="float:left;margin-bottom:20px;" ng-repeat="transaction in heroBuild[12].queue">
-				        	<div class="buildItem"><itemscope item="transaction.item" buy="transaction.buy"></itemscope></div>
+				        	<div class="buildItem" ng-click="popLast()"><itemscope item="transaction.item" buy="transaction.buy"></itemscope></div>
 				        	<div class="lineConnect"></div>
 			        	</div>
 		        	</div>
@@ -95,7 +95,7 @@
 		        <div class="row">
 		        	<div class="col-xs-12">
 		        		<div style="float:left;margin-bottom:20px;" ng-repeat="transaction in heroBuild[11].queue">
-				        	<div class="buildItem"><itemscope item="transaction.item" buy="transaction.buy"></itemscope></div>
+				        	<div class="buildItem" ng-click="popLast()"><itemscope item="transaction.item" buy="transaction.buy"></itemscope></div>
 				        	<div class="lineConnect"></div>
 			        	</div>
 		        	</div>

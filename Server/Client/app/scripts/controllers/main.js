@@ -19,4 +19,6 @@ angular.module('sbAdminApp').controller('MainCtrl', function($scope, $position, 
 			$http.get("http://handsfreeleveler.com:4446/api/ping");
 		}
 	},1000 * 30)
+
+	$scope.Math=Math;
 });

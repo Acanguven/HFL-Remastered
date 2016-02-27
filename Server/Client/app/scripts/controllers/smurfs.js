@@ -48,6 +48,9 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 
 	$scope.add = function(smurf){
 		var newSmurf = angular.copy(smurf);
+		newSmurf.currentLevel = "?";
+		newSmurf.currentrp = "?";
+		newSmurf.currentip = "?";
 		$scope.user.userData.smurfs.push(newSmurf);
 		$scope.refresher();
 	}

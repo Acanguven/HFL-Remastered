@@ -6,15 +6,14 @@
         <ul class="dropdown-menu dropdown-tasks">
 
             <li>
-                <a href="#">
+                <a ng-repeat="smurf in user.userData.smurfs">
                     <div>
                         <p>
-                            <strong>Task 1</strong>
-                            <span class="pull-right text-muted">40% Complete</span>
+                            <strong>{{smurf.username}}</strong>
+                            <span class="pull-right text-muted">{{smurf.currentLevel == "?" ? '0% Complete' : Math.floor((100*smurf.currentLevel)/smurf.desiredLevel)+'% Complete'}}</span>
                         </p>
                         <div class="progress progress-striped active">
-                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                                <span class="sr-only">40% Complete (success)</span>
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: {{smurf.currentLevel == '?' ? '0' : Math.floor((100*smurf.currentLevel)/smurf.desiredLevel)}}%">
                             </div>
                         </div>
                     </div>

@@ -7,7 +7,6 @@
  * Controller of the sbAdminApp
  */
 angular.module('sbAdminApp').controller('login', function(Websocket,$scope,$http,$state,$stateParams) {
-	console.log($stateParams)	
 	if(!$stateParams.redirect){
 		top.location.href = "/";
 	}

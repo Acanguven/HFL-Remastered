@@ -81,11 +81,21 @@ angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootSco
     }
   };
 })
-.run(function(Websocket,$rootScope){
+.run(function(Websocket,$rootScope,$interval){
 	$rootScope.liveData = {
 		groups:[],
-		smurfs:[]
+		smurfs:[],
+		remote:[]
 	}
+
+	$interval(function(){
+		$rootScope.liveData.remote.forEach(function(script, index){
+			if(script.lastPing + 7500 < Date.now()){
+				$rootScope.liveData.remote.splice(index,1);
+			}
+		})
+	},2000)
+
 	Websocket.on('status', function (data) {
 		if(data.controller){
 			$rootScope.controller = {
@@ -106,6 +116,31 @@ angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootSco
 		data.update.groups.forEach(function(grp){
 			$rootScope.liveData.groups[grp.name] = grp;
 		})
+  	});
+  	Websocket.on('scriptPing' , function(data){
+  		var found = false;
+        for(var x = 0; x < $rootScope.liveData.remote.length; x++){
+            if($rootScope.liveData.remote[x].gameid == data.info.gameid){
+                $rootScope.liveData.remote[x].data = data.info.data;
+                $rootScope.liveData.remote[x].lastPing = Date.now();
+                found = true;
+            }
+        }
+        if(!found){
+        	data.lastPing = Date.now();
+        	$rootScope.liveData.remote.push(data.info);
+        }
+  	});
+  	Websocket.on('removeScript' , function(data){
+  		var found = false;
+        for(var x = 0; x < $rootScope.liveData.remote.length; x++){
+            if($rootScope.liveData.remote[x].gameid == data.gameid){
+                found = x;
+            }
+        }
+        if(found !== false){
+        	$rootScope.liveData.remote.splice(x,1);
+        }
   	});
 })
     

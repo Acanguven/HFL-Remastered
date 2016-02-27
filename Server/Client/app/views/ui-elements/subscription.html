@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Package Information && Payments</h1>
+    </div>  
+    <!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Single Smurf Lifetime
+            </div>
+            <div class="panel-body">
+                <p>Single Smurf is for the people who just want to level one smurf at same time. You can control it from anywhere and any device which has internet access. <b>When you pay for it you will have lifetime access.</b></p>
+            </div>
+            <div class="panel-footer">
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="8KP4CH2QL4HY8">
+					<input name="custom" value="{{user._id}}" type="hidden">
+					<input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_buynow_SM.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+					<img alt="" border="0" src="https://www.paypalobjects.com/tr_TR/i/scr/pixel.gif" width="1" height="1">
+				</form>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-4 -->
+    <div class="col-lg-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Monthly Package
+            </div>
+            <div class="panel-body">
+                <p>Monthly smurf <b>has the same features like Multi Smurf</b> so you can run mutiple smurfs at same time. You control them from anywhere and any device which has internet access. The difference is this is monthly payment.</p>
+            </div>
+            <div class="panel-footer">
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="KEXP7RJLGT9AE">
+					<input type="hidden" value="{{user.userData._id}}" name="userId" maxlength="200">
+					<input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_paynow_SM.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+					<img alt="" border="0" src="https://www.paypalobjects.com/tr_TR/i/scr/pixel.gif" width="1" height="1">
+				</form>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-4 -->
+    <div class="col-lg-4">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                Multi Smurf Lifetime
+            </div>
+            <div class="panel-body">
+				<p>Multi smurf account is the full package and the best package of Hands Free Leveler. With this package you can run multiple smurfs at same time and control them from anywhere and any device which has internet access. <b>When you pay for it you will have lifetime access.</b></p>
+            </div>
+            <div class="panel-footer">
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="CJHJHNT7MC3LY">
+					<input type="hidden" value="{{user.userData._id}}" name="userId" maxlength="200">
+					<input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_buynow_SM.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+					<img alt="" border="0" src="https://www.paypalobjects.com/tr_TR/i/scr/pixel.gif" width="1" height="1">
+				</form>
+
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-4 -->
+</div>

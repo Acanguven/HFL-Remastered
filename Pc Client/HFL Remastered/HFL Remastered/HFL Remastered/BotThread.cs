@@ -134,7 +134,7 @@ namespace HFL_Remastered
         #region OnConnect
         public async void connection_OnConnect(object sender, object message)
         {
-            Logger.Log newLog = new Logger.Log("success");
+            Logger.Log newLog = new Logger.Log("info");
             newLog.Smurf = this.username;
             newLog.Text = "Smurf connected to Riot Server, ready to login.";
             Logger.Push(newLog);
@@ -176,7 +176,7 @@ namespace HFL_Remastered
         #region OnLogin
         private void connection_OnLogin(object sender, string username, string ipAddress)
         {
-            Logger.Log newLog = new Logger.Log("success");
+            Logger.Log newLog = new Logger.Log("info");
             newLog.Smurf = this.username;
             newLog.Text = "Smurf logged in, ready to queue";
             Logger.Push(newLog);
@@ -194,7 +194,7 @@ namespace HFL_Remastered
                     LoLLauncher.RiotObjects.Platform.Summoner.AllSummonerData sumData = await connection.CreateDefaultSummoner(summonerName);
                     loginPacket.AllSummonerData = sumData;
 
-                    Logger.Log sNameLog = new Logger.Log("info");
+                    Logger.Log sNameLog = new Logger.Log("success");
                     sNameLog.Smurf = this.username;
                     sNameLog.Text = "Smurf summoner name updated as" + summonerName;
                     Logger.Push(sNameLog);
@@ -202,10 +202,10 @@ namespace HFL_Remastered
                 currentLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
                 currentExp = loginPacket.AllSummonerData.SummonerLevelAndPoints.ExpPoints;
                 toNextLevel = loginPacket.AllSummonerData.SummonerLevel.ExpToNextLevel;
-                smurf.updateExpLevel(toNextLevel, currentExp, currentLevel);
                 dynamicSummonerName = loginPacket.AllSummonerData.Summoner.Name;
                 summonerId = loginPacket.AllSummonerData.Summoner.SumId;
                 rpBalance = loginPacket.RpBalance;
+                updateSmurfInfo();
 
                 if (currentLevel >= desiredLevel)
                 {
@@ -451,6 +451,7 @@ namespace HFL_Remastered
 
         private void handleEndOfGameStats(object message)
         {
+            updateSmurfInfo();
             if (!smurf.groupMember)
             {
                 this.joinQueue();
@@ -562,7 +563,12 @@ namespace HFL_Remastered
         //Methods
         public void levelUp()
         {
+            updateSmurfInfo();
             rpBalance = loginPacket.RpBalance;
+            Logger.Log levelupLog = new Logger.Log("success");
+            levelupLog.Smurf = username;
+            levelupLog.Text = "Level up, smurf is now level:" + currentLevel;
+            Logger.Push(levelupLog);
             if (currentLevel >= desiredLevel && !smurf.groupMember)
             {
                 connection.Disconnect();
@@ -820,21 +826,27 @@ namespace HFL_Remastered
                     leaveTimeLeft.Text = "Waiting out leaver buster: " + minutes + " minutes!";
                     Logger.Push(leaveTimeLeft);
                     Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
-                    message = await connection.AttachToLowPriorityQueue(matchParams, this.m_accessToken);
-                    if (message.PlayerJoinFailures == null)
-                    {
-                        Logger.Log lowerScc = new Logger.Log("info");
-                        lowerScc.Smurf = username;
-                        lowerScc.Text = "Succesfully joined lower priority queue!";
-                        Logger.Push(lowerScc);
+                    try { 
+                        message = await connection.AttachToLowPriorityQueue(matchParams, this.m_accessToken);
+                        if (message.PlayerJoinFailures == null)
+                        {
+                            Logger.Log lowerScc = new Logger.Log("info");
+                            lowerScc.Smurf = username;
+                            lowerScc.Text = "Succesfully joined lower priority queue!";
+                            Logger.Push(lowerScc);
+                        }
+                        else
+                        {
+                            Logger.Log lowerFail = new Logger.Log("danger");
+                            lowerFail.Smurf = username;
+                            lowerFail.Text = "There was an error in joining lower priority queue.Disconnecting...";
+                            Logger.Push(lowerFail);
+                            this.connection.Disconnect();
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        Logger.Log lowerFail = new Logger.Log("danger");
-                        lowerFail.Smurf = username;
-                        lowerFail.Text = "There was an error in joining lower priority queue.Disconnecting...";
-                        Logger.Push(lowerFail);
-                        this.connection.Disconnect();
+
                     }
                 }
                 else
@@ -864,7 +876,13 @@ namespace HFL_Remastered
                             leaveTimeLeft.Text = "Waiting out queue buster: " + minutes + " minutes!";
                             Logger.Push(leaveTimeLeft);
                             Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
-                            this.joinQueue();
+                            try { 
+                                this.joinQueue();
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
                         }
                     }
                 }
@@ -981,6 +999,14 @@ namespace HFL_Remastered
                 await connection.Invite(11422666.0);
                 lobbyInviteUpdate();
             }
-        } 
+        }
+        private async void updateSmurfInfo()
+        {
+            loginPacket = await connection.GetLoginDataPacketForUser();
+            smurf.currentrp = loginPacket.RpBalance;
+            smurf.currentLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
+            smurf.currentip = loginPacket.IpBalance;
+            smurf.updateSelfOnRemote();
+        }
     }
 }

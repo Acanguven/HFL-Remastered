@@ -5,9 +5,10 @@ var jwt = require('jsonwebtoken');
 var ipn = require('paypal-ipn');
 var querystring = require('querystring');
 var request = require('request');
+var js2lua = require('js2lua');
 var net = require('net');
 var Table = require('cli-table2');
-
+var VERSION = "1.2"
 
 mongoose.connect("mongodb://127.0.0.1:27017/hflRest");
 var db = mongoose.connection;
@@ -15,10 +16,12 @@ var fs = require("fs");
 var Schema = mongoose.Schema;
 var TOKEN_KEY = "Oh!my_ohMibod.?;";
 db.on('error', console.error.bind(console, 'connection error:'));
+
 db.once('open', function(callback) {
     console.log("connection to db open")
-        //db.db.dropDatabase(); //Db refresher
+    //db.db.dropDatabase(); //Db refresher
 });
+
 var User = require("../models/user.js");
 
 router.get('/ts', function(req, res, next) {
@@ -159,7 +162,6 @@ router.post("/remotelogin", function(req, res, next) {
     });
 });
 
-
 router.get("/getLogs", verifyTokenDetectUser, function(req, res, next) {
     res.json(req.user);
 });
@@ -170,6 +172,58 @@ router.get("/getSmurfs", verifyTokenDetectUser, function(req, res, next) {
 
 router.post("/updateSettings", verifyTokenDetectUser, function(req, res, next) {
     req.user.settings = req.body.settings;
+    req.user.save();
+    res.end();
+});
+
+router.post("/importAI", verifyTokenDetectUser, function(req,res,next){
+    if(req.body.ai){
+        req.user.ai = JSON.parse(req.body.ai);
+        req.user.markModified("ai");
+        req.user.save();
+    }
+    res.end();
+});
+
+router.get("/getAI", verifyTokenDetectUser, function(req,res,next){
+    res.json(req.user.ai)
+});
+
+router.get("/getItems/:hero", verifyTokenDetectUser, function(req,res,next){
+    if(!req.user.ai.items){
+        req.user.ai.items = {};
+    }
+    if(!req.user.ai.items[req.params.hero]){
+        req.user.ai.items[req.params.hero] = {
+            11:[],
+            12:[]
+        }
+    }
+    res.json(req.user.ai.items[req.params.hero])
+});
+
+router.post("/updateItems", verifyTokenDetectUser, function(req,res,next){
+    if(!req.user.ai.items){
+        req.user.ai.items = {};
+    }
+    if(!req.user.ai.items[req.body.hero]){
+        req.user.ai.items[req.body.hero] = {
+            11:[],
+            12:[]
+        }
+    }
+    if(!req.user.ai.items[req.body.hero][req.body.map]){
+        req.user.ai.items[req.body.hero][req.body.map] = [];
+    }
+    req.user.ai.items[req.body.hero][req.body.map] = req.body.build;
+
+    req.user.markModified("ai");
+    req.user.save();
+    res.end();
+});
+
+router.post("/updateBol", verifyTokenDetectUser, function(req, res, next) {
+    req.user.bol = req.body.bol;
     req.user.save();
     res.end();
 });
@@ -185,6 +239,41 @@ router.post("/updateSmurfs", verifyTokenDetectUser, function(req, res, next) {
     });
 });
 
+router.get("/getStaticVersions", function(req,res,next){
+    request("http://ddragon.leagueoflegends.com/api/versions.json", function(err, resp, body){
+        res.end(body);
+    });
+});
+
+router.get("/staticItemsVersion/:v", function(req,res,next){
+    request("http://ddragon.leagueoflegends.com/cdn/"+req.params.v+"/data/en_US/item.json", function(err, resp, body){
+        res.end(js2lua.convert(JSON.parse(body)));
+    });
+});
+
+router.get("/staticMasteryVersion/:v", function(req,res,next){
+    request("http://ddragon.leagueoflegends.com/cdn/"+req.params.v+"/data/en_US/mastery.json", function(err, resp, body){
+        res.end(js2lua.convert(JSON.parse(body)));
+    });
+});
+
+router.get("/staticRuneVersion/:v", function(req,res,next){
+    request("http://ddragon.leagueoflegends.com/cdn/"+req.params.v+"/data/en_US/rune.json", function(err, resp, body){
+        res.end(js2lua.convert(JSON.parse(body)));
+    });
+});
+
+router.get("/staticSummonerVersion/:v", function(req,res,next){
+    request("http://ddragon.leagueoflegends.com/cdn/"+req.params.v+"/data/en_US/summoner.json", function(err, resp, body){
+        res.end(js2lua.convert(JSON.parse(body)));
+    });
+});
+
+router.get("/staticChampionVersion/:v", function(req,res,next){
+    request("http://ddragon.leagueoflegends.com/cdn/"+req.params.v+"/data/en_US/champion.json", function(err, resp, body){
+        res.end(js2lua.convert(JSON.parse(body)));
+    });
+});
 
 function loginForumBridge(username, password, callback) {
 
@@ -278,8 +367,6 @@ function verifyTokenDetectUserSocket(token, cb) {
     });
 }
 
-
-
 function SocketMap() {
     this.groupList = [];
 
@@ -344,12 +431,34 @@ function SocketMap() {
             this.groupList[ws.user.uid].updateSmurfs(update);
         }
     }
+
+    //Script Module
+    this.addScript = function(uid, socket, gameid, champion){
+        if (this.groupList[uid]) {
+            this.groupList[uid].addScript(socket,gameid,champion)
+        }
+    }
+
+    this.scriptPing = function(uid,data){
+        if (this.groupList[uid]) {
+            this.groupList[uid].scriptPing(data)
+        }
+    }
+
+    this.removeScript = function(socket){
+        if(socket.uid && socket.gameid){
+            if (this.groupList[socket.uid]) {
+                this.groupList[socket.uid].removeScript(socket.gameid)
+            }
+        }
+    }
 }
 
 function Group(user) {
     this.user = user;
     this.controller = [];
     this.remote = [];
+    this.scripts = [];
 
     this.getMembers = function() {
         var members = [];
@@ -368,6 +477,10 @@ function Group(user) {
 
     this.getControllerCount = function() {
         return this.controller.length;
+    }
+
+    this.getScriptCount = function() {
+        return this.scripts.length;
     }
 
     this.removeRemote = function(ws) {
@@ -436,7 +549,6 @@ function Group(user) {
     }
 
     this.cmdOutput = function(text) {
-        //console.log("User " + this.user.uid + " console output recieved.");
         this.remote.forEach(function(rmt) {
             if (rmt) {
                 rmt.socket.send(JSON.stringify({
@@ -448,7 +560,6 @@ function Group(user) {
     }
 
     this.cmdWrite = function(text) {
-        //console.log("User " + this.user.uid + " console data sent.");
         if (this.controller[0]) {
             this.controller[0].socket.send(JSON.stringify({
                 type: "cmdWrite",
@@ -493,20 +604,67 @@ function Group(user) {
             }
         });
     }
+
+    this.addScript = function(socket,gameid,champion){
+        var found = false;
+        this.scripts.forEach(function (script){
+            if (script.gameid == gameid){
+                script.socket = socket;
+                found = true;
+            }
+        })
+        if(!found){
+            var script = {
+                socket: socket,
+                gameid: gameid,
+                champion: champion
+            }
+            this.scripts.push(script);
+        }
+    }
+
+    this.scriptPing = function(data){
+        this.remote.forEach(function(rmt) {
+            if (rmt) {
+                rmt.socket.send(JSON.stringify({
+                    type: "scriptPing",
+                    info: data
+                }));
+            }
+        });
+    }
+
+    this.removeScript = function(gameid){
+        var found = false;
+        for(var x = 0; x < this.scripts.length; x++){
+            if(this.scripts[x].gameid == gameid){
+                found = x;
+            }
+        }
+        if(found !== false){
+            this.scripts.splice(found,1);
+            this.remote.forEach(function(rmt) {
+                rmt.socket.send(JSON.stringify({
+                    type: "removeScript",
+                    gameid: gameid
+                }));
+            });
+        }
+    }
 }
 
 var cliTable = new Table({
-    head: ['#', 'User Id', 'Controller', 'Remote', 'Account Type', 'Trial'],
-    colWidths: [3, 35, 15, 15, 20, 20]
+    head: ['#', 'User Id', 'Controller', 'Script', 'Remote', 'Account Type', 'Trial'],
+    colWidths: [3, 35, 15, 15, 15, 20, 20]
 });
 
 var updateTable = function() {
-    console.log('\033[2J');
+    console.log('\033c');
     var x = 1;
     cliTable.splice(0, cliTable.length)
     for (var gr in socketMap.groupList) {
         if (gr) {
-            cliTable.push([x, socketMap.groupList[gr].user.id, socketMap.groupList[gr].getControllerCount(), socketMap.groupList[gr].getRemoteCount(), socketMap.groupList[gr].user.type, socketMap.groupList[gr].user.trial]);
+            cliTable.push([x, socketMap.groupList[gr].user.id, socketMap.groupList[gr].getControllerCount(), socketMap.groupList[gr].getScriptCount(), socketMap.groupList[gr].getRemoteCount(), socketMap.groupList[gr].user.type, socketMap.groupList[gr].user.trial]);
             x++;
         }
     }
@@ -528,6 +686,7 @@ function handleMessage(data, ws) {
                             ws.rType = "remote";
                             socketMap.addSocket(ws, "remote", user)
                         }
+                        updateTable();
                     }
                 });
             }
@@ -582,11 +741,28 @@ function handleMessage(data, ws) {
                 socketMap.updateSmurfs(ws, data);
             }
             break;
+        case 'smurfdbupdate':
+        	if (ws.user && ws.user.uid) {
+                User.findOne( {uid:ws.user.uid}, function(err,acc){
+                    if(!err && acc){
+                        for(var i in acc.smurfs){
+                            var smurf = acc.smurfs[i];
+                            if (smurf.username == data.smurf.username){
+                                smurf.currentLevel = data.smurf.currentLevel;
+                                smurf.currentip = data.smurf.currentip;
+                                smurf.currentrp = data.smurf.currentrp;
+                            }
+                        }
+                        acc.markModified('smurfs');
+                        acc.save();
+                    }
+                });
+            }
+        	break;
     }
 }
 
 var socketMap = new SocketMap();
-
 
 var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({
@@ -595,6 +771,7 @@ var WebSocketServer = require('ws').Server,
 
 wss.on('connection', function(ws) {
     ws.on('error', function(err) {
+        updateTable();
         return false;
     });
 
@@ -640,19 +817,77 @@ function tryParseValidJSON(jsonString) {
     return false;
 };
 
-net.createServer(function(socket) {    
+net.createServer(function(socket) {
+	socket.write(scriptPacket("welcome",VERSION));
     socket.on('data', function(data) {
-
+    	var textChunk = data.toString('utf8');
+    	if (textChunk.indexOf("|") > -1){
+    		scriptManager(textChunk.split("|"),socket);
+    	}
     });
 
-    socket.on('error', function(data) {
-    	console.log(data);
+    socket.on('error', function(err) {
+    	socketMap.removeScript(socket);
     });
 
     socket.on('end', function() {
-
+        socketMap.removeScript(socket);
     });
 }).listen(4450);
+
+function scriptManager(cmd,socket){
+	switch(cmd[0]){
+		case "login":
+			User.findOne({bol:cmd[1]},"type trial uid ai", function(err,user){
+                if(err || !user){
+                    socket.write(scriptPacket("login","Failed to authenticate "+cmd[1]+", you should set Bol Settings on Remote Controller"));
+                }else{
+                    if (user.type == 2 || user.type == 1){
+                        socket.write(scriptPacket("login","Successfuly logged in "+cmd[1],js2lua.convert(user.ai)));
+                        socket.uid = user.uid;
+                        socket.champion = cmd[3];
+                        socket.gameid = cmd[2];
+                        socketMap.addScript(user.uid, socket, cmd[2], cmd[3])
+                    }else{
+                        var ts = Date.now()
+                        if(user.trial - ts > 0){
+                            var minutes = Math.round((user.trial - ts) / 60000)
+                            socket.write(scriptPacket("login","Successfuly logged in "+cmd[1]+", " + minutes + " minutes remain.",js2lua.convert(user.ai)));
+                            socket.uid = user.uid;
+                            socket.champion = cmd[3];
+                            socket.gameid = cmd[2];
+                            socketMap.addScript(user.uid, socket, cmd[2], cmd[3])
+                        }else{
+                            socket.write(scriptPacket("login","Your trial is expired "+cmd[1]));
+                        }
+                    }
+                }
+            });
+		break;
+        case "ping":
+            if(socket.uid && socket.champion && socket.gameid){
+                var info = {};
+                var cmdInfo = cmd;
+                cmdInfo.splice(0,1);
+                info['data'] = cmd;
+                info['champion'] = socket.champion;
+                info['uid'] = socket.uid;
+                info['gameid'] = socket.gameid;
+                socketMap.scriptPing(socket.uid,info)
+                socket.write(scriptPacket("pong",Date.now()));
+            }
+        break;
+	}
+}
+
+function scriptPacket(){
+	var packet = [];
+	for(var arg = 0; arg < arguments.length; ++ arg)
+	{
+	    packet.push(arguments[arg]);
+	}
+	return packet.join("|");
+}
 
 
 module.exports = router;

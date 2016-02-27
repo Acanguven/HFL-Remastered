@@ -1,29 +1,23 @@
 <div class="panel-body">
     <ul class="timeline">
-        <li>
-            <div class="timeline-badge success"><i class="fa fa-check"></i>
+        <li ng-repeat="log in timeLineLogs  | reverse" ng-class="{'timeline-inverted': log.code != 'success'}">
+            <div class="timeline-badge" ng-class="log.code">
+                <i class="fa fa-check" ng-if="log.code == 'success'"></i>
+                <i class="fa fa-exclamation" ng-if="log.code == 'danger'"></i>
+                <i class="fa fa-info" ng-if="log.code == 'warning'"></i>
             </div>
             <div class="timeline-panel">
                 <div class="timeline-heading">
-                    <h4 class="timeline-title">Lawsmurf4 has leveled up!</h4>
-                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> 11 hours ago</small>
+                    <h4 class="timeline-title">{{log.smurf}}</h4>
+                    <p>
+                    <small class="text-muted">
+                        <i class="fa fa-clock-o"></i> 
+                        {{log.date}}
+                    </small>
                     </p>
                 </div>
                 <div class="timeline-body">
-                    <p>Lawsmurf4 is now level 9.</p>
-                </div>
-            </div>
-        </li>
-        <li class="timeline-inverted">
-            <div class="timeline-badge warning"><i class="fa fa-check"></i>
-            </div>
-            <div class="timeline-panel">
-                <div class="timeline-heading">
-                    <h4 class="timeline-title">Lawsmurf5 stopped working.</h4>
-                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> 12 hours ago</small>
-                </div>
-                <div class="timeline-body">
-                    <p>Lawsmurf5 is now level 10 and stopped working.</p>
+                    <p>{{log.text}}.</p>
                 </div>
             </div>
         </li>
