@@ -27,6 +27,16 @@ angular.module('sbAdminApp').controller('importExport', function($scope,$http,$s
 	}
 
 	$scope.import = function(json){
-		$http.post("http://handsfreeleveler.com:4446/api/importAI", {ai:json});
+		$http.post("http://handsfreeleveler.com:4446/api/importAI", {ai:json}).then(function(res){
+			$scope.importStatus = "Settings imported, please refresh page";
+		});
 	}
+
+	$scope.importDefault = function(){
+		$http.post("http://handsfreeleveler.com:4446/api/defaultAI").then(function(res){
+			$scope.importStatus = "Default settings imported, please refresh page";
+		});
+	}
+
+	$scope.importStatus = "Your settings will be deleted.";
 });

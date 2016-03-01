@@ -31,14 +31,17 @@ angular.module('sbAdminApp').controller('heroItems', function($scope,$http,$stat
     $http.get("items.json").then(function(res){
     	$scope.itemList = [];
     	for (var key in res.data.data){
-            delete res.data.data[key].description;
-            delete res.data.data[key].colloq;
-            delete res.data.data[key].plaintext;
-            delete res.data.data[key].tags;
-            delete res.data.data[key].stats;
-    		var obj = res.data.data[key];
-    		obj.id = key;
-    		$scope.itemList.push(obj);
+            if(res.data.data[key].name.indexOf("Potion") == -1){
+                console.log(res.data.data[key].name)
+                delete res.data.data[key].description;
+                delete res.data.data[key].colloq;
+                delete res.data.data[key].plaintext;
+                delete res.data.data[key].tags;
+                delete res.data.data[key].stats;
+                var obj = res.data.data[key];
+                obj.id = key;
+                $scope.itemList.push(obj);
+            }
     	}
 
         $http.get("http://handsfreeleveler.com:4446/api/getItems/"+$scope.hero).then(function(res){
@@ -226,5 +229,10 @@ angular.module('sbAdminApp').controller('heroItems', function($scope,$http,$stat
             map:map,
             hero:$scope.hero
         });
+    }
+
+    $scope.copyFrom = function(from,to){
+        var heroSave = angular.copy($scope.heroBuild[from]).queue
+        $scope.heroBuild[to].queue = heroSave
     }
 });

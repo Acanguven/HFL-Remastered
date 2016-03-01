@@ -13,8 +13,9 @@
                 <textarea class="form-control" rows="3" placeholder="Paste here your copied settings" ng-model="importText"></textarea>
             </div>
             <div class="panel-footer">
-                <button type="button" class="btn btn-success" ng-click="import(importText)">Import</button>
-                <small class="text-danger">Your settings will be deleted.</small>
+                <button type="button" class="btn btn-warning" ng-click="import(importText)">Import</button>
+                <button type="button" class="btn btn-info" ng-click="importDefault()">Default Settings</button>
+                <small class="text-danger">{{importStatus}}</small>
             </div>
         </div>
     </div>

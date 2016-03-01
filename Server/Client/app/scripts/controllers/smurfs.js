@@ -10,6 +10,7 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 	if(!$scope.user){
 		return false;
 	}
+	$scope.pageInit = 0
 
 	$http.get("http://handsfreeleveler.com:4446/api/getSmurfs").then(function(res){
 		$scope.user.userData.smurfs = res.data.smurfs;
@@ -106,9 +107,12 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 			}
 		});
 		$scope.user.userData.logs = [];
-		$http.post("http://handsfreeleveler.com:4446/api/updateSmurfs", {userData:$scope.user.userData}).then(function(res){
-			//console.log(res.data);
-		});
+		if($scope.pageInit >= 2){
+			$http.post("http://handsfreeleveler.com:4446/api/updateSmurfs", {userData:$scope.user.userData}).then(function(res){
+				//console.log(res.data);
+			});
+		}
+		$scope.pageInit++;
 	},true);
 
 	$scope.showSmurfAction = function(smurf,type){

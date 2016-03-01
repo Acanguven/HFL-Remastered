@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
-var ipn = require('paypal-ipn');
 var querystring = require('querystring');
 var request = require('request');
+var fs = require("fs");
 var js2lua = require('js2lua');
 var net = require('net');
 var Table = require('cli-table2');
@@ -30,20 +30,6 @@ router.get('/ts', function(req, res, next) {
     });
 });
 
-router.post('/ipn', function(req, res, next) {
-    ipn.verify(req.body, {
-        'allow_sandbox': true
-    }, function callback(err, mes) {
-        if (err) {
-            console.error(err);
-        } else {
-            if (req.body.payment_status == 'Completed') {
-                console.log(req.body)
-            }
-        }
-    });
-});
-
 router.get('/ping', verifyTokenDetectUser, function(req, res, next) {
     res.end("pong");
 });
@@ -60,7 +46,8 @@ router.post("/remotelogin", function(req, res, next) {
             User.findOne({
                 uid: login.uid
             }, {
-                logs: 0
+                logs: 0,
+                ai:0
             }, function(err, user) {
                 if (err) {
                     res.end("err");
@@ -180,9 +167,22 @@ router.post("/importAI", verifyTokenDetectUser, function(req,res,next){
     if(req.body.ai){
         req.user.ai = JSON.parse(req.body.ai);
         req.user.markModified("ai");
-        req.user.save();
+        req.user.save(function(){
+            res.end("Done");
+        });
     }
-    res.end();
+});
+
+router.post("/defaultAI", verifyTokenDetectUser, function(req,res,next){
+    fs.readFile('./defaultbuild.json', 'utf8', function (err, data) {
+        if (err) throw err;
+        var obj = JSON.parse(data);
+        req.user.ai = obj;
+        req.user.markModified("ai");
+        req.user.save(function(){
+            res.end("Done");
+        })
+    });
 });
 
 router.get("/getAI", verifyTokenDetectUser, function(req,res,next){
@@ -293,7 +293,7 @@ function loginForumBridge(username, password, callback) {
 
 
     request(options, function(error, response, body) {
-        if (!error && response.statusCode == 200) {
+        if (!error) {
             callback(JSON.parse(body))
         }
     })
@@ -843,7 +843,8 @@ function scriptManager(cmd,socket){
                     socket.write(scriptPacket("login","Failed to authenticate "+cmd[1]+", you should set Bol Settings on Remote Controller"));
                 }else{
                     if (user.type == 2 || user.type == 1){
-                        socket.write(scriptPacket("login","Successfuly logged in "+cmd[1],js2lua.convert(user.ai)));
+                        var convertedCode = js2lua.convert(user.ai.items[cmd[3].toLowerCase()])
+                        socket.write(scriptPacket("login","Successfuly logged in "+cmd[1],convertedCode));
                         socket.uid = user.uid;
                         socket.champion = cmd[3];
                         socket.gameid = cmd[2];
@@ -852,7 +853,8 @@ function scriptManager(cmd,socket){
                         var ts = Date.now()
                         if(user.trial - ts > 0){
                             var minutes = Math.round((user.trial - ts) / 60000)
-                            socket.write(scriptPacket("login","Successfuly logged in "+cmd[1]+", " + minutes + " minutes remain.",js2lua.convert(user.ai)));
+                            var convertedCode = js2lua.convert(user.ai.items[cmd[3].toLowerCase()])
+                            socket.write(scriptPacket("login","Successfuly logged in "+cmd[1]+", " + minutes + " minutes remain.",convertedCode));
                             socket.uid = user.uid;
                             socket.champion = cmd[3];
                             socket.gameid = cmd[2];
