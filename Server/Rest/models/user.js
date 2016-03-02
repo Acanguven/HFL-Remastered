@@ -65,6 +65,8 @@ user.pre("save", function(next) {
             self.hwidCanChange = Date.now()-1000;
             next();
         });
+    }else{
+        next();
     }
 });
 

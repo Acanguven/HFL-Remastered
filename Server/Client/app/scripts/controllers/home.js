@@ -38,10 +38,11 @@ angular.module('sbAdminApp').controller('Home', function(Websocket ,$scope, $pos
 
 	$scope.buildTimelineLogs = function(logs){
 		var d = new Date();
-		var today = [d.getDate(),('0' + (d.getMonth() +1)).slice(-2),d.getFullYear()].join(".")
+		var today = [('0' + (d.getDate())).slice(-2),('0' + (d.getMonth() +1)).slice(-2),d.getFullYear()].join(".")
 		
 		logs.forEach(function(log){
 			if(log.date.split(" ")[0] == today && log.code != "info" && log.smurf){
+				console.log(log.code)
 				$scope.timeLineLogs.push(log);
 			}
 		});

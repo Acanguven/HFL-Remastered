@@ -19,23 +19,23 @@ router.post('/gotPaymentHolyFuckYes', function(req,res,next){
         if(req.body.custom){
           if(req.body.mc_gross == "50.00"){
             User.update({_id: req.body.custom}, {
-                type: 2, 
+              type: 2, 
             }, function(err, numberAffected, rawResponse) {
-               console.log(err);
+              console.log(err);
             })
           }
           if(req.body.mc_gross == "35.00"){
             User.update({_id: req.body.custom}, {
-                type: 1, 
+              type: 1, 
             }, function(err, numberAffected, rawResponse) {
-               console.log(err);
+              console.log(err);
             })
           }
           if(req.body.mc_gross == "15.00"){
             User.update({_id: req.body.custom}, {
-                trial: Date.now()+2592000000, 
+              trial: Date.now()+2592000000, 
             }, function(err, numberAffected, rawResponse) {
-               console.log(err);
+              console.log(err);
             })
           }
         }

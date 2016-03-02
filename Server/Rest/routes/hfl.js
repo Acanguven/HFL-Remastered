@@ -9,7 +9,6 @@ var js2lua = require('js2lua');
 var net = require('net');
 var Table = require('cli-table2');
 var VERSION = "1.2"
-
 mongoose.connect("mongodb://127.0.0.1:27017/hflRest");
 var db = mongoose.connection;
 var fs = require("fs");
@@ -224,6 +223,8 @@ router.post("/updateItems", verifyTokenDetectUser, function(req,res,next){
 
 router.post("/updateBol", verifyTokenDetectUser, function(req, res, next) {
     req.user.bol = req.body.bol;
+    req.user.markModified("bol")
+    console.log(req.user.bol)
     req.user.save();
     res.end();
 });
@@ -295,6 +296,8 @@ function loginForumBridge(username, password, callback) {
     request(options, function(error, response, body) {
         if (!error) {
             callback(JSON.parse(body))
+        }else{
+            console.log(body,error)
         }
     })
 }
@@ -846,7 +849,7 @@ function scriptManager(cmd,socket){
                         var convertedCode = js2lua.convert(user.ai.items[cmd[3].toLowerCase()])
                         socket.write(scriptPacket("login","Successfuly logged in "+cmd[1],convertedCode));
                         socket.uid = user.uid;
-                        socket.champion = cmd[3];
+                        socket.champion = cmd[3].toLowerCase();
                         socket.gameid = cmd[2];
                         socketMap.addScript(user.uid, socket, cmd[2], cmd[3])
                     }else{
@@ -856,7 +859,7 @@ function scriptManager(cmd,socket){
                             var convertedCode = js2lua.convert(user.ai.items[cmd[3].toLowerCase()])
                             socket.write(scriptPacket("login","Successfuly logged in "+cmd[1]+", " + minutes + " minutes remain.",convertedCode));
                             socket.uid = user.uid;
-                            socket.champion = cmd[3];
+                            socket.champion = cmd[3].toLowerCase();
                             socket.gameid = cmd[2];
                             socketMap.addScript(user.uid, socket, cmd[2], cmd[3])
                         }else{
