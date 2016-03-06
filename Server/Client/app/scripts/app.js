@@ -345,6 +345,22 @@ angular
                     }
                 }
             })
+            .state('dashboard.plugins', {
+                templateUrl: 'views/ui-elements/plugins.html',
+                url: '/plugins/:heroName',
+                controller:'plugins',
+                resolve: {
+                    loadMyFile: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/plugins.js',
+                                'scripts/directives/game/herobox.js',
+                            ]
+                        })
+                    }
+                }
+            })
             .state('dashboard.remote', {
                 templateUrl: 'views/ui-elements/remote.html',
                 url: '/remote',
@@ -376,21 +392,21 @@ angular
                     }
                 },
                 controller : 'logger'
-            }).state('dashboard.items', {
+            }).state('dashboard.heroSelector', {
                 resolve: {
                     loadMyFile: function($ocLazyLoad) {
                         return $ocLazyLoad.load({
                             name: 'sbAdminApp',
                             files: [
                                 'scripts/directives/game/herobox.js',
-                                'scripts/controllers/items.js'
+                                'scripts/controllers/heroSelector.js'
                             ]
                         })
                     },
                 },
                 templateUrl: 'views/ui-elements/champs.html',
-                url: '/items',
-                controller: "Items"
+                url: '/heroSelector/:navigate',
+                controller: "heroSelector"
             }).state('dashboard.championItems', {
                 templateUrl: 'views/ui-elements/champItems.html',
                 url: '/items/:heroName',

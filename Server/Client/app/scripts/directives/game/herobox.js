@@ -34,10 +34,11 @@ angular.module('sbAdminApp')
     .directive('herolist', function() {
     return {
         restrict : 'E',
-        template : '<a  ng-repeat="hero in list | filter:search" href="#/dashboard/items/{{hero.toLowerCase()}}"><img class="img-circle" src="/img/champions/{{hero.toLowerCase()}}.png" style="margin-bottom:10px;cursor:pointer;margin-right:11px;" height="100px"/></a>',
+        template : '<a ng-repeat="hero in list | filter:search" href="#/dashboard/{{navigate}}/{{hero.toLowerCase()}}"><img class="img-circle" src="/img/champions/{{hero.toLowerCase()}}.png" style="margin-bottom:10px;cursor:pointer;margin-right:11px;" height="100px"/></a>',
         scope: {
             list: "=",
-            search: "="
+            search: "=",
+            navigate: "="
         },
         replace:true
     }
