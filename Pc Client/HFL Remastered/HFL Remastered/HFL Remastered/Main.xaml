@@ -93,5 +93,8 @@
         <CheckBox HorizontalAlignment="Left" Margin="10,119,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" Name="startUp">
             <TextBlock Text="Run on startup" Margin="0,-2,0,0" Foreground="#cccccc"/>
         </CheckBox>
+        <CheckBox HorizontalAlignment="Left" Margin="120,119,0,0" VerticalAlignment="Top" Checked="logging_Checked" Unchecked="logging_Unchecked" Name="logging">
+            <TextBlock Text="Logging" Margin="0,-2,0,0" Foreground="#cccccc"/>
+        </CheckBox>
     </Grid>
 </Window>

@@ -7,17 +7,6 @@
  * # adminPosHeader
  */
 angular.module('sbAdminApp')
-	.directive('item', function() {
-    return {
-        restrict: 'E',
-        compile: function(element, attrs) {
-            var htmlText = '<img class="itembox" src="/img/items/'+encodeURIComponent(attrs.name)+'.jpg"/>';
-            element.replaceWith(htmlText);
-        }
-    };
-})
-
-angular.module('sbAdminApp')
 	.directive('itemscope', function() {
     return {
         restrict: 'E',
@@ -25,7 +14,7 @@ angular.module('sbAdminApp')
         	item: "=",
         	buy: "="
         },
-        template: '<img class="itembox" style="border:{{buy?\'2px solid green\':\'2px solid red\'}}" src="http://ddragon.leagueoflegends.com/cdn/6.1.1/img/item/{{item.id}}.png"/>'
+        template: '<img class="itembox" style="border:{{buy?\'2px solid green\':\'2px solid red\'}}" src="http://ddragon.leagueoflegends.com/cdn/6.5.1/img/item/{{item.id}}.png"/>'
     };
 })
 
@@ -38,7 +27,7 @@ angular.module('sbAdminApp')
             action: "=",
             slot: "="
         },
-        template: '<img ng-click="action(slot)" class="itembox" src="{{item?\'http://ddragon.leagueoflegends.com/cdn/6.1.1/img/item/\'+item.id+\'.png\':\'/img/items/empty.png\'}}" name="{{item.name}}"/>'
+        template: '<img ng-click="action(slot)" class="itembox" src="{{item?\'http://ddragon.leagueoflegends.com/cdn/6.5.1/img/item/\'+item.id+\'.png\':\'/img/items/empty.png\'}}" name="{{item.name}}"/>'
     };
 })
 
@@ -46,7 +35,7 @@ angular.module('sbAdminApp')
     .directive('itemlist', function() {
     return {
         restrict : 'E',
-        template : '<a ng-repeat="(key,value) in list | filtermap:search.map"  ng-mouseover="hover(value)" ng-mouseleave="out(value)" ng-show="value.name.toLowerCase().indexOf(search.name.toLowerCase()) != -1"><img title="{{value.name}}" id="item_{{value.id}}" class="img-circle" src="http://ddragon.leagueoflegends.com/cdn/6.3.1/img/item/{{value.image.full}}" style="margin-bottom:10px;cursor:pointer;margin-right:11px;" height="50px" ng-click="action(value)"/></a>',
+        template : '<a ng-repeat="(key,value) in list | filtermap:search.map"  ng-mouseover="hover(value)" ng-mouseleave="out(value)" ng-show="value.name.toLowerCase().indexOf(search.name.toLowerCase()) != -1"><img title="{{value.name}}" id="item_{{value.id}}" class="img-circle" src="http://ddragon.leagueoflegends.com/cdn/6.5.1/img/item/{{value.image.full}}" style="margin-bottom:10px;cursor:pointer;margin-right:11px;" height="50px" ng-click="action(value)"/></a>',
         scope: {
             list: "=",
             search: "=",

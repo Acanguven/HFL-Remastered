@@ -218,6 +218,10 @@ angular
                 templateUrl: 'views/ui-elements/icons.html',
                 url: '/icons'
             })
+            .state('dashboard.changelog', {
+                templateUrl: 'views/ui-elements/changelog.html',
+                url: '/changelog'
+            })
             .state('dashboard.grid', {
                 templateUrl: 'views/ui-elements/grid.html',
                 url: '/grid'
@@ -392,7 +396,38 @@ angular
                     }
                 },
                 controller : 'logger'
-            }).state('dashboard.heroSelector', {
+            })
+            .state('dashboard.aichat', {
+                templateUrl: 'views/ui-elements/aichat.html',
+                url: '/AIChat',
+                resolve: {
+                    loadMyFiles: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/aichat.js',
+                            ]
+                        })
+                    }
+                },
+                controller : 'aichat'
+            })
+            .state('dashboard.emotes', {
+                templateUrl: 'views/ui-elements/emotes.html',
+                url: '/emotes',
+                resolve: {
+                    loadMyFiles: function($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'sbAdminApp',
+                            files: [
+                                'scripts/controllers/emotes.js',
+                            ]
+                        })
+                    }
+                },
+                controller : 'emotes'
+            })
+            .state('dashboard.heroSelector', {
                 resolve: {
                     loadMyFile: function($ocLazyLoad) {
                         return $ocLazyLoad.load({

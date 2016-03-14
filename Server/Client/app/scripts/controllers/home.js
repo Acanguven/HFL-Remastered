@@ -42,7 +42,6 @@ angular.module('sbAdminApp').controller('Home', function(Websocket ,$scope, $pos
 		
 		logs.forEach(function(log){
 			if(log.date.split(" ")[0] == today && log.code != "info" && log.smurf){
-				console.log(log.code)
 				$scope.timeLineLogs.push(log);
 			}
 		});

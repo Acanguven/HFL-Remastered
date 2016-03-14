@@ -118,6 +118,9 @@
     <Compile Include="Connection.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FileManager.cs" />
+    <Compile Include="GameMask.xaml.cs">
+      <DependentUpon>GameMask.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Group.cs" />
     <Compile Include="Hwid.cs" />
     <Compile Include="Logger.cs" />
@@ -297,6 +300,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="GameMask.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" ng-enter="login(username,password)">
     <div class="row" style="margin-top:20px;">
         <div class="col-md-10 col-md-offset-1">
             <img src="/img/logo.png" style="float:left;"/>
@@ -16,7 +16,7 @@
                             <div class="form-group">
                                 <input class="form-control" placeholder="Forum Password" name="password" type="password" ng-model="password">
                             </div>
-                            <a class="btn btn-lg btn-success btn-block" ng-click="login(username,password)">Login</a>
+                            <a class="btn btn-lg btn-success btn-block" ng-click="login(username,password)" >Login</a>
                             <p class="text-danger" style="margin-top:5px;" ng-if="errMsg.length>0">{{errMsg}}</p>
                         </fieldset>
                     </form>

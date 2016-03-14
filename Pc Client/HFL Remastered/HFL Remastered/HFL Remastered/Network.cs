@@ -52,7 +52,6 @@ namespace HFL_Remastered
             websocket.Error += new EventHandler<ErrorEventArgs>(websocket_Error);
             websocket.Closed += new EventHandler(websocket_Closed);
             websocket.MessageReceived += new EventHandler<MessageReceivedEventArgs>(websocket_MessageReceived);
-            websocket.AutoSendPingInterval = 1000;
             websocket.EnableAutoSendPing = true;
         }
 
@@ -94,9 +93,7 @@ namespace HFL_Remastered
                 break;
 
                 case "updateSettings":
-                    Logger.Log log = new Logger.Log("info");
-                    log.Text = "Settings Updated";
-                    Logger.Push(log);
+                    Logger.Push("Settings Updated", "info");
                     dynamic settings = msg.Value<dynamic>("settings");
                     App.Client.UserData.Settings.PacketSearch = (bool)settings.packetSearch;
                     App.Client.UserData.Settings.BuyBoost = (bool)settings.buyBoost;
@@ -223,9 +220,7 @@ namespace HFL_Remastered
 
             websocket.Send(buffer);
 
-            Logger.Log log = new Logger.Log("info");
-            log.Text = "Client started and ready to listen commands.";
-            Logger.Push(log);
+            Logger.Push("Client started and ready to listen commands.", "info");
         }
 
         protected void websocket_MessageReceived(object sender, MessageReceivedEventArgs e)

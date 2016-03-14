@@ -23,6 +23,10 @@ db.once('open', function(callback) {
 
 var User = require("../models/user.js");
 
+router.get('/version', function(req,res,next){
+    res.end(VERSION);
+})
+
 router.get('/ts', function(req, res, next) {
     res.json({
         ts: Date.now()
@@ -222,11 +226,78 @@ router.post("/updateItems", verifyTokenDetectUser, function(req,res,next){
 });
 
 router.post("/updateBol", verifyTokenDetectUser, function(req, res, next) {
-    req.user.bol = req.body.bol;
-    req.user.markModified("bol")
-    console.log(req.user.bol)
+    User.count({bol: req.body.bol}, function (err, count){ 
+        if(count === 0){
+            req.user.bol = req.body.bol;
+            req.user.markModified("bol")
+            console.log(req.user.bol)
+            req.user.save();
+            res.end();
+        }
+    }); 
+});
+
+router.post("/updatePlugin/:hero", verifyTokenDetectUser, function(req,res,next){
+    if(!req.user.ai.plugins){
+        req.user.ai.plugins = {};
+    }
+    req.user.ai.plugins[req.params.hero] = req.body.plugin;
+    req.user.markModified("ai");
     req.user.save();
     res.end();
+});
+
+router.post("/updateChat", verifyTokenDetectUser, function(req,res,next){
+    if(!req.user.ai.chat){
+        req.user.ai.chat = {};
+    }
+    req.user.ai.chat = req.body.chat;
+    req.user.markModified("ai");
+    req.user.save();
+    res.end();
+});
+
+router.get('/getChat', verifyTokenDetectUser,function(req,res,next){
+    if(!req.user.ai.chat){
+        req.user.ai.chat = {};
+        req.user.markModified("ai");
+        req.user.save();
+    }
+    res.json(req.user.ai.chat);
+});
+
+router.post("/updateEmotes", verifyTokenDetectUser, function(req,res,next){
+    if(!req.user.ai.emotes){
+        req.user.ai.emotes = {};
+    }
+    req.user.ai.emotes = req.body.emotes;
+    req.user.markModified("ai");
+    req.user.save();
+    res.end();
+});
+
+router.get('/getEmotes', verifyTokenDetectUser,function(req,res,next){
+    if(!req.user.ai.emotes){
+        req.user.ai.emotes = {
+            onkill:true,
+            betterstate:false,
+            spellmiss:true
+        };
+        req.user.markModified("ai");
+        req.user.save();
+    }
+    res.json(req.user.ai.emotes);
+});
+
+router.get('/getPlugin/:hero', verifyTokenDetectUser,function(req,res,next){
+    if(!req.user.ai.plugins){
+        req.user.ai.plugins = {};
+    }
+    if(!req.user.ai.plugins[req.params.hero]){
+        res.json({emptyPlugin:true})
+    }else{
+        res.json(req.user.ai.plugins[req.params.hero])
+    }
 });
 
 router.post("/updateSmurfs", verifyTokenDetectUser, function(req, res, next) {
@@ -273,6 +344,29 @@ router.get("/staticSummonerVersion/:v", function(req,res,next){
 router.get("/staticChampionVersion/:v", function(req,res,next){
     request("http://ddragon.leagueoflegends.com/cdn/"+req.params.v+"/data/en_US/champion.json", function(err, resp, body){
         res.end(js2lua.convert(JSON.parse(body)));
+    });
+});
+
+router.get("/staticChampion/:v/:h", function(req,res,next){
+    request("http://ddragon.leagueoflegends.com/cdn/"+req.params.v+"/data/en_US/champion/"+req.params.h+".json", function(err, resp, body){
+        res.end(body);
+    });
+});
+
+router.get("/getScriptAI/:bolid/:champ", function(req,res,next){
+    User.findOne({bol:req.params.bolid}, {ai:1} ,function(err, user){
+        var luaCode = "return ";
+        if(user){
+            var response = user.ai;
+            response.items = user.ai.items[req.params.champ];
+            response.plugin = user.ai.plugins[req.params.champ];
+            delete response.plugins;
+            luaCode += js2lua.convert(response);
+            res.end(luaCode);
+        }else{
+            luaCode += "nil";
+            res.end(luaCode);
+        }
     });
 });
 

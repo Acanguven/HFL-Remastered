@@ -1,5 +1,387 @@
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header" style="text-transform:capitalize"><heroscope name="hero"></heroscope>{{hero}} Plugins</h1>
+        <h1 class="page-header" style="text-transform:capitalize"><heroscope name="hero"></heroscope>{{hero}} Plugin <span class="small">{{staticversion}}</span></h1>
+        <p></p>
     </div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6">
+	    <div class="panel panel-info">
+	        <div class="panel-heading">
+	            Plugin Information
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-xs-12">
+	        		  	<fieldset class="form-group">
+						    <label for="exampleInputEmail1">Plugin Name</label>
+						    <input type="text" ng-model="plugin['name']" class="form-control" placeholder="Default">
+					  	</fieldset>
+					  	<fieldset class="form-group">
+						    <label for="exampleInputEmail1">Plugin Version</label>
+						    <input type="number" ng-model="plugin['version']" class="form-control" placeholder="0.1">
+					  	</fieldset>
+					  	<fieldset class="form-group">
+						    <label for="exampleInputEmail1">Plugin Notes</label>
+						    <textarea class="form-control" ng-model="plugin['notes']" id="exampleTextarea" rows="3"></textarea>
+					  	</fieldset>
+					  	<hr>
+					  	<fieldset class="form-group">
+						    <label for="exampleInputEmail1">Plugin Export</label>
+						    <textarea class="form-control" id="exampleTextarea" rows="3" disabled="disabled" ng-model="exportedSettings"></textarea>
+						    <button type="submit" class="btn btn-info" style="margin-top:5px;" clipboard on-copied="copied()" on-error="copyfail(err)" text="exportedSettings">Copy</button><small style="margin-left:5px;">{{copyStatus}}</small>
+					  	</fieldset>
+					  	<fieldset class="form-group">
+						    <label for="exampleInputEmail1">Plugin Import</label>
+						    <textarea class="form-control" id="exampleTextarea" rows="3" ng-model="importText"></textarea>
+						    <button type="button" class="btn btn-info" style="margin-top:5px;" ng-click="import(importText)">Import Plugin</button>
+						    <small class="text-danger" style="margin-left:5px;">{{importStatus}}</small>
+					  	</fieldset>
+					  	<hr>
+					  	<button type="submit" class="btn btn-success" ng-click="save()">Save</button>{{saveStatus}}
+		        	</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+	<div class="col-lg-6">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Behaviour
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-lg-12">
+		        		<label>Lane Selection</label>
+		        		<fieldset class="form-group">
+						    <select class="form-control" name="laneSelect" value="auto" ng-model="plugin['laneSelect']">
+								<option value="auto">Auto Decide</option>
+								<option value="top">Always Top</option>
+								<option value="mid">Always Mid</option>
+								<option value="bottom">Always Bottom</option>
+						    </select>
+					  	</fieldset>
+					  	<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="baron" ng-model="plugin['lanePrompt']">
+						      	Lane Change Prompt (Changes lane when team mates want yo to go)
+						    </label>
+					  	</div>
+					  	<hr>
+					</div>
+		        	<div class="col-lg-12">
+		        		<label>Team Actions</label>
+					  	<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="teamPush" ng-model="plugin['teamPush']">
+						      	Team Push (Joins team when they are pushing with 3+ players)
+						    </label>
+					  	</div>
+					  	<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="teamDefend" ng-model="plugin['teamDefend']">
+						      	Team Defend (Changes lane when enemy is coming with 3+ players)
+						    </label>
+					  	</div>
+					  	<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="dragon" ng-model="plugin['dragon']">
+						      	Team Dragon (Joins team when they are killing dragon)
+						    </label>
+					  	</div>
+					  	<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="baron" ng-model="plugin['baron']">
+						      	Team Baron (Joins team when they are killing baron)
+						    </label>
+					  	</div>
+					  	<hr>
+	        		</div>
+		        	<div class="col-lg-12">
+		        		<label>Lane Positioning</label>
+		        		<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="towerDive" ng-model="plugin['towerDive']">
+						      	Tower Dive (Tower Dive when needed)
+						    </label>
+					  	</div>
+					  	<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="support" ng-model="plugin['support']">
+						      	Support Mode (Doesn't last hit when ally nearby)
+						    </label>
+					  	</div>
+					  	<hr>
+		        	</div>	   
+		        	<div class="col-lg-12">
+		        		<label>Items</label>
+		        		<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="potions" ng-model="plugin['buyPotions']">
+						      	Buy Potions
+						    </label>
+					  	</div>
+					  	<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="contBuild" ng-model="plugin['contBuild']">
+						      	Continue Build (On case of F9 trys to continue current build)
+						    </label>
+					  	</div>
+					  	<fieldset class="form-group">
+						    <input type="number" class="form-control" placeholder="2000" ng-model="plugin['goldCap']"/>
+						    Gold Cap (When you have x money, champ will return to base)
+					  	</fieldset>
+					  	<hr>
+		        	</div>	
+		        	<div class="col-lg-12">
+		        		<label>Misc</label>
+		        		<div class="checkbox">
+						    <label>
+						      	<input type="checkbox" name="warding" ng-model="plugin['warding']">
+						      	Warding (Tries to ward important positions)
+						    </label>
+					  	</div>
+					</div>       		
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-6">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Combat Mode
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-xs-12">
+				    	<div class="input-group" ng-repeat="spell in heroStatic.spells track by $index" style="margin-bottom:5px;">
+					      	<span class="input-group-addon" >
+					      		<img src="http://ddragon.leagueoflegends.com/cdn/{{staticversion}}/img/spell/{{spell.image.full}}" title="{{spell.description}}" width="64px" height="64px">
+					        	<input type="checkbox" ng-model="plugin['combat'][$index].enabled">
+					        	<div style="clear: both;margin-top: 5px;">{{spell.name}}</div>
+					      	</span>
+				        	<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">If Mana% &gt;</span>
+							  	<input style="border-bottom:0;" type="number" class="form-control" placeholder="30" ng-model="plugin['combat'][$index].managt"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">Cast To</span>
+							  	<select style="border-bottom:0;" class="form-control" id="sel1" ng-model="plugin['combat'][$index].targeting">
+								    <option value="targetpos">Current Target Position</option>
+								    <option value="targetpredictpos">Current Target Predicted Position</option>
+								    <option value="target">Current Target</option>
+								    <option value="self">Self</option>
+								    <option value="notarget">No Target</option>
+								    <option value="tospawn">To Spawn Point</option>
+							  	</select>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;">Hit Chance &gt;</span>
+							  	<input type="number" class="form-control" placeholder="30" ng-model="plugin['combat'][$index].chance"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-top:0;">Only Killable</span>
+							  	<select class="form-control" style="border-top:0;" ng-model="plugin['combat'][$index].onlykill">
+								    <option value="true">True</option>
+								    <option value="false">False</option>
+							  	</select>
+							</div>
+					    </div>
+				    </div>
+				</div>
+			</div>
+	    </div>
+	</div>
+
+	<div class="col-lg-6">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Survival Mode
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-xs-12">
+				    	<div class="input-group" ng-repeat="spell in heroStatic.spells track by $index" style="margin-bottom:5px;">
+					      	<span class="input-group-addon" >
+					      		<img src="http://ddragon.leagueoflegends.com/cdn/{{staticversion}}/img/spell/{{spell.image.full}}" title="{{spell.description}}" width="64px" height="64px">
+					        	<input type="checkbox" ng-model="plugin['survive'][$index].enabled">
+					        	<div style="clear: both;margin-top: 5px;">{{spell.name}}</div>
+					      	</span>
+				        	<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">If Mana% &gt;</span>
+							  	<input style="border-bottom:0;" type="number" class="form-control" placeholder="30" ng-model="plugin['survive'][$index].managt"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">Cast To</span>
+							  	<select style="border-bottom:0;" class="form-control" id="sel1" ng-model="plugin['survive'][$index].targeting">
+								    <option value="targetpos">Current Target Position</option>
+								    <option value="targetpredictpos">Current Target Predicted Position</option>
+								    <option value="target">Current Target</option>
+								    <option value="self">Self</option>
+								    <option value="notarget">No Target</option>
+								    <option value="tospawn">To Spawn Point</option>
+							  	</select>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;">Hit Chance &gt;</span>
+							  	<input type="number" class="form-control" placeholder="30" ng-model="plugin['survive'][$index].chance"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-top:0;">Only Killable</span>
+							  	<select class="form-control" style="border-top:0;" ng-model="plugin['survive'][$index].onlykill">
+								    <option value="true">True</option>
+								    <option value="false">False</option>
+							  	</select>
+							</div>
+					    </div>
+				    </div>
+				</div>
+			</div>
+	    </div>
+	</div>
+
+	<div class="col-lg-6">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Farming Mode (Push)
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-xs-12">
+				    	<div class="input-group" ng-repeat="spell in heroStatic.spells track by $index" style="margin-bottom:5px;">
+					      	<span class="input-group-addon" >
+					      		<img src="http://ddragon.leagueoflegends.com/cdn/{{staticversion}}/img/spell/{{spell.image.full}}" title="{{spell.description}}" width="64px" height="64px">
+					        	<input type="checkbox" ng-model="plugin['farmpush'][$index].enabled">
+					        	<div style="clear: both;margin-top: 5px;">{{spell.name}}</div>
+					      	</span>
+				        	<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">If Mana% &gt;</span>
+							  	<input style="border-bottom:0;" type="number" class="form-control" placeholder="30" ng-model="plugin['farmpush'][$index].managt"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">Cast To</span>
+							  	<select style="border-bottom:0;" class="form-control" id="sel1" ng-model="plugin['farmpush'][$index].targeting">
+								    <option value="targetpos">Current Target Position</option>
+								    <option value="targetpredictpos">Current Target Predicted Position</option>
+								    <option value="target">Current Target</option>
+								    <option value="self">Self</option>
+								    <option value="notarget">No Target</option>
+								    <option value="tospawn">To Spawn Point</option>
+							  	</select>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;">Hit Chance &gt;</span>
+							  	<input type="number" class="form-control" placeholder="30" ng-model="plugin['farmpush'][$index].chance"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-top:0;">Only Killable</span>
+							  	<select class="form-control" style="border-top:0;" ng-model="plugin['farmpush'][$index].onlykill">
+								    <option value="true">True</option>
+								    <option value="false">False</option>
+							  	</select>
+							</div>
+					    </div>
+				    </div>
+				</div>
+			</div>
+	    </div>
+	</div>
+
+	<div class="col-lg-6">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Farming Mode (Safe)
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-xs-12">
+				    	<div class="input-group" ng-repeat="spell in heroStatic.spells track by $index" style="margin-bottom:5px;">
+					      	<span class="input-group-addon" >
+					      		<img src="http://ddragon.leagueoflegends.com/cdn/{{staticversion}}/img/spell/{{spell.image.full}}" title="{{spell.description}}" width="64px" height="64px">
+					        	<input type="checkbox" ng-model="plugin['farmsafe'][$index].enabled">
+					        	<div style="clear: both;margin-top: 5px;">{{spell.name}}</div>
+					      	</span>
+				        	<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">If Mana% &gt;</span>
+							  	<input style="border-bottom:0;" type="number" class="form-control" placeholder="30" ng-model="plugin['farmsafe'][$index].managt"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">Cast To</span>
+							  	<select style="border-bottom:0;" class="form-control" id="sel1" ng-model="plugin['farmsafe'][$index].targeting">
+								    <option value="targetpos">Current Target Position</option>
+								    <option value="targetpredictpos">Current Target Predicted Position</option>
+								    <option value="target">Current Target</option>
+								    <option value="self">Self</option>
+								    <option value="notarget">No Target</option>
+								    <option value="tospawn">To Spawn Point</option>
+							  	</select>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;">Hit Chance &gt;</span>
+							  	<input type="number" class="form-control" placeholder="30" ng-model="plugin['farmsafe'][$index].chance"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-top:0;">Only Killable</span>
+							  	<select class="form-control" style="border-top:0;" ng-model="plugin['farmsafe'][$index].onlykill">
+								    <option value="true">True</option>
+								    <option value="false">False</option>
+							  	</select>
+							</div>
+					    </div>
+				    </div>
+				</div>
+			</div>
+	    </div>
+	</div>
+
+	<div class="col-lg-6">
+	    <div class="panel panel-default">
+	        <div class="panel-heading">
+	            Harass Mode
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-xs-12">
+				    	<div class="input-group" ng-repeat="spell in heroStatic.spells track by $index" style="margin-bottom:5px;">
+					      	<span class="input-group-addon" >
+					      		<img src="http://ddragon.leagueoflegends.com/cdn/{{staticversion}}/img/spell/{{spell.image.full}}" title="{{spell.description}}" width="64px" height="64px">
+					        	<input type="checkbox" ng-model="plugin['harass'][$index].enabled">
+					        	<div style="clear: both;margin-top: 5px;">{{spell.name}}</div>
+					      	</span>
+				        	<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">If Mana% &gt;</span>
+							  	<input style="border-bottom:0;" type="number" class="form-control" placeholder="30" ng-model="plugin['harass'][$index].managt"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-bottom:0;">Cast To</span>
+							  	<select style="border-bottom:0;" class="form-control" id="sel1" ng-model="plugin['harass'][$index].targeting">
+								    <option value="targetpos">Current Target Position</option>
+								    <option value="targetpredictpos">Current Target Predicted Position</option>
+								    <option value="target">Current Target</option>
+								    <option value="self">Self</option>
+								    <option value="notarget">No Target</option>
+								    <option value="tospawn">To Spawn Point</option>
+							  	</select>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;">Hit Chance &gt;</span>
+							  	<input type="number" class="form-control" placeholder="30" ng-model="plugin['harass'][$index].chance"/>
+							</div>
+							<div class="input-group" style="width:100%">
+							  	<span class="input-group-addon" style="border-right: 0;border-radius: 0;border-top:0;">Only Killable</span>
+							  	<select class="form-control" style="border-top:0;" ng-model="plugin['harass'][$index].onlykill">
+								    <option value="true">True</option>
+								    <option value="false">False</option>
+							  	</select>
+							</div>
+					    </div>
+				    </div>
+				</div>
+			</div>
+	    </div>
+	</div>
 </div>

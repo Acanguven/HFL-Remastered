@@ -12,32 +12,32 @@ namespace HFL_Remastered
 {
     public static class Logger
     {
-        public static void Push(Log log){
-
-            dynamic logPacket = new JObject();
-            logPacket.date = String.Format("{0:G}", log.Date);
-            logPacket.smurf = log.Smurf;
-            logPacket.text = log.Text;
-            logPacket.code = log.Code;
-            logPacket.token = App.Client.Token;
-            logPacket.type = "log";
-            string buffer = logPacket.ToString(Formatting.None);
-
-            App.mainwindow.net.sendLog(buffer);
-            log = null;
+        public static void Push(string text,string code,string smurf){
+            if (Properties.Settings.Default.logging) { 
+                dynamic logPacket = new JObject();
+                logPacket.date = String.Format("{0:G}", DateTime.Now);
+                logPacket.smurf = smurf;
+                logPacket.text = text;
+                logPacket.code = code;
+                logPacket.token = App.Client.Token;
+                logPacket.type = "log";
+                string buffer = logPacket.ToString(Formatting.None);
+                App.mainwindow.net.sendLog(buffer);
+            }
         }
 
-        public class Log
+        public static void Push(string text, string code)
         {
-            public DateTime Date { get; set; }
-            public string Smurf { get; set; }
-            public string Text { get; set; }
-            public string Code { get; set; }
-
-            public Log(string code)
+            if (Properties.Settings.Default.logging)
             {
-                Date = DateTime.Now;
-                Code = code;
+                dynamic logPacket = new JObject();
+                logPacket.date = String.Format("{0:G}", DateTime.Now);
+                logPacket.text = text;
+                logPacket.code = code;
+                logPacket.token = App.Client.Token;
+                logPacket.type = "log";
+                string buffer = logPacket.ToString(Formatting.None);
+                App.mainwindow.net.sendLog(buffer);
             }
         }
     }

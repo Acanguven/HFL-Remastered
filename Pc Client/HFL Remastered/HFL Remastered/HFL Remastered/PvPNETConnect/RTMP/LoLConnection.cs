@@ -91,74 +91,47 @@ namespace LoLLauncher
 
         public void Connect(string user, string password, Region region, string clientVersion)
         {
-            if (!isConnected)
+            if (!this.isConnected)
             {
-                Thread t = new Thread(() =>
+                new Thread(delegate(object state)
                 {
                     this.user = user;
                     this.password = password;
                     this.clientVersion = clientVersion;
-                    //this.server = "127.0.0.1";
                     this.server = RegionInfo.GetServerValue(region);
                     this.loginQueue = RegionInfo.GetLoginQueueValue(region);
                     this.locale = RegionInfo.GetLocaleValue(region);
                     this.useGarena = RegionInfo.GetUseGarenaValue(region);
-
-                    //Sets up our sslStream to riots servers
                     try
                     {
-                        client = new TcpClient(server, 2099);
-                    }
-                    catch
-                    {
-                        Error("Riots servers are currently unavailable.", ErrorType.AuthKey);
-                        Disconnect();
-                        return;
-                    }
-
-                    //Check for riot webserver status
-                    //along with gettin out Auth Key that we need for the login process.
-                    if (useGarena)
-                        if (!GetGarenaToken())
-                            return;
-
-                    if (!GetAuthKey())
-                        return;
-
-                    if (!GetIpAddress())
-                        return;
-
-                    sslStream = new SslStream(client.GetStream(), false, AcceptAllCertificates);
-                    try
-                    {
-                        var ar = sslStream.BeginAuthenticateAsClient(server, null, null);
-                        using (ar.AsyncWaitHandle)
+                        this.client = new TcpClient(this.server, 0x833);
+                        if ((!this.useGarena || this.GetGarenaToken()) && (this.GetAuthKey() && this.GetIpAddress()))
                         {
-                            if (ar.AsyncWaitHandle.WaitOne(-1))
+                            this.sslStream = new SslStream(this.client.GetStream(), false, new RemoteCertificateValidationCallback(this.AcceptAllCertificates));
+                            IAsyncResult asyncResult = this.sslStream.BeginAuthenticateAsClient(this.server, null, null);
+                            using (asyncResult.AsyncWaitHandle)
                             {
-                                sslStream.EndAuthenticateAsClient(ar);
+                                if (asyncResult.AsyncWaitHandle.WaitOne(-1))
+                                {
+                                    this.sslStream.EndAuthenticateAsClient(asyncResult);
+                                }
+                            }
+                            if (this.Handshake())
+                            {
+                                this.BeginReceive();
+                                if (this.SendConnect() && this.Login())
+                                {
+                                    this.StartHeartbeat();
+                                }
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        Disconnect();
+                        this.Error("Riots servers are currently unavailable.", ErrorType.AuthKey);
+                        this.Disconnect();
                     }
-
-                    if (!Handshake())
-                        return;
-
-                    BeginReceive();
-
-                    if (!SendConnect())
-                        return;
-
-                    if (!Login())
-                        return;
-                    StartHeartbeat();
-                });
-
-                t.Start();
+                }).Start();
             }
         }
 
@@ -509,37 +482,34 @@ namespace LoLLauncher
             paramaters.Add("app", "");
             paramaters.Add("flashVer", "WIN 10,6,602,161");
             paramaters.Add("swfUrl", "app:/LolClient.swf/[[DYNAMIC]]/32");
-            paramaters.Add("tcUrl", "rtmps://" + server + ":" + 2099);
+            paramaters.Add("tcUrl", string.Concat(new object[] { "rtmps://", this.server, ":", 0x833 }));
             paramaters.Add("fpad", false);
-            paramaters.Add("capabilities", 239);
-            paramaters.Add("audioCodecs", 3575);
-            paramaters.Add("videoCodecs", 252);
+            paramaters.Add("capabilities", 0xef);
+            paramaters.Add("audioCodecs", 0xdf7);
+            paramaters.Add("videoCodecs", 0xfc);
             paramaters.Add("videoFunction", 1);
             paramaters.Add("pageUrl", null);
             paramaters.Add("objectEncoding", 3);
-
-            RTMPSEncoder encoder = new RTMPSEncoder();
-            byte[] connect = encoder.EncodeConnect(paramaters);
-
-            sslStream.Write(connect, 0, connect.Length);
-
-            while (!results.ContainsKey(1))
-                Thread.Sleep(10);
-            TypedObject result = results[1];
-            results.Remove(1);
-            if (result["result"].Equals("_error"))
+            byte[] buffer = new RTMPSEncoder().EncodeConnect(paramaters);
+            this.sslStream.Write(buffer, 0, buffer.Length);
+            while (!this.results.ContainsKey(1))
             {
-                Error(GetErrorMessage(result), ErrorType.Connect);
-                Disconnect();
+                Thread.Sleep(10);
+            }
+            TypedObject message = this.results[1];
+            this.results.Remove(1);
+            if (message["result"].Equals("_error"))
+            {
+                this.Error(this.GetErrorMessage(message), ErrorType.Connect);
+                this.Disconnect();
                 return false;
             }
-
-            DSId = result.GetTO("data").GetString("id");
-
-            isConnected = true;
-            if (OnConnect != null)
-                OnConnect(this, EventArgs.Empty);
-
+            this.DSId = message.GetTO("data").GetString("id");
+            this.isConnected = true;
+            if (this.OnConnect != null)
+            {
+                this.OnConnect(this, EventArgs.Empty);
+            }
             return true;
         }
 

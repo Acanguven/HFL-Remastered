@@ -1,0 +1,58 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">AI CHat</h1>
+    </div>  
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+	    <div class="panel panel-info">
+	        <div class="panel-heading">
+	            Add Chat Message & Save
+	        </div>
+	        <div class="panel-body">
+	            <div class="row">
+			    	<div class="col-lg-8">
+			    		<input class="form-control" type="text" placeholder="Hello!" ng-model="text"/> 
+			    	</div>
+			    	<div class="col-lg-1">
+			    		<select class="form-control" ng-model="perc">
+			    			<option ng-repeat="n in [] | range:100" value="{{$index+1}}" >{{$index+1}}%</option>
+			    		</select>
+			    	</div>
+			    	<div class="col-lg-2">
+			    		<select class="form-control" ng-model="selectedCase">
+			    			<option ng-repeat="case in cases" value="{{case}}" >{{case}}</option>
+			    		</select>
+			    	</div>
+			    	<div class="col-lg-1">
+			    		<button type="submit" class="btn btn-info" ng-click="add(text,selectedCase,perc)">Add</button>
+			    	</div>
+			    </div>
+			</div>
+			<div class="panel-footer">
+				<button type="submit" class="btn btn-success" ng-click="save()">Save</button>
+				{{saveStatus}}
+			</div>
+	    </div>
+	</div>
+	<div class="col-lg-4" ng-repeat="case in cases">
+	    <div class="panel panel-info">
+	        <div class="panel-heading">
+	            {{case}}
+	        </div>
+	        <div class="panel-body">
+		        <div class="row">
+		        	<div class="col-lg-12">
+			        	<div class="list-group">
+							<a class="list-group-item" ng-repeat="msg in aichat[case]" ng-click="remove(msg,aichat[case]);">
+							    {{msg.text}}
+							    <span class="badge">{{msg.perc}}%</span>
+							</a>
+						</div>
+		        	</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>

@@ -26,6 +26,7 @@ namespace HFL_Remastered
     /// </summary>
     public partial class Main : Window
     {
+       
         private System.Windows.Forms.NotifyIcon m_notifyIcon;
         public Network net = new Network();
         private double remainingTrial { get; set; }
@@ -37,6 +38,7 @@ namespace HFL_Remastered
             updateHome();
             net.init(remainingTrial, App.Client.UserData.Type);
             uiversion.Text = "Version " + App.version;
+            App.gameContainer.Show();
         }
 
         private WindowState m_storedWindowState = WindowState.Normal;
@@ -149,6 +151,10 @@ namespace HFL_Remastered
             {
                 startUp.IsChecked = true;
             }
+            if (Properties.Settings.Default.logging)
+            {
+                logging.IsChecked = true;
+            }
             HandleCK(startUp);
 
             this.DataContext = net;
@@ -241,9 +247,26 @@ namespace HFL_Remastered
             Properties.Settings.Default.Save();
         }
 
+        private void HandleLoggingCK(CheckBox checkBox)
+        {
+            bool flag = checkBox.IsChecked.Value;
+            Properties.Settings.Default.logging = flag;
+            Properties.Settings.Default.Save();
+        }
+
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://forum.handsfreeleveler.com/topic/24/how-to-buy-payment-methods");
+        }
+
+        private void logging_Checked(object sender, RoutedEventArgs e)
+        {
+            HandleLoggingCK(sender as CheckBox);
+        }
+
+        private void logging_Unchecked(object sender, RoutedEventArgs e)
+        {
+            HandleLoggingCK(sender as CheckBox);
         }
     }
 }

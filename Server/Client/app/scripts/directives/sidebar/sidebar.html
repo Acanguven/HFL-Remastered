@@ -5,7 +5,7 @@
     <div class="alert alert-success" style="border-radius:0px;margin-bottom:0px;" ng-if="controller">
         <i class="fa fa-bolt fa-fw"></i>Connected to controller
     </div>
-    <div class="sidebar-nav navbar-collapse">
+    <div class="sidebar-nav navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
         
         <ul class="nav in" id="side-menu">
             <li ui-sref-active="active">
@@ -33,7 +33,7 @@
                 <a ui-sref="dashboard.smurfs"><i class="fa fa-table fa-fw"></i> Smurfs List</a>
             </li>
             <li ui-sref-active="active">
-                <a ui-sref="dashboard.settings"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                <a ui-sref="dashboard.settings"><i class="fa fa-gear fa-fw"></i>Controller Settings</a>
             </li>
             <li ui-sref-active="active" style="display:none;">
                 <a ui-sref="dashboard.home"><i class="fa fa-bar-chart-o fa-fw"></i> Stats - <span>Disabled for Beta</span></a>
@@ -57,14 +57,20 @@
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.heroSelector({navigate:'plugins'})">Plugins</a>
                     </li>
-                    <li ui-sref-active="active" style="display:none;">
-                        <a ui-sref="dashboard.levels">Level Squence</a>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.emotes">Emotes</a>
+                    </li>
+                    <li ui-sref-active="active">
+                        <a ui-sref="dashboard.aichat">Chat</a>
                     </li>
                     <li ui-sref-active="active">
                         <a ui-sref="dashboard.impexp">Import & Export</a>
                     </li>
                 </ul>
                 <!-- /.nav-second-level -->
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.changelog"><i class="fa fa-file-text fa-fw"></i> Changelog<span></span></a>
             </li>
         </ul>
     </div>

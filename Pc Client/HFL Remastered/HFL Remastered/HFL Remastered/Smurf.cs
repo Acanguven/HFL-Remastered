@@ -50,21 +50,15 @@ namespace HFL_Remastered
 
         public void loadSelf()
         {
-            Logger.Log newLog = new Logger.Log("info");
-            newLog.Smurf = this.username;
-            newLog.Text = "Loading components...";
-            Logger.Push(newLog);
-
+            Logger.Push("Loading components...", "info", username);
             thread.init(username, password, desiredLevel, region, queue, this, regionVersion);
         }
 
         public void updateRegion(string newRegionInformation)
         {
             regionVersion = newRegionInformation;
-            Logger.Log newLog = new Logger.Log("warning");
-            newLog.Smurf = this.username;
-            newLog.Text = "Region information updated, restarting...";
-            Logger.Push(newLog);
+
+            Logger.Push("Region information updated, restarting...", "info", this.username);
             stop();
             thread = new BotThread();
             loadSelf();
@@ -73,10 +67,7 @@ namespace HFL_Remastered
 
         public void start()
         {
-            Logger.Log newLog = new Logger.Log("info");
-            newLog.Smurf = this.username;
-            newLog.Text = "Trying to start smurf.";
-            Logger.Push(newLog);
+            Logger.Push("Trying to start smurf.", "info", this.username);
             thread.start();
         }
 
@@ -97,10 +88,7 @@ namespace HFL_Remastered
             {
 
             }
-            Logger.Log newLog = new Logger.Log("warning");
-            newLog.Smurf = this.username;
-            newLog.Text = "Stopping smurf";
-            Logger.Push(newLog);
+            Logger.Push("Stopping smurf", "warning", this.username);
         }
 
         public void restart()

@@ -1,0 +1,167 @@
+Memo - Hit Chances:
+0-64 - low hitChance
+65+ - high hitChance
+
+-Aatrox
+Aatrox W Blood Thirst/Blood Price - toggle to be handled script-side
+
+-Alistar
+Alistar E-Q headbutt-pulverize combo script-side
+Alistar R Unbreakable will to be handled script-side
+
+-Anivia
+Anivia W Crystallize
+
+-Bard
+Bard E Magical Journey
+Bard R Tempered Fate - used only in escape
+
+-Braum 
+Braum W Stand Behind Me
+Braum E Unbreakable
+
+-Elise
+to be handled script-side - shapeshifter
+
+-Fiora
+Fiora W Riposte to be handled script-side
+
+-Fizz
+Fizz E Playful/Trickster set Landing Position as target
+
+-Gangplank
+GangPlank E Powder Ked - to be handled script-side
+
+-Gnar
+Gnar R GNAR! direction to be handled script-side
+
+-Karma
+Karma R Mantra interaction to be handled script-side
+
+-Jayce
+to be handled script-side - shapeshifter
+
+-Jinx
+Jinx Q Switcheroo - toggle to be handled script-side
+
+-Kalista
+Kalista should be handled script-side except Q
+
+-Katarina
+Katarina E Shunpo on ward to escape to be handled script-side
+
+-Kayle
+Kayle R Intervention to be cast if health<=10% both in combat and survival
+
+-Kha'Zix
+Kha'Zix R Void Assault Stealth to be handled
+Evolutions to be handled
+
+-Kindred
+Kindred R Lamb Respite to be cast if healt <=10%
+
+-LeBlanc
+LeBlanc R Mimic to be handled for the different combos
+
+-Lee Sin
+double skills kit to be handled
+W to escape
+E to slow
+
+=Master Yi
+Master Yi Q Alpha Strike to Harass bouncin on minions. Not on target.
+
+-Nidalee
+to be handled script-side - shapeshifter
+
+-Nunu 
+Nunu Q Consume to be used to self sustain even in survival
+
+-Pantheon
+Pantheon R Grand Skyfall to be handled
+
+-Poppy
+Poppy R Keeper's Verdict to be used in different manners - tap for combat mode, charge for survival
+Poppy E Heroic Charge to be only used in harass if can stun
+
+-Quinn
+Quinn R Behind Enemy Lines to be used for map traveling
+
+-Rek'Sai
+To be fixed
+double spells kit to be handled
+
+-Rengar
+Ferocity stacks and empowered spell to be handled
+Rengar R Thrill of the Hunt stealth to be handled
+
+-Riven
+Riven R Blade of the Exile to be handled script-side
+
+-Rumble
+Rumble's Overheat meter to be managed script-side
+Rumble R The Equalizer vector to be handled by script
+
+-Shen
+Shen R Stand United to be used to save allies and escape
+
+-Singed
+Good Luck with Singed.
+
+-Sion
+Sion R Unstoppable Onslaught to be directed script-side accordingly to funcion
+
+-Sona
+Sona W Aria of Perseverance to be handled script-side to sustain
+
+-Soraka
+Soraka W Astral Infusion to be handled script-side to sustain
+Soraka R Wish to save allies
+
+-Swain
+Swain R Ravenous Flock to be used to sustain
+
+-Syndra
+Syndra W Force of Will to be handled by script
+
+-Tahm Kench
+Tahm Kench stack to be handled script-side
+
+-Thresh
+Thresh W Dark Passage to be used to shield as save allies
+Thresh E Flay Pull/Push mechanic to be handled
+
+-Tryndamere
+Tryndamere R Undying Rage to be used if hp<=10%
+
+-Twisted Fate
+Twisted Fate Pick A Card to be handled - Blue if mana<=10%, Gold if in Survival Mode
+Twisted Fate R Destiny/Gate to be handled
+
+-Twitch
+Twitch Q Ambush stealth to be handled
+
+-Udyr
+HOW THE FUCK DO I DO THIS.
+
+-Vayne
+Vayne Q Tumble to be handled script-side
+
+-Viktor
+Viktor E Death Ray vector to be handled by script
+
+-Warwick
+Warwick E toggle to be handled
+
+-Yasuo
+Yasuo W Wind Wall to be handled
+Yasuo E Sweeping Blade to be handled during escape
+
+-Yorick
+Yorick R Omen of Death to be Handled
+
+-Zilean
+R to be handled
+
+-Zyra
+weird seed-skill interactions to be handled

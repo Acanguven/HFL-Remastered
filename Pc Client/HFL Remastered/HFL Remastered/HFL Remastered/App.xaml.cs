@@ -22,6 +22,7 @@ namespace HFL_Remastered
         public static Main mainwindow;
         public Login loginWindow = new Login();
         public static string version = "1.7";
+        public static GameMask gameContainer = new GameMask();
 
         private async void igniter(object sender, StartupEventArgs e)
         {

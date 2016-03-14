@@ -134,10 +134,7 @@ namespace HFL_Remastered
         #region OnConnect
         public async void connection_OnConnect(object sender, object message)
         {
-            Logger.Log newLog = new Logger.Log("info");
-            newLog.Smurf = this.username;
-            newLog.Text = "Smurf connected to Riot Server, ready to login.";
-            Logger.Push(newLog);
+            Logger.Push("Smurf connected to Riot Server, ready to login.", "info", this.username);
         }
         #endregion
         #region OnDisconnect
@@ -159,27 +156,18 @@ namespace HFL_Remastered
             }
             else if (error.Message.Contains("Game was not found!"))
             {
-                Logger.Log errorLog = new Logger.Log("warning");
-                errorLog.Smurf = username;
-                errorLog.Text = "Somebody broke the game queue.";
-                Logger.Push(errorLog);
+                Logger.Push("Somebody broke the game queue.", "info", username);
             }
             else
             {
-                Logger.Log errorLog = new Logger.Log("warning");
-                errorLog.Smurf = username;
-                errorLog.Text = "Unhandled error message recieved from server:" + error.Message;
-                Logger.Push(errorLog);
+                Logger.Push("Unhandled error message recieved from server:" + error.Message, "warning", username);
             }
         }
         #endregion
         #region OnLogin
         private void connection_OnLogin(object sender, string username, string ipAddress)
         {
-            Logger.Log newLog = new Logger.Log("info");
-            newLog.Smurf = this.username;
-            newLog.Text = "Smurf logged in, ready to queue";
-            Logger.Push(newLog);
+            Logger.Push("Smurf logged in, ready to queue", "info", this.username);
 
             new Thread((ThreadStart)(async () =>
             {
@@ -194,10 +182,7 @@ namespace HFL_Remastered
                     LoLLauncher.RiotObjects.Platform.Summoner.AllSummonerData sumData = await connection.CreateDefaultSummoner(summonerName);
                     loginPacket.AllSummonerData = sumData;
 
-                    Logger.Log sNameLog = new Logger.Log("success");
-                    sNameLog.Smurf = this.username;
-                    sNameLog.Text = "Smurf summoner name updated as" + summonerName;
-                    Logger.Push(sNameLog);
+                    Logger.Push("Smurf summoner name updated as" + summonerName, "success", this.username);
                 }
                 currentLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
                 currentExp = loginPacket.AllSummonerData.SummonerLevelAndPoints.ExpPoints;
@@ -209,10 +194,7 @@ namespace HFL_Remastered
 
                 if (currentLevel >= desiredLevel)
                 {
-                    Logger.Log sNameLog = new Logger.Log("success");
-                    sNameLog.Smurf = this.username;
-                    sNameLog.Text = "Smurfins is done, smurf is level: " + (int)currentLevel;
-                    Logger.Push(sNameLog);
+                    Logger.Push("Smurfing is done, smurf is level: " + (int)currentLevel, "success", this.username);
                     if (!smurf.groupMember) { 
                         connection.Disconnect();
                     }
@@ -220,10 +202,7 @@ namespace HFL_Remastered
 
                 if (rpBalance == 400.0 && App.Client.UserData.Settings.BuyBoost)
                 {
-                    Logger.Log bootBuyLog = new Logger.Log("info");
-                    bootBuyLog.Smurf = this.username;
-                    bootBuyLog.Text = "Buying xp boost.";
-                    Logger.Push(bootBuyLog);
+                    Logger.Push("Buying xp boost", "info", this.username);
                     try
                     {
                         Task t = new Task(buyBoost);
@@ -231,10 +210,7 @@ namespace HFL_Remastered
                     }
                     catch (Exception exception)
                     {
-                        Logger.Log boostFailLog = new Logger.Log("warning");
-                        boostFailLog.Smurf = this.username;
-                        boostFailLog.Text = "Failed to buy boost.";
-                        Logger.Push(boostFailLog);
+                        Logger.Push("Failed to buy xp boost", "warning", this.username);
                     }
                 }
 
@@ -258,10 +234,7 @@ namespace HFL_Remastered
                         }
                         else
                         {
-                            Logger.Log inviteReqToHost = new Logger.Log("info");
-                            inviteReqToHost.Smurf = username;
-                            inviteReqToHost.Text = "Requesting host to invite me.";
-                            Logger.Push(inviteReqToHost);
+                            Logger.Push("Requesting host to invite me.", "info", this.username);
                             smurf.hostCallback.inviteMe(summonerId);
                         }
                     }
@@ -280,10 +253,7 @@ namespace HFL_Remastered
             }
             else
             {
-                Logger.Log newLog = new Logger.Log("info");
-                newLog.Smurf = this.username;
-                newLog.Text = "Position to login: " + positionInLine;
-                Logger.Push(newLog);
+                Logger.Push("Position to login: " + positionInLine, "info", this.username);
             }
         }
         #endregion
@@ -318,10 +288,7 @@ namespace HFL_Remastered
                         // TODO Sr hero selection, change here!
                         if (currentLevel < 6)
                         {
-                            Logger.Log limit6levelChamp = new Logger.Log("info");
-                            limit6levelChamp.Smurf = username;
-                            limit6levelChamp.Text = "Till level 6 we are not allowed to pick from free champions so I will select Ashe";
-                            Logger.Push(limit6levelChamp);
+                            Logger.Push("Till level 6 we are not allowed to pick from free champions so I will select Ashe", "info", this.username);
                             await connection.SelectChampion(22);
                         }
                         else { 
@@ -371,40 +338,22 @@ namespace HFL_Remastered
                     }
                     break;
                 case "POST_CHAMP_SELECT":
-                    Logger.Log newLogPOST_CHAMP_SELECT = new Logger.Log("info");
-                    newLogPOST_CHAMP_SELECT.Smurf = username;
-                    newLogPOST_CHAMP_SELECT.Text = "Waiting for game to start";
-                    Logger.Push(newLogPOST_CHAMP_SELECT);
+                    Logger.Push("Waiting for game to start", "info", username);
                     break;
                 case "PRE_CHAMP_SELECT":
-                    Logger.Log newLogPRE_CHAMP_SELECT = new Logger.Log("info");
-                    newLogPRE_CHAMP_SELECT.Smurf = username;
-                    newLogPRE_CHAMP_SELECT.Text = "Last seconds to set champion.";
-                    Logger.Push(newLogPRE_CHAMP_SELECT);
+                    Logger.Push("Last seconds to set champion.", "info", username);
                     break;
                 case "GAME_START_CLIENT":
-                    Logger.Log newLogGAME_START_CLIENT = new Logger.Log("info");
-                    newLogGAME_START_CLIENT.Smurf = username;
-                    newLogGAME_START_CLIENT.Text = "Game started";
-                    Logger.Push(newLogGAME_START_CLIENT);
+                    Logger.Push("Game started", "info", username);
                     break;
                 case "GameClientConnectedToServer":
-                    Logger.Log newLogGameClientConnectedToServer = new Logger.Log("info");
-                    newLogGameClientConnectedToServer.Smurf = username;
-                    newLogGameClientConnectedToServer.Text = "Game client connected to server.";
-                    Logger.Push(newLogGameClientConnectedToServer);
+                    Logger.Push("Game client connected to server.", "info", username);
                     break;
                 case "IN_QUEUE":
-                    Logger.Log newLogIN_QUEUE = new Logger.Log("info");
-                    newLogIN_QUEUE.Smurf = username;
-                    newLogIN_QUEUE.Text = "Joined queue.";
-                    Logger.Push(newLogIN_QUEUE);
+                    Logger.Push("Joined queue.", "info", username);
                     break;
                 case "TERMINATED":
-                    Logger.Log newLogTERMINATED = new Logger.Log("info");
-                    newLogTERMINATED.Smurf = username;
-                    newLogTERMINATED.Text = "Re entering to queue.";
-                    Logger.Push(newLogTERMINATED);
+                    Logger.Push("Re entering to queue.", "info", username);
                     this.firstTimeInQueuePop = true;
                     break;
                 case "JOINING_CHAMP_SELECT":
@@ -412,18 +361,12 @@ namespace HFL_Remastered
                     {
                         this.firstTimeInQueuePop = false;
                         this.firstTimeInLobby = true;
-                        Logger.Log newLogJOINING_CHAMP_SELECT = new Logger.Log("info");
-                        newLogJOINING_CHAMP_SELECT.Smurf = username;
-                        newLogJOINING_CHAMP_SELECT.Text = "Accepting game";
-                        Logger.Push(newLogJOINING_CHAMP_SELECT);
+                        Logger.Push("Accepting game", "info", username);
                         await this.connection.AcceptPoppedGame(true);
                     }
                     break;
                 case "LEAVER_BUSTED":
-                    Logger.Log newLogLEAVER_BUSTED = new Logger.Log("warning");
-                    newLogLEAVER_BUSTED.Smurf = username;
-                    newLogLEAVER_BUSTED.Text = "You are leaver busted.";
-                    Logger.Push(newLogLEAVER_BUSTED);
+                    Logger.Push("You are leaver busted.", "warning", username);
                     break;
             }
         }
@@ -441,10 +384,7 @@ namespace HFL_Remastered
             }
             startInfo.FileName = "League of Legends.exe";
             startInfo.Arguments = string.Concat(new object[] { "\"8394\" \"LoLLauncher.exe\" \"\" \"", credentials.ServerIp, " ", credentials.ServerPort, " ", credentials.EncryptionKey, " ", credentials.SummonerId, "\"" });
-            Logger.Log gameStarterLog = new Logger.Log("info");
-            gameStarterLog.Smurf = username;
-            gameStarterLog.Text = "Starting game";
-            Logger.Push(gameStarterLog);
+            Logger.Push("Starting game", "info", username);
             lastStarter = startInfo;
             startProcessor(startInfo);
         }
@@ -464,10 +404,7 @@ namespace HFL_Remastered
                 }
                 else
                 {
-                    Logger.Log inviteReqToHost = new Logger.Log("info");
-                    inviteReqToHost.Smurf = username;
-                    inviteReqToHost.Text = "Requesting host to invite me.";
-                    Logger.Push(inviteReqToHost);
+                    Logger.Push("Requesting host to invite me.", "info", username);
                     smurf.hostCallback.inviteMe(summonerId);
                 }
             }
@@ -486,37 +423,24 @@ namespace HFL_Remastered
         private async void handleInvitationRequest(object message)
         {
             if (smurf.groupMember) {
-                Logger.Log parttInviteLog = new Logger.Log("info");
-                parttInviteLog.Smurf = username;
-                parttInviteLog.Text = "Recieved party from group host, accepting.";
-                Logger.Push(parttInviteLog);
+                Logger.Push("Recieved party from group host, accepting.", "info", username);
                 InvitationRequest req = message as InvitationRequest;
                 await connection.AcceptInviteForMatchmakingGame(req.InvitationId);
             }
             else
             {
-                Logger.Log nonPartyLog = new Logger.Log("warning");
-                nonPartyLog.Smurf = username;
-                nonPartyLog.Text = "Recieved party request from a friend, not responding...";
-                Logger.Push(nonPartyLog);
+                Logger.Push("Recieved party request from a friend, not responding...", "warning", username);
             }
         }
 
         private async void handleLobbyStatus(object message)
         {
             LobbyStatus lobby = message as LobbyStatus;
-            Logger.Log parttInviteLog = new Logger.Log("info");
-            parttInviteLog.Smurf = username;
             int totalMembers = (lobby.Invitees.FindAll(member => member.InviteeState == "ACCEPTED").Count + 1);
-            parttInviteLog.Text = "Lobby just updated, accepted members:" + totalMembers;
-            Logger.Push(parttInviteLog);
-
+            Logger.Push("Lobby just updated, accepted members:" + totalMembers, "info", username);
             if (totalMembers == smurf.totalGroupLength)
             {
-                Logger.Log readyQueue = new Logger.Log("warning");
-                readyQueue.Smurf = username;
-                readyQueue.Text = "We have enough members to join queue, joining queue";
-                Logger.Push(readyQueue);
+                Logger.Push("We have enough members to join queue, joining queue", "info", username);
                 lobbyReady = false;
                 lobbyInviteQuery.Clear();
 
@@ -565,10 +489,7 @@ namespace HFL_Remastered
         {
             updateSmurfInfo();
             rpBalance = loginPacket.RpBalance;
-            Logger.Log levelupLog = new Logger.Log("success");
-            levelupLog.Smurf = username;
-            levelupLog.Text = "Level up, smurf is now level:" + currentLevel;
-            Logger.Push(levelupLog);
+            Logger.Push("Level up, smurf is now level:" + currentLevel, "success", username);
             if (currentLevel >= desiredLevel && !smurf.groupMember)
             {
                 connection.Disconnect();
@@ -579,10 +500,7 @@ namespace HFL_Remastered
             }
             if (rpBalance == 400.0 && App.Client.UserData.Settings.BuyBoost)
             {
-                Logger.Log bootBuyLog = new Logger.Log("info");
-                bootBuyLog.Smurf = this.username;
-                bootBuyLog.Text = "Buying xp boost.";
-                Logger.Push(bootBuyLog);
+                Logger.Push("Buying xp boost.", "info", username);
                 try
                 {
                     Task t = new Task(buyBoost);
@@ -590,10 +508,7 @@ namespace HFL_Remastered
                 }
                 catch (Exception exception)
                 {
-                    Logger.Log boostFailLog = new Logger.Log("warning");
-                    boostFailLog.Smurf = this.username;
-                    boostFailLog.Text = "Failed to buy boost.";
-                    Logger.Push(boostFailLog);
+                    Logger.Push("Failed to buy xp boost.", "warning", username);
                 }
             }
         }
@@ -620,10 +535,7 @@ namespace HFL_Remastered
                     storeItemList.Add(new KeyValuePair<string, string>("duration", "3"));
                     HttpContent httpContent = new FormUrlEncodedContent(storeItemList);
                     await httpClient.PostAsync(purchaseURL, httpContent);
-                    Logger.Log boostBought = new Logger.Log("success");
-                    boostBought.Smurf = this.username;
-                    boostBought.Text = "Bought 3 days xp boost.";
-                    Logger.Push(boostBought);
+                    Logger.Push("Bought 3 days xp boost.", "success", username);
                     httpClient.Dispose();
                 }
                 else if (region.ToString() == "EUNE")
@@ -645,10 +557,7 @@ namespace HFL_Remastered
                     storeItemList.Add(new KeyValuePair<string, string>("duration", "3"));
                     HttpContent httpContent = new FormUrlEncodedContent(storeItemList);
                     await httpClient.PostAsync(purchaseURL, httpContent);
-                    Logger.Log boostBought = new Logger.Log("success");
-                    boostBought.Smurf = this.username;
-                    boostBought.Text = "Bought 3 days xp boost.";
-                    Logger.Push(boostBought);
+                    Logger.Push("Bought 3 days xp boost.", "success", username);
                     httpClient.Dispose();
                 }
                 else if (region.ToString() == "NA")
@@ -670,10 +579,7 @@ namespace HFL_Remastered
                     storeItemList.Add(new KeyValuePair<string, string>("duration", "3"));
                     HttpContent httpContent = new FormUrlEncodedContent(storeItemList);
                     await httpClient.PostAsync(purchaseURL, httpContent);
-                    Logger.Log boostBought = new Logger.Log("success");
-                    boostBought.Smurf = this.username;
-                    boostBought.Text = "Bought 3 days xp boost.";
-                    Logger.Push(boostBought);
+                    Logger.Push("Bought 3 days xp boost.", "success", username);
                     httpClient.Dispose();
                 }
                 else
@@ -695,10 +601,7 @@ namespace HFL_Remastered
                     storeItemList.Add(new KeyValuePair<string, string>("duration", "3"));
                     HttpContent httpContent = new FormUrlEncodedContent(storeItemList);
                     await httpClient.PostAsync(purchaseURL, httpContent);
-                    Logger.Log boostBought = new Logger.Log("success");
-                    boostBought.Smurf = this.username;
-                    boostBought.Text = "Bought 3 days xp boost.";
-                    Logger.Push(boostBought);
+                    Logger.Push("Bought 3 days xp boost.", "success", username);
                     httpClient.Dispose();
                 }
             }
@@ -718,15 +621,15 @@ namespace HFL_Remastered
                 exeProcess.EnableRaisingEvents = true;
                 if (App.Client.UserData.Settings.DisableGpu)
                 {
-                    /* App.gameContainer.Dispatcher.Invoke(new Action(() =>
+                     App.gameContainer.Dispatcher.Invoke(new Action(() =>
                      {
-                         App.gameContainer.addWindow(exeProcess, Accountname);    //Implement This
-                     }), DispatcherPriority.ContextIdle);*/
+                         App.gameContainer.addWindow(exeProcess, username);
+                     }), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(3000);
                 if (App.Client.UserData.Settings.ManualInjection)
                 {
-                    BasicInject.Inject(exeProcess, Properties.Settings.Default.bolPath.Split(new string[] { "lol.launcher.exe" }, StringSplitOptions.None)[0] + "tangerine.dll");
+                    BasicInject.Inject(exeProcess, Properties.Settings.Default.bolPath.Split(new string[] { "lol.launcher.exe" }, StringSplitOptions.None)[0] + "agent.dll");
                 }
             }));
             processStarter.Start();
@@ -749,26 +652,17 @@ namespace HFL_Remastered
             mustQueue = queue;
             if (currentLevel < 3 && queue == QueueTypes.NORMAL_5x5)
             {
-                Logger.Log normalWarnLog = new Logger.Log("warning");
-                normalWarnLog.Smurf = username;
-                normalWarnLog.Text = "Need to be Level 3 before NORMAL_5x5 queue, joining Co-Op vs AI (Beginner) queue until 3.";
-                Logger.Push(normalWarnLog);
+                Logger.Push("Need to be Level 3 before NORMAL_5x5 queue, joining Co-Op vs AI (Beginner) queue until 3.", "info", username);
                 mustQueue = QueueTypes.BEGINNER_BOT;
             }
             if (currentLevel < 6 && queue == QueueTypes.ARAM)
             {
-                Logger.Log normalWarnLog = new Logger.Log("warning");
-                normalWarnLog.Smurf = username;
-                normalWarnLog.Text = "Need to be Level 6 before ARAM queue, joining Co-Op vs AI (Beginner) queue until 6.";
-                Logger.Push(normalWarnLog);
+                Logger.Push("Need to be Level 6 before ARAM queue, joining Co-Op vs AI (Beginner) queue until 6.", "info", username);
                 mustQueue = QueueTypes.BEGINNER_BOT;
             }
             if (currentLevel < 7 && queue == QueueTypes.NORMAL_3x3)
             {
-                Logger.Log normalWarnLog = new Logger.Log("warning");
-                normalWarnLog.Smurf = username;
-                normalWarnLog.Text = "Need to be Level 7 before NORMAL_3x3 queue, joining Co-Op vs AI (Beginner) queue until 6.";
-                Logger.Push(normalWarnLog);
+                Logger.Push("Need to be Level 7 before NORMAL_3x3 queue, joining Co-Op vs AI (Beginner) queue until 6.", "info", username);
                 mustQueue = QueueTypes.BEGINNER_BOT;
             }
 
@@ -777,10 +671,7 @@ namespace HFL_Remastered
             SearchingForMatchNotification message = await connection.AttachToQueue(matchParams);
             if (message.PlayerJoinFailures == null)
             {
-                Logger.Log inQueueLog = new Logger.Log("info");
-                inQueueLog.Smurf = username;
-                inQueueLog.Text = "In Queue: " + mustQueue.ToString();
-                Logger.Push(inQueueLog);
+                Logger.Push("In Queue: " + mustQueue.ToString(), "info", username);
             }
             else
             {
@@ -809,10 +700,7 @@ namespace HFL_Remastered
 
                     if (current.ReasonFailed == "LEAVER_BUSTER_TAINTED_WARNING")
                     {
-                        Logger.Log accountAcceptTos = new Logger.Log("danger");
-                        accountAcceptTos.Smurf = username;
-                        accountAcceptTos.Text = "Login to your account using your real client and accept the popup you will see";
-                        Logger.Push(accountAcceptTos);
+                        Logger.Push("Login to your account using your real client and accept the popup you will see", "danger", username);
                         taintedWarning = true;
                         connection.Disconnect();
                         break;
@@ -821,26 +709,17 @@ namespace HFL_Remastered
                 if (!string.IsNullOrEmpty(this.m_accessToken))
                 {
                     double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
-                    Logger.Log leaveTimeLeft = new Logger.Log("warning");
-                    leaveTimeLeft.Smurf = username;
-                    leaveTimeLeft.Text = "Waiting out leaver buster: " + minutes + " minutes!";
-                    Logger.Push(leaveTimeLeft);
+                    Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
                     Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
                     try { 
                         message = await connection.AttachToLowPriorityQueue(matchParams, this.m_accessToken);
                         if (message.PlayerJoinFailures == null)
                         {
-                            Logger.Log lowerScc = new Logger.Log("info");
-                            lowerScc.Smurf = username;
-                            lowerScc.Text = "Succesfully joined lower priority queue!";
-                            Logger.Push(lowerScc);
+                            Logger.Push("Succesfully joined lower priority queue!", "info", username);
                         }
                         else
                         {
-                            Logger.Log lowerFail = new Logger.Log("danger");
-                            lowerFail.Smurf = username;
-                            lowerFail.Text = "There was an error in joining lower priority queue.Disconnecting...";
-                            Logger.Push(lowerFail);
+                            Logger.Push("There was an error in joining lower priority queue.Disconnecting...", "danger", username);
                             this.connection.Disconnect();
                         }
                     }
@@ -871,10 +750,7 @@ namespace HFL_Remastered
                         }
                         else
                         {
-                            Logger.Log leaveTimeLeft = new Logger.Log("warning");
-                            leaveTimeLeft.Smurf = username;
-                            leaveTimeLeft.Text = "Waiting out queue buster: " + minutes + " minutes!";
-                            Logger.Push(leaveTimeLeft);
+                            Logger.Push("Waiting out queue buster: " + minutes + " minutes!", "warning", username);
                             Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
                             try { 
                                 this.joinQueue();
@@ -936,17 +812,11 @@ namespace HFL_Remastered
             GameDTO game = await connection.CreatePracticeGame(cfg);
             if (game.Id == 0)
             {
-                Logger.Log customGameLog = new Logger.Log("warning");
-                customGameLog.Text = "Game failed to create";
-                customGameLog.Smurf = username;
-                Logger.Push(customGameLog);
+                Logger.Push("Game failed to create", "warning", username);
             }
             else
             {
-                Logger.Log customGameLog = new Logger.Log("info");
-                customGameLog.Text = "Game (" + game.Id + ") created.";
-                customGameLog.Smurf = username;
-                Logger.Push(customGameLog);
+                Logger.Push("Game (" + game.Id + ") created.","info",username);
             }
 
             
@@ -964,10 +834,7 @@ namespace HFL_Remastered
         }
         private async void createLobby()
         {
-            Logger.Log lobbyCreateLog = new Logger.Log("info");
-            lobbyCreateLog.Smurf = username;
-            lobbyCreateLog.Text = "Creating lobby for the team";
-            Logger.Push(lobbyCreateLog);
+            Logger.Push("Creating lobby for the team", "info", username);
             LobbyStatus newLobby;
             if (queue == QueueTypes.INTRO_BOT)
             {
@@ -992,10 +859,7 @@ namespace HFL_Remastered
             if (newLobby != null)
             {
                 lobbyReady = true;
-                Logger.Log lobbyCreateLogSucc = new Logger.Log("info");
-                lobbyCreateLogSucc.Smurf = username;
-                lobbyCreateLogSucc.Text = "Lobby created successfully";
-                Logger.Push(lobbyCreateLogSucc);
+                Logger.Push("Lobby created successfully", "info", username);
                 await connection.Invite(11422666.0);
                 lobbyInviteUpdate();
             }

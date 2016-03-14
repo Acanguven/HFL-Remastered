@@ -7,6 +7,9 @@
  * Controller of the sbAdminApp
  */
 angular.module('sbAdminApp').controller('heroItems', function($scope,$http,$stateParams) {
+    if(!$scope.user){
+        return false;
+    }
     $scope.hero = $stateParams.heroName;
 
 	$http.get("champions.json").then(function(data){
@@ -32,7 +35,6 @@ angular.module('sbAdminApp').controller('heroItems', function($scope,$http,$stat
     	$scope.itemList = [];
     	for (var key in res.data.data){
             if(res.data.data[key].name.indexOf("Potion") == -1){
-                console.log(res.data.data[key].name)
                 delete res.data.data[key].description;
                 delete res.data.data[key].colloq;
                 delete res.data.data[key].plaintext;

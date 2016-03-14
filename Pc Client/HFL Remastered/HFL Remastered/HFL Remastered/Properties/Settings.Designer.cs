@@ -94,5 +94,17 @@ namespace HFL_Remastered.Properties {
                 this["startup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool logging {
+            get {
+                return ((bool)(this["logging"]));
+            }
+            set {
+                this["logging"] = value;
+            }
+        }
     }
 }

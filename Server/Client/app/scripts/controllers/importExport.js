@@ -9,6 +9,10 @@
 
 angular.module('sbAdminApp').controller('importExport', function($scope,$http,$stateParams) {
 
+	if(!$scope.user){
+		return false;
+	}
+
 	$http.get("http://handsfreeleveler.com:4446/api/getAI").then(function(res){
 		$scope.exportedSettings = JSON.stringify(res.data);
 	});

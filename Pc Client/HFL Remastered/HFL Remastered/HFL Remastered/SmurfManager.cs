@@ -19,9 +19,7 @@ namespace HFL_Remastered
             if (!containsGroup)
             {
                 groups.Add(group);
-                Logger.Log newLog = new Logger.Log("info");
-                newLog.Text = "Smurf " + group.name + " registered to system. Waiting members to login to start...";
-                Logger.Push(newLog);
+                Logger.Push("Group " + group.name + " registered to system. Waiting members to login to start...", "info");
 
                 bool hostIgnited = false;
                 foreach (var smurf in group.smurfs)
@@ -70,17 +68,13 @@ namespace HFL_Remastered
             if (!containsSmurf)
             {
                 smurfs.Add(newSmurf);
-                Logger.Log newLog = new Logger.Log("info");
-                newLog.Text = "Smurf " + newSmurf.username + " registered to system.";
-                Logger.Push(newLog);
+                Logger.Push("Smurf " + newSmurf.username + " registered to system.", "info");
                 newSmurf.loadSelf();
                 newSmurf.start();
             }
             else
             {
-                Logger.Log newLog = new Logger.Log("warning");
-                newLog.Text = "Smurf " + newSmurf.username + " already registered to system!";
-                Logger.Push(newLog);
+                Logger.Push("Smurf " + newSmurf.username + " already registered to system!", "info");
                 newSmurf.start();
             }
             SmurfManager.updateStatus();
