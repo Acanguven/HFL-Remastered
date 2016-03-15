@@ -1,0 +1,13 @@
+﻿<Window x:Class="HandsFreeLeveler.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Login - Register" Height="300" Width="237" Topmost="True" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/HandsFreeLeveler;component/Resources/hfl_256px.ico" Closing="onCLose">
+    <Grid>
+        <TextBox x:Name="username_box" HorizontalAlignment="Center" Height="30" Margin="0,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="200" TextChanged="TextBox_TextChanged" FontSize="16" ToolTip="Your username"/>
+        <PasswordBox x:Name="pass_box" HorizontalAlignment="Center" Margin="0,140,0,0" VerticalAlignment="Top" Width="200" Height="30" FontSize="14"/>
+        <Button x:Name="login_button" Content="Login" HorizontalAlignment="Center" Margin="0,180,0,0" VerticalAlignment="Top" Width="200" IsDefault="True" Height="30" Click="login_button_Click"/>
+        <Button x:Name="register_button" Content="Button" HorizontalAlignment="Center" Margin="0,220,0,0" VerticalAlignment="Top" Width="200" Height="30" Click="Button_Click"/>
+        <Label Content="HFL" HorizontalAlignment="Center" Margin="46,73,212,0" VerticalAlignment="Top" FontFamily="Tahoma" FontSize="14"/>
+        <Image HorizontalAlignment="Left" Height="100" Margin="0" VerticalAlignment="Top" Width="237" Source="/HandsFreeLeveler;component/Resources/jinxSprite.png" Stretch="Fill"/>
+    </Grid>
+</Window>

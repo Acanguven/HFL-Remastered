@@ -1,0 +1,119 @@
+﻿<Window x:Class="HandsFreeLeveler.Dashboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hands Free Leveler" Height="350" Width="755" WindowStartupLocation="CenterScreen" Icon="/HandsFreeLeveler;component/Resources/hfl_256px.ico" ResizeMode="CanMinimize" TabIndex="2147483645" IsHitTestVisible="True" Topmost="True" Closing="window_terminate">
+
+    <Grid>
+        <DockPanel VerticalAlignment="Top" Height="320">
+            <Menu DockPanel.Dock="Top" Background="#FFA9D1F4">
+                <MenuItem x:Name="Account_Button" Header="Account" Click="Account_Button_Click"/>
+                <MenuItem x:Name="smurfListButton" Header="Smurf List" Click="smurfListButton_Click"></MenuItem>
+                <MenuItem x:Name="settingsButton" Header="Settings" Click="settingsButton_Click"></MenuItem>
+                <MenuItem x:Name="languageButton" Header="Language" Click="languageButton_Click"></MenuItem>
+                <MenuItem x:Name="aiscript" Header="AI Script" Click="aiscript_Click"></MenuItem>
+                <MenuItem x:Name="queueTypeButton" Header="Queue Type: " Foreground="BlueViolet" ToolTipService.InitialShowDelay="300" ToolTipService.ShowDuration="5000" ToolTipService.BetweenShowDelay="2000" ToolTip="Click here to change queue type, all smurfs will be affected except running smurfs." Click="queueTypeButton_clicked"></MenuItem>
+            </Menu>
+            <StatusBar Height="25" VerticalAlignment="Bottom" Margin="0,0,0,5">
+                <StatusBarItem VerticalAlignment="Top">
+                    <TextBlock Name="statusText" Text="Remote connection is disabled at the moment, you can still change items and spells from the website." VerticalAlignment="Top"/>
+                </StatusBarItem>
+            </StatusBar>
+
+
+        </DockPanel>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Margin="10,30,0,0" Stroke="Black" VerticalAlignment="Top" Width="169"/>
+        <Label Content="Username:" Name="UsernameLabel" HorizontalAlignment="Left" Margin="10,32,0,0" VerticalAlignment="Top"/>
+        <Label Content="Package Type: Multi Smurf" Name="PType" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top"/>
+        <Label Content="Trial: Unlimited" Name="TrLabel" HorizontalAlignment="Left" Margin="10,91,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.263,0.538"/>
+        <Button Content="Game Windows" Height="39" VerticalAlignment="Top" Margin="10,231,545,0" Name="gmWindows" Click="gmWindows_click"/>
+        <Label Content="HFL Status: " HorizontalAlignment="Left" Margin="10,135,0,0" VerticalAlignment="Top" FontSize="14" FontFamily="Tahoma"/>
+        <Label Content="Updated" HorizontalAlignment="Left" Margin="85,135,0,0" VerticalAlignment="Top" FontSize="14" FontFamily="Tahoma" Foreground="Green" Background="#00AA1919"/>
+        <Label Content="BoL Status: " HorizontalAlignment="Left" Margin="10,167,0,0" VerticalAlignment="Top" FontSize="14" FontFamily="Tahoma"/>
+        <Label Content="Running" Name="BolStatus" HorizontalAlignment="Left" Margin="85,167,0,0" VerticalAlignment="Top" FontSize="14" FontFamily="Tahoma" Foreground="Red" Background="#00FF0000"/>
+        <Label Content="Number Of Smurfs: 1" Name="NumOfSums" HorizontalAlignment="Left" Margin="10,199,0,0" VerticalAlignment="Top" FontSize="14" FontFamily="Tahoma"/>
+        <DataGrid x:Name="smurfListDashBoard" Height="240" VerticalAlignment="Top" Margin="209,30,22,0" RowHeaderWidth="0" IsReadOnly="True" CanUserAddRows="false" CanUserDeleteRows="False" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Hidden" AutoGenerateColumns="False">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="FontWeight"  Value="Bold" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="  Actions  " Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Name="start_stop" Content="Start" Click="start_stop_Button"/>
+                                <Button  Name="log_button" Content="Logs" Click="log_Button" Margin="2,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Exp To Level">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ProgressBar Value="{Binding expCalc}" Width="auto" ToolTip="Experience ratio remaining to next level"/>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding expCalc}" ToolTip="Experience ratio remaining to next level"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Username">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding username}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Password">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding password}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Level">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding level}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Max Level">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding maxLevel}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Log Count">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Logs}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+
+</Window>
