@@ -40,13 +40,21 @@ namespace HFL_Remastered
         static extern bool EnableWindow(IntPtr hWnd, bool enable);
         [DllImport("user32.dll")]
         private static extern int ShowWindow(IntPtr hWnd, int nCmdShow);
-
-
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool IsWindowVisible(IntPtr hWnd);
+        [DllImport("winmm.dll", EntryPoint = "waveOutSetVolume")]
+        public static extern int WaveOutSetVolume(IntPtr hwo, uint dwVolume);
+        [DllImport("winmm.dll", SetLastError = true)]
+        public static extern bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);
 
         private const int SW_SHOW = 5;
-        private const int SW_HIDE = 0;             
-        private static BackgroundWorker bgWorker = new BackgroundWorker();
-        public static ObservableCollection<handle> smurfList = new ObservableCollection<handle>();
+        private const int SW_HIDE = 0;
+        public ObservableCollection<handle> smurfList = new ObservableCollection<handle>();
+        CustomWindow fake = new CustomWindow();
+        BackgroundWorker bw = new BackgroundWorker();
 
 
 
@@ -55,27 +63,73 @@ namespace HFL_Remastered
             InitializeComponent();
             this.DataContext = this;
             runningSmurfs.ItemsSource = smurfList;
-            bgWorker.WorkerSupportsCancellation = false;
-            bgWorker.WorkerReportsProgress = true;
-            bgWorker.DoWork += worker;
-            bgWorker.RunWorkerAsync();
+            bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+            bw.RunWorkerAsync();
+        }
+
+        public int runningCount()
+        {
+            return smurfList.Count;
+        }
+
+        public void gameEnded(string username)
+        {
+
+        }
+
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            IntPtr HWND;
+            while (FindWindow("RiotWindowClass", "League of Legends (TM) Client") == (IntPtr)0)
+            {
+                Thread.Sleep(100);
+            }
+            HWND = FindWindow("RiotWindowClass", "League of Legends (TM) Client");
+            while (true)
+            {
+                if (HWND != (IntPtr)0)
+                {
+                    if (IsWindowVisible(HWND))
+                    {
+                        ShowWindow(HWND, SW_HIDE);
+                    }
+                }
+                Thread.Sleep(100);
+            }
         }
 
         public void addWindow(Process exe, string smurfName)
         {
-            IntPtr windowHandle = new WindowInteropHelper(this).Handle;
-            SetParent(exe.MainWindowHandle, windowHandle);
-            MoveWindow(exe.MainWindowHandle, 120, 40, 1080, 640, true);
-            SetWindowLong(exe.MainWindowHandle, -16, 0x11800000);
-            EnableWindow(exe.MainWindowHandle, false);
-            ShowWindow(exe.MainWindowHandle, SW_HIDE);
-
-
-            handle newSmurf = new handle(exe, smurfName);
-            smurfList.Add(newSmurf);
+            handle existedSmurf = smurfList.FirstOrDefault(e => (e.smurfName == smurfName));
+            if (existedSmurf != null)
+            {
+                existedSmurf.process = exe;
+            }
+            else
+            {
+                handle newSmurf = new handle(exe, smurfName);
+                smurfList.Add(newSmurf);
+            }
+            modifyWindows();
         }
 
-        public class handle{
+        public void modifyWindows()
+        {
+            foreach (handle smurf in smurfList)
+            {
+                Thread.Sleep(150);
+                IntPtr windowHandle = new WindowInteropHelper(this).Handle;
+                SetParent(smurf.process.MainWindowHandle, windowHandle);
+                MoveWindow(smurf.process.MainWindowHandle, 0, 0, 640, 480, true);
+                SetWindowLong(smurf.process.MainWindowHandle, -16, 0x11800000);
+                EnableWindow(smurf.process.MainWindowHandle, false);
+                ShowWindow(smurf.process.MainWindowHandle, SW_HIDE);
+            }
+        }
+
+        public class handle
+        {
             public string smurfName { get; set; }
             internal Process process;
 
@@ -83,21 +137,6 @@ namespace HFL_Remastered
             {
                 process = _pro;
                 smurfName = _smuf;
-            }
-        }
-
-        public static void worker(object sender, DoWorkEventArgs e)
-        {
-            while (true)
-            {
-                foreach (handle proc in smurfList)
-                {
-                    if (!proc.process.Responding || proc.process.HasExited)
-                    {
-                        smurfList.Remove(proc);
-                    }
-                }
-                Thread.Sleep(300);
             }
         }
 
@@ -110,10 +149,18 @@ namespace HFL_Remastered
 
         }
 
-        public void hideAll(){
-            foreach(handle exe in smurfList){
+        public void hideAll()
+        {
+            foreach (handle exe in smurfList)
+            {
                 ShowWindow(exe.process.MainWindowHandle, SW_HIDE);
             }
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            e.Cancel = true;
         }
 
         public void killAll()
@@ -129,12 +176,6 @@ namespace HFL_Remastered
 
                 }
             }
-        }
-
-        private void window_Closinh(object sender, CancelEventArgs e)
-        {
-            e.Cancel = true;
-            this.Visibility = Visibility.Hidden;
         }
     }
 }

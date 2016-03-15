@@ -6,10 +6,11 @@
  * # MainCtrl
  * Controller of the sbAdminApp
  */
-angular.module('sbAdminApp').controller('remote', function($rootScope,$scope, $http) {
+angular.module('sbAdminApp').controller('remote', function($rootScope, $scope, $http, Websocket) {
     if(!$scope.user){
     	return false;
     }
+    $scope.sendChatText = "";
 
     $scope.selectedRemote = false;
 
@@ -40,7 +41,6 @@ angular.module('sbAdminApp').controller('remote', function($rootScope,$scope, $h
 
     $scope.setMap = function(){
     	var map = $scope.selectedRemote.data[9];
-    	console.log(map);
     	if(map == "summonerRift"){
             var mapX = $("#currentmap").width()*$scope.selectedRemote.data[7]/14716;
             var mapZ = $("#currentmap").height()*$scope.selectedRemote.data[8]/14824;
@@ -55,6 +55,19 @@ angular.module('sbAdminApp').controller('remote', function($rootScope,$scope, $h
     $scope.$watch("selectedRemote", function(){
     	if($scope.selectedRemote){
     		$scope.setMap();
+
+            setTimeout(function(){
+                var objDiv = document.getElementById("chatscroller");
+                objDiv.scrollTop = objDiv.scrollHeight;
+            },100);
     	}
     },true)
+
+    
+    $scope.sendText = function(text){
+        Websocket.send({type:"submitChat",gameid:$scope.selectedRemote.gameid,text:text});
+        $scope.sendChatText = "";
+        text = "";
+        document.getElementById("inputforchat").value = "";
+    }
 });

@@ -99,16 +99,27 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 
 	$scope.$watch(function(){
 		return $scope.user.userData
-	}, function(){
-		$scope.user.userData.smurfs.forEach(function(smurf){
-			if (smurf.group > -1 && smurf.group != null){
-				smurf.group = smurf.group.toString();
-			}
-		});
-		$scope.user.userData.logs = [];
-		$http.post("http://handsfreeleveler.com:4446/api/updateSmurfs", {userData:$scope.user.userData}).then(function(res){
-			//console.log(res.data);
-		});
+	}, function(newValue, oldValue){
+	  	var difFound = false;
+	    for(var x in $scope.user.userData){
+	    	if(x != "logs"){
+	    		if (oldValue[x] != newValue[x]){
+	    			difFound = true;
+	    		}
+	    	}
+	    }
+	    if (difFound){
+			$scope.user.userData.smurfs.forEach(function(smurf){
+				if (smurf.group > -1 && smurf.group != null){
+					smurf.group = smurf.group.toString();
+				}
+			});
+			var tempData = angular.copy($scope.user.userData);
+			tempData.logs = [];
+			$http.post("http://handsfreeleveler.com:4446/api/updateSmurfs", {userData:tempData}).then(function(res){
+				//console.log(res.data);
+			});
+		}
 	},true);
 
 	$scope.showSmurfAction = function(smurf,type){

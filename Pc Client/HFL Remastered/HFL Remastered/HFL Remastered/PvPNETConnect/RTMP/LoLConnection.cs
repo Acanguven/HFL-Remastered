@@ -42,6 +42,8 @@ namespace LoLLauncher
         private string loginQueue;
         private string locale;
         private string clientVersion;
+        private string regionName;
+        private Smurf owner;
 
         /** Garena information */
         private bool useGarena = false;
@@ -89,15 +91,17 @@ namespace LoLLauncher
 
         #region Connect, Login, and Heartbeat Methods
 
-        public void Connect(string user, string password, Region region, string clientVersion)
+        public void Connect(string user, string password, Region region, Smurf _owner)
         {
             if (!this.isConnected)
             {
                 new Thread(delegate(object state)
                 {
+                    this.owner = _owner;
                     this.user = user;
                     this.password = password;
-                    this.clientVersion = clientVersion;
+                    this.regionName = region.ToString();
+                    this.clientVersion = RegionInfo.getRegionVersion(region.ToString());
                     this.server = RegionInfo.GetServerValue(region);
                     this.loginQueue = RegionInfo.GetLoginQueueValue(region);
                     this.locale = RegionInfo.GetLocaleValue(region);
@@ -544,8 +548,8 @@ namespace LoLLauncher
             if (result["result"].Equals("_error"))
             {
                 string newVersion = (string)result.GetTO("data").GetTO("rootCause").GetArray("substitutionArguments")[1];
-                Disconnect();
-                SmurfManager.smurfs.First(smurf => (smurf.username == user)).updateRegion(newVersion);
+                Logger.Push("Updated " + regionName + " region information","info");
+                RegionInfo.updateRegionVersion(regionName, newVersion);
                 return false;
             }
 

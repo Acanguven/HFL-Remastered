@@ -5,7 +5,7 @@ angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootSco
 
   function injectStuff(){
 	  ws.onMessage(function (event) {
-	  	console.log('Recieved Message', event);
+	  	//console.log('Recieved Message', event);
 	    var response;
 	    try {
 	        response = angular.fromJson(event.data);
@@ -121,6 +121,9 @@ angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootSco
   		var found = false;
         for(var x = 0; x < $rootScope.liveData.remote.length; x++){
             if($rootScope.liveData.remote[x].gameid == data.info.gameid){
+            	if (!$rootScope.liveData.remote[x].chat){
+            		$rootScope.liveData.remote[x].chat = [];
+            	}
                 $rootScope.liveData.remote[x].data = data.info.data;
                 $rootScope.liveData.remote[x].lastPing = Date.now();
                 found = true;
@@ -140,6 +143,17 @@ angular.module('sbAdminApp').factory('Websocket', function ($websocket, $rootSco
         }
         if(found !== false){
         	$rootScope.liveData.remote.splice(x,1);
+        }
+  	});
+  	Websocket.on('chatUpdate', function(data){
+  		var found = false;
+        for(var x = 0; x < $rootScope.liveData.remote.length; x++){
+            if($rootScope.liveData.remote[x].gameid == data.gameid){
+                found = x;
+            }
+        }
+        if (found !== false){
+        	$rootScope.liveData.remote[found].chat = data.chats;
         }
   	});
 })

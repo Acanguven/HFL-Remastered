@@ -31,6 +31,18 @@ angular.module('sbAdminApp')
 });
 
 angular.module('sbAdminApp')
+    .directive('chathero', function() {
+    return {
+        restrict : 'E',
+        template : '<img class="img-circle" src="http://ddragon.leagueoflegends.com/cdn/6.5.1/img/champion/{{name}}.png" style="margin-bottom:10px;cursor:pointer;" height="50px"/>',
+        scope: {
+            name: "=",
+        },
+        replace:true
+    }
+});
+
+angular.module('sbAdminApp')
     .directive('herolist', function() {
     return {
         restrict : 'E',

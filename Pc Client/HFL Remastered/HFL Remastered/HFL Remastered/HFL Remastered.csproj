@@ -116,6 +116,7 @@
     <Compile Include="BotThread.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="Connection.cs" />
+    <Compile Include="CustomWindow.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="GameMask.xaml.cs">

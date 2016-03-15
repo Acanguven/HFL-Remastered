@@ -106,5 +106,293 @@ namespace HFL_Remastered.Properties {
                 this["logging"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string NA {
+            get {
+                return ((string)(this["NA"]));
+            }
+            set {
+                this["NA"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string EUW {
+            get {
+                return ((string)(this["EUW"]));
+            }
+            set {
+                this["EUW"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string EUN {
+            get {
+                return ((string)(this["EUN"]));
+            }
+            set {
+                this["EUN"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string KR {
+            get {
+                return ((string)(this["KR"]));
+            }
+            set {
+                this["KR"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string BR {
+            get {
+                return ((string)(this["BR"]));
+            }
+            set {
+                this["BR"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string TR {
+            get {
+                return ((string)(this["TR"]));
+            }
+            set {
+                this["TR"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string RU {
+            get {
+                return ((string)(this["RU"]));
+            }
+            set {
+                this["RU"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string PBE {
+            get {
+                return ((string)(this["PBE"]));
+            }
+            set {
+                this["PBE"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string SG {
+            get {
+                return ((string)(this["SG"]));
+            }
+            set {
+                this["SG"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string MY {
+            get {
+                return ((string)(this["MY"]));
+            }
+            set {
+                this["MY"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string SGMY {
+            get {
+                return ((string)(this["SGMY"]));
+            }
+            set {
+                this["SGMY"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string TW {
+            get {
+                return ((string)(this["TW"]));
+            }
+            set {
+                this["TW"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string TH {
+            get {
+                return ((string)(this["TH"]));
+            }
+            set {
+                this["TH"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string PH {
+            get {
+                return ((string)(this["PH"]));
+            }
+            set {
+                this["PH"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string VN {
+            get {
+                return ((string)(this["VN"]));
+            }
+            set {
+                this["VN"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string OCE {
+            get {
+                return ((string)(this["OCE"]));
+            }
+            set {
+                this["OCE"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string LAN {
+            get {
+                return ((string)(this["LAN"]));
+            }
+            set {
+                this["LAN"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string LAS {
+            get {
+                return ((string)(this["LAS"]));
+            }
+            set {
+                this["LAS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        public string EUNE {
+            get {
+                return ((string)(this["EUNE"]));
+            }
+            set {
+                this["EUNE"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool packetSearch {
+            get {
+                return ((bool)(this["packetSearch"]));
+            }
+            set {
+                this["packetSearch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool buyBoost {
+            get {
+                return ((bool)(this["buyBoost"]));
+            }
+            set {
+                this["buyBoost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool reconnect {
+            get {
+                return ((bool)(this["reconnect"]));
+            }
+            set {
+                this["reconnect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool disableGpu {
+            get {
+                return ((bool)(this["disableGpu"]));
+            }
+            set {
+                this["disableGpu"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool manualInjection {
+            get {
+                return ((bool)(this["manualInjection"]));
+            }
+            set {
+                this["manualInjection"] = value;
+            }
+        }
     }
 }

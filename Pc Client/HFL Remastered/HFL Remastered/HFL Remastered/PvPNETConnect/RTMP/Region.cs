@@ -125,6 +125,17 @@ namespace LoLLauncher
 
     public static class RegionInfo
     {
+        public static string getRegionVersion(String name)
+        {
+            return HFL_Remastered.Properties.Settings.Default[name].ToString();
+        }
+
+        public static void updateRegionVersion(String name,String version)
+        {
+            HFL_Remastered.Properties.Settings.Default[name] = version;
+            HFL_Remastered.Properties.Settings.Default.Save();
+        }
+
         public static string GetServerValue(Enum value)
         {
             string output = null;

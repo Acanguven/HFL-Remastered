@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Windows.Controls;
@@ -23,10 +24,30 @@ namespace HFL_Remastered
     {
         //public static Socket socket;
         private static WebSocket websocket = new WebSocket("ws://handsfreeleveler.com:4447/");
+        private static List<string> sendqueue = new List<string>();
         private CommandManager cmd;
         private bool underRecon = false;
         public static bool socketLive {get; set;}
         private bool underSettingsNotify = false;
+        private DateTime lastSend = DateTime.Now;
+
+        private void sendManager(){
+            while (true) { 
+                DateTime tLast = lastSend;
+                tLast = tLast.AddMilliseconds(200);
+                if (tLast < DateTime.Now)
+                {
+                    string msg = sendqueue.FirstOrDefault();
+                    if (msg != null)
+                    {
+                        lastSend = DateTime.Now;
+                        websocket.Send(msg);
+                        sendqueue.RemoveAt(0);
+                    }
+                }
+                Thread.Sleep(200);
+            }
+        }
 
         public void init(double remainingTrial,int type)
         {
@@ -44,6 +65,8 @@ namespace HFL_Remastered
                 Text = "Trial Expired";
                 Foreground = "Red";
             }
+            Thread managerThread = new Thread(new ThreadStart(sendManager));
+            managerThread.Start();
         }
 
         private void injectCallbacks()
@@ -95,11 +118,36 @@ namespace HFL_Remastered
                 case "updateSettings":
                     Logger.Push("Settings Updated", "info");
                     dynamic settings = msg.Value<dynamic>("settings");
+
                     App.Client.UserData.Settings.PacketSearch = (bool)settings.packetSearch;
+                    Properties.Settings.Default.packetSearch = App.Client.UserData.Settings.PacketSearch;
                     App.Client.UserData.Settings.BuyBoost = (bool)settings.buyBoost;
+                    Properties.Settings.Default.buyBoost = App.Client.UserData.Settings.BuyBoost;
                     App.Client.UserData.Settings.Reconnect = (bool)settings.reconnect;
+                    Properties.Settings.Default.reconnect = App.Client.UserData.Settings.Reconnect;
                     App.Client.UserData.Settings.DisableGpu = (bool)settings.disableGpu;
+                    Properties.Settings.Default.disableGpu = App.Client.UserData.Settings.DisableGpu;
                     App.Client.UserData.Settings.ManualInjection = (bool)settings.manualInjection;
+                    Properties.Settings.Default.manualInjection = App.Client.UserData.Settings.ManualInjection;
+                    Properties.Settings.Default.Save();
+
+                    App.gameContainer.Dispatcher.Invoke(new Action(() =>
+                    {
+                        if (App.Client.UserData.Settings.DisableGpu)
+                        {
+                            App.gameContainer.Show();
+                        }
+                        else
+                        {
+                            if (App.gameContainer.runningCount() == 0)
+                            {
+                                App.gameContainer.Hide();
+                            }
+                        }
+                    }), DispatcherPriority.ContextIdle);
+                    
+                    
+                    
                     SystemSounds.Asterisk.Play();
                     if (!underSettingsNotify) {
                         underSettingsNotify = true;
@@ -154,7 +202,7 @@ namespace HFL_Remastered
             smurfPacket.smurfs = (JArray)JToken.FromObject(smurfList);
             smurfPacket.groups = (JArray)JToken.FromObject(groupList);
             string buffer = smurfPacket.ToString(Formatting.None);
-            websocket.Send(buffer);
+            sendqueue.Add(buffer);
         }
 
         public static void updateSmurfData(Smurf smurf)
@@ -167,7 +215,7 @@ namespace HFL_Remastered
             smurfPacket.smurf.currentip = smurf.currentip;
             smurfPacket.smurf.currentrp = smurf.currentrp;
             string buffer = smurfPacket.ToString(Formatting.None);
-            websocket.Send(buffer);
+            sendqueue.Add(buffer);
         }
 
 
@@ -179,14 +227,14 @@ namespace HFL_Remastered
                 cmdPacket.type = "cmdLog";
                 cmdPacket.text = line;
                 string buffer = cmdPacket.ToString(Formatting.None);
-                websocket.Send(buffer);
+                sendqueue.Add(buffer);
             }
         }
 
         public void sendLog(string buffer){
             if (socketLive)
             {
-                websocket.Send(buffer);
+                sendqueue.Add(buffer);
             }
         }
 
@@ -218,7 +266,7 @@ namespace HFL_Remastered
             loginPacket.token = App.Client.Token;
             string buffer = loginPacket.ToString(Formatting.None);
 
-            websocket.Send(buffer);
+            sendqueue.Add(buffer);
 
             Logger.Push("Client started and ready to listen commands.", "info");
         }
@@ -290,7 +338,7 @@ namespace HFL_Remastered
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static bool IsPropertyExists(dynamic dynamicObj, string property)
+        public bool IsPropertyExists(dynamic dynamicObj, string property)
         {
             try
             {

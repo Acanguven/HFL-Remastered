@@ -1,11 +1,11 @@
 ﻿<Window x:Class="HFL_Remastered.GameMask"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Game Windows" Height="723.931" Width="1236.022" Icon="Resources/favicon.ico" Closing="window_Closinh">
+        Title="Game Windows" Height="520.946" Width="792.739" Icon="Resources/favicon.ico"  ResizeMode="CanMinimize">
     <Grid>
-        <Label Content="Game Windows" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Right" Height="640" Margin="0,40,10,0" Stroke="Black" VerticalAlignment="Top" Width="1080"/>
-        <ListBox HorizontalAlignment="Left" Height="643" Margin="3,41,0,0" VerticalAlignment="Top" Width="113" Name="runningSmurfs">
+        <Label Content="Game Windows" HorizontalAlignment="Left" Margin="660,10,0,0" VerticalAlignment="Top"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="480" Margin="0,0,0,0" Stroke="Black" VerticalAlignment="Top" Width="640"/>
+        <ListBox HorizontalAlignment="Left" Height="444" Margin="654,36,0,0" VerticalAlignment="Top" Width="113" Name="runningSmurfs" ItemsSource="{Binding smurfList, Mode=OneWay}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Button Content="{Binding Path=smurfName}" Width="100" Click="smurfWindow_click"></Button>

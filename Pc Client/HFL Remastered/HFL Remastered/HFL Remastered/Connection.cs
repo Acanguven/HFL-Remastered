@@ -65,7 +65,7 @@ namespace HFL_Remastered
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
-                    Application.Current.Shutdown();
+                    Process.GetCurrentProcess().Kill();
                     return false;
                 }
             }
@@ -97,13 +97,13 @@ namespace HFL_Remastered
                 else
                 {
                     MessageBox.Show("Cant check for updates terminating.");
-                    Application.Current.Shutdown();
+                    Process.GetCurrentProcess().Kill();
                 }
             }
             catch (Exception)
             {
                 MessageBox.Show("Cant check for updates terminating.");
-                Application.Current.Shutdown();
+                Process.GetCurrentProcess().Kill();
             }
             return false;
         }

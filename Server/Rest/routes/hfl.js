@@ -8,7 +8,7 @@ var fs = require("fs");
 var js2lua = require('js2lua');
 var net = require('net');
 var Table = require('cli-table2');
-var VERSION = "1.2"
+var VERSION = "1.3"
 mongoose.connect("mongodb://127.0.0.1:27017/hflRest");
 var db = mongoose.connection;
 var fs = require("fs");
@@ -230,7 +230,6 @@ router.post("/updateBol", verifyTokenDetectUser, function(req, res, next) {
         if(count === 0){
             req.user.bol = req.body.bol;
             req.user.markModified("bol")
-            console.log(req.user.bol)
             req.user.save();
             res.end();
         }
@@ -487,9 +486,6 @@ function SocketMap() {
             } else if (type == "remote") {
                 this.groupList[user.uid].removeRemote(ws);
             }
-            if (this.groupList[user.uid].getRemoteCount() + this.groupList[user.uid].getControllerCount() === 0) {
-                delete this.groupList[user.uid];
-            }
         }
     }
 
@@ -530,10 +526,11 @@ function SocketMap() {
     }
 
     //Script Module
-    this.addScript = function(uid, socket, gameid, champion){
-        if (this.groupList[uid]) {
-            this.groupList[uid].addScript(socket,gameid,champion)
+    this.addScript = function(uid, socket, gameid, champion, user){
+        if (!this.groupList[uid]) {
+            this.groupList[uid] = new Group(user);
         }
+        this.groupList[uid].addScript(socket,gameid,champion)
     }
 
     this.scriptPing = function(uid,data){
@@ -546,6 +543,20 @@ function SocketMap() {
         if(socket.uid && socket.gameid){
             if (this.groupList[socket.uid]) {
                 this.groupList[socket.uid].removeScript(socket.gameid)
+            }
+        }
+    }
+
+    this.updateChat = function(uid,chats,gameid){
+        if (this.groupList[uid]) {
+            this.groupList[uid].updateChat(chats,gameid)
+        }
+    }
+
+    this.submitChat = function(ws,data){
+        if(ws.user.uid){
+            if (this.groupList[ws.user.uid]) {
+                this.groupList[ws.user.uid].submitChat(data.gameid,data.text)
             }
         }
     }
@@ -708,8 +719,9 @@ function Group(user) {
             if (script.gameid == gameid){
                 script.socket = socket;
                 found = true;
+                console.log("User " + this.user.uid + " script updated");
             }
-        })
+        });
         if(!found){
             var script = {
                 socket: socket,
@@ -717,6 +729,7 @@ function Group(user) {
                 champion: champion
             }
             this.scripts.push(script);
+            //console.log("User " + this.user.uid + " script logged in");
         }
     }
 
@@ -740,12 +753,35 @@ function Group(user) {
         }
         if(found !== false){
             this.scripts.splice(found,1);
+            //console.log("User " + this.user.uid + " script removed");
             this.remote.forEach(function(rmt) {
                 rmt.socket.send(JSON.stringify({
                     type: "removeScript",
                     gameid: gameid
                 }));
             });
+        }
+    }
+
+    this.updateChat = function(chats,gameid){
+        this.remote.forEach(function(rmt) {
+            rmt.socket.send(JSON.stringify({
+                type: "chatUpdate",
+                gameid: gameid,
+                chats:chats
+            }));
+        });
+    }
+
+    this.submitChat = function(gameid,text){
+        var found = false;
+        for(var x = 0; x < this.scripts.length; x++){
+            if(this.scripts[x].gameid == gameid){
+                found = this.scripts[x];
+            }
+        }
+        if(found !== false){
+            found.socket.write(scriptPacket("pushchat",text));
         }
     }
 }
@@ -856,6 +892,9 @@ function handleMessage(data, ws) {
                 });
             }
         	break;
+        case 'submitChat':
+            socketMap.submitChat(ws, data);
+        break;
     }
 }
 
@@ -935,27 +974,27 @@ net.createServer(function(socket) {
 function scriptManager(cmd,socket){
 	switch(cmd[0]){
 		case "login":
-			User.findOne({bol:cmd[1]},"type trial uid ai", function(err,user){
+			User.findOne({bol:cmd[1]},"type trial uid", function(err,user){
                 if(err || !user){
                     socket.write(scriptPacket("login","Failed to authenticate "+cmd[1]+", you should set Bol Settings on Remote Controller"));
                 }else{
                     if (user.type == 2 || user.type == 1){
-                        var convertedCode = js2lua.convert(user.ai.items[cmd[3].toLowerCase()])
-                        socket.write(scriptPacket("login","Successfuly logged in "+cmd[1],convertedCode));
+                        socket.write(scriptPacket("login","Successfuly logged in "+cmd[1]));
                         socket.uid = user.uid;
+                        socket.chats = [];
                         socket.champion = cmd[3].toLowerCase();
                         socket.gameid = cmd[2];
-                        socketMap.addScript(user.uid, socket, cmd[2], cmd[3])
+                        socketMap.addScript(user.uid, socket, cmd[2], cmd[3],user)
                     }else{
                         var ts = Date.now()
                         if(user.trial - ts > 0){
                             var minutes = Math.round((user.trial - ts) / 60000)
-                            var convertedCode = js2lua.convert(user.ai.items[cmd[3].toLowerCase()])
-                            socket.write(scriptPacket("login","Successfuly logged in "+cmd[1]+", " + minutes + " minutes remain.",convertedCode));
+                            socket.write(scriptPacket("login","Successfuly logged in "+cmd[1]+", " + minutes + " minutes remain."));
                             socket.uid = user.uid;
+                            socket.chats = [];
                             socket.champion = cmd[3].toLowerCase();
                             socket.gameid = cmd[2];
-                            socketMap.addScript(user.uid, socket, cmd[2], cmd[3])
+                            socketMap.addScript(user.uid, socket, cmd[2], cmd[3],user)
                         }else{
                             socket.write(scriptPacket("login","Your trial is expired "+cmd[1]));
                         }
@@ -974,6 +1013,18 @@ function scriptManager(cmd,socket){
                 info['gameid'] = socket.gameid;
                 socketMap.scriptPing(socket.uid,info)
                 socket.write(scriptPacket("pong",Date.now()));
+            }
+        break;
+        case "chatRecieve":
+            if(socket.uid && socket.champion && socket.gameid){
+                socket.chats.push({hero:cmd[1],name:cmd[2],team:cmd[3],text:cmd[4]});
+                socketMap.updateChat(socket.uid,socket.chats,socket.gameid);
+            }
+        break;
+        case "chatSent":
+            if(socket.uid && socket.champion && socket.gameid){
+                socket.chats.push({hero:cmd[1],name:cmd[2],team:cmd[3],text:cmd[4]});
+                socketMap.updateChat(socket.uid,socket.chats,socket.gameid);
             }
         break;
 	}

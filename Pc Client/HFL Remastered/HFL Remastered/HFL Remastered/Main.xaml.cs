@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using WinForms = System.Windows.Forms;
+using System.Diagnostics;
 
 namespace HFL_Remastered
 {
@@ -38,7 +39,17 @@ namespace HFL_Remastered
             updateHome();
             net.init(remainingTrial, App.Client.UserData.Type);
             uiversion.Text = "Version " + App.version;
-            App.gameContainer.Show();
+
+            App.Client.UserData.Settings.PacketSearch = Properties.Settings.Default.packetSearch;
+            App.Client.UserData.Settings.BuyBoost = Properties.Settings.Default.buyBoost;
+            App.Client.UserData.Settings.Reconnect = Properties.Settings.Default.reconnect;
+            App.Client.UserData.Settings.DisableGpu = Properties.Settings.Default.disableGpu;
+            App.Client.UserData.Settings.ManualInjection = Properties.Settings.Default.manualInjection;
+
+            if (App.Client.UserData.Settings.DisableGpu)
+            {
+                App.gameContainer.Show();
+            }
         }
 
         private WindowState m_storedWindowState = WindowState.Normal;
@@ -116,7 +127,7 @@ namespace HFL_Remastered
         {
             try {
                 m_notifyIcon.Visible = false;
-                Application.Current.Shutdown();
+                Process.GetCurrentProcess().Kill();
             }
             catch (Exception ex)
             {

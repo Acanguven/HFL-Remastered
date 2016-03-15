@@ -60,6 +60,11 @@
 			            <span class="pull-right text-muted small"><em>{{floor(selectedRemote.data[6])}}</em>
 			            </span>
 			        </a>
+			        <a class="list-group-item">
+			            <i class="fa fa-usd fa-fw"></i> Game Id
+			            <span class="pull-right text-muted small"><em>{{selectedRemote.gameid}}</em>
+			            </span>
+			        </a>
 			    </div>
             </div>
         </div>
@@ -88,71 +93,18 @@
 		        Chat
 		    </div>
 		    <!-- /.panel-heading -->
-		    <div class="panel-body" style="height:450px;">
-		    	<p>This feature will be released when Bol fixed</p>	
-		        <ul class="chat" style="display:none;">
-		            <li class="left clearfix">
+		    <div class="panel-body" style="height:450px;" id="chatscroller">
+		        <ul class="chat">
+		            <li ng-repeat="chat in selectedRemote.chat" class="clearfix" ng-class="(chat.team=='ally') ? 'left' : 'right'">
 		                <span class="chat-img pull-left">
-		                    <hero name="draven" chat="chat"></hero>
+		                    <chathero name="chat.hero" chat="chat"></chathero>
 		                </span>
 		                <div class="chat-body clearfix">
 		                    <div class="header" style="margin-bottom:10px;">
-		                        <strong class="primary-font">You</strong>
+		                        <strong class="primary-font">{{chat.name}}</strong>
 		                    </div>
 		                    <p>
-		                        Lol I am testing my remote chat at the moment :D
-		                    </p>
-		                </div>
-		            </li>
-		            <li class="right clearfix">
-		                <span class="chat-img pull-right">
-		                    <hero name="vayne" chat="chat"></hero>
-		                </span>
-		                <div class="chat-body clearfix">
-		                    <div class="header" style="height:22px;margin-bottom:10px;">
-		                        <strong class="pull-right primary-font">thelawtest48</strong>
-		                    </div>
-		                    <p>
-		                        Wtf is that?
-		                    </p>
-		                </div>
-		            </li>
-		            <li class="left clearfix">
-		                <span class="chat-img pull-left">
-		                    <hero name="draven" chat="chat"></hero>
-		                </span>
-		                <div class="chat-body clearfix">
-		                    <div class="header" style="margin-bottom:10px;">
-		                        <strong class="primary-font">You</strong>
-		                    </div>
-		                    <p>
-		                        You will see soon
-		                    </p>
-		                </div>
-		            </li>
-		            <li class="left clearfix">
-		                <span class="chat-img pull-left">
-		                    <hero name="draven" chat="chat"></hero>
-		                </span>
-		                <div class="chat-body clearfix">
-		                    <div class="header" style="margin-bottom:10px;">
-		                        <strong class="primary-font">You</strong>
-		                    </div>
-		                    <p>
-		                        :)
-		                    </p>
-		                </div>
-		            </li>
-		            <li class="right clearfix">
-		                <span class="chat-img pull-right">
-		                    <hero name="vayne" chat="chat"></hero>
-		                </span>
-		                <div class="chat-body clearfix">
-		                    <div class="header" style="height:22px;margin-bottom:10px;">
-		                        <strong class="pull-right primary-font">thelawtest48</strong>
-		                    </div>
-		                    <p>
-		                        Hahaha
+		                        {{chat.text}}
 		                    </p>
 		                </div>
 		            </li>
@@ -161,9 +113,9 @@
 		                <!-- /.panel-body -->
 		    <div class="panel-footer">
 		        <div class="input-group">
-		            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here...">
+		            <input id="inputforchat" type="text" class="form-control input-sm" placeholder="Type your message here..." ng-model="sendChatText" ng-enter="sendText(sendChatText)">
 		            <span class="input-group-btn">
-		                <button class="btn btn-warning btn-sm" id="btn-chat">
+		                <button class="btn btn-warning btn-sm" id="btn-chat" ng-click="sendText(sendChatText)">
 		                    Send
 		                </button>
 		            </span>

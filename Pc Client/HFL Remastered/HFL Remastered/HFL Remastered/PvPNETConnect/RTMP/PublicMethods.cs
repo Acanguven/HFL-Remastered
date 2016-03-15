@@ -629,9 +629,26 @@ namespace LoLLauncher
             Invoke("lcdsGameInvitationService", "invite", new object[] { id });
         }
 
-        public async Task attachTeamToQueue(MatchMakerParams qqq)
+        public async Task<SearchingForMatchNotification> attachTeamToQueue(MatchMakerParams qqq)
         {
-            Invoke("matchmakerService", "attachTeamToQueue", new object[] { qqq.GetBaseTypedObject() });
+            int Id = Invoke("matchmakerService", "attachTeamToQueue", new object[] { qqq.GetBaseTypedObject() });
+            while (!results.ContainsKey(Id))
+                await Task.Delay(10);
+            TypedObject messageBody = results[Id].GetTO("data").GetTO("body");
+            SearchingForMatchNotification result = new SearchingForMatchNotification(messageBody);
+            results.Remove(Id);
+            return result;
+        }
+
+        public async Task<SearchingForMatchNotification> attachTeamToQueue(MatchMakerParams qqq, string token)
+        {
+            int Id = Invoke("matchmakerService", "attachTeamToQueue", new object[] { qqq.GetBaseTypedObject(), token });
+            while (!results.ContainsKey(Id))
+                await Task.Delay(10);
+            TypedObject messageBody = results[Id].GetTO("data").GetTO("body");
+            SearchingForMatchNotification result = new SearchingForMatchNotification(messageBody);
+            results.Remove(Id);
+            return result;
         }
         
 

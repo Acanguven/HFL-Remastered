@@ -47,7 +47,7 @@ using System.Windows.Documents;
 
 namespace HFL_Remastered
 {
-    public class BotThread
+    public class BotThread : IDisposable
     {
         // Callbacks
         public Process exeProcess;
@@ -105,8 +105,9 @@ namespace HFL_Remastered
         public List<double> lobbyInviteQuery = new List<double>();
         public bool lobbyReady = false;
         public ProcessStartInfo lastStarter = null;
+        private bool m_disposed = false;
 
-        public void init(string _username, string _password, int _desiredLevel, Region _region, QueueTypes _queue, Smurf _smurf, string _regionVersion)
+        public void init(string _username, string _password, int _desiredLevel, Region _region, QueueTypes _queue, Smurf _smurf)
         {
             username = _username;
             password = _password;
@@ -114,7 +115,6 @@ namespace HFL_Remastered
             region = _region;
             queue = _queue;
             smurf = _smurf;
-            regionVersion = _regionVersion;
             smurfGroup = smurfGroup;
 
             connection.OnConnect += new LoLConnection.OnConnectHandler(connection_OnConnect);
@@ -127,7 +127,7 @@ namespace HFL_Remastered
 
         public async void start()
         {
-            connection.Connect(username, password, region, regionVersion);
+            connection.Connect(username, password, region, smurf);
         }
 
         //Event Handslers
@@ -146,6 +146,7 @@ namespace HFL_Remastered
         #region OnError
         private void connection_OnError(object sender, LoLLauncher.Error error)
         {
+            
             if (error.Message.Contains("Wrong client version for server"))
             {
                 connection.Disconnect();
@@ -157,6 +158,10 @@ namespace HFL_Remastered
             else if (error.Message.Contains("Game was not found!"))
             {
                 Logger.Push("Somebody broke the game queue.", "info", username);
+            }
+            else if (error.Message.Contains("Riots servers are currently unavailable"))
+            {
+                smurf.restart();
             }
             else
             {
@@ -260,16 +265,16 @@ namespace HFL_Remastered
         #region OnMessage
         public async void connection_OnMessageReceived(object sender, object message)
         {
-            if (message is GameDTO) { handleGameDTO(message); return; }
-            if (message is PlayerCredentialsDto) { handlePlayerCredentialsDto(message); return; }
-            if (message is EndOfGameStats) { handleEndOfGameStats(message); return; }
-            if (message is SearchingForMatchNotification) { handleSearchingForMatchNotification((SearchingForMatchNotification)message); return; }
-            if (message is GameNotification) { handleGameNotification(message); return; }
-            if (message is InvitationRequest) { handleInvitationRequest(message); return; }
-            if (message is LobbyStatus) { handleLobbyStatus(message); return; }
-
-            //Weird Handling of end game then close game
-            if (message.ToString().Contains("EndOfGameStats")) { handleGameEnder(sender, message); return; }
+            if (!m_disposed) { 
+                if (message is GameDTO) { handleGameDTO(message); return; }
+                if (message is PlayerCredentialsDto) { handlePlayerCredentialsDto(message); return; }
+                if (message is EndOfGameStats) { handleEndOfGameStats(message); return; }
+                if (message is SearchingForMatchNotification) { handleSearchingForMatchNotification((SearchingForMatchNotification)message); return; }
+                if (message is GameNotification) { handleGameNotification(message); return; }
+                if (message is InvitationRequest) { handleInvitationRequest(message); return; }
+                if (message is LobbyStatus) { handleLobbyStatus(message); return; }
+                if (message.ToString().Contains("EndOfGameStats")) { handleGameEnder(sender, message); return; }
+            }
         }
 
         public async void handleGameDTO(object message)
@@ -378,10 +383,6 @@ namespace HFL_Remastered
             System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
             startInfo.CreateNoWindow = false;
             startInfo.WorkingDirectory = str;
-            if (App.Client.UserData.Settings.DisableGpu)
-            {
-                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            }
             startInfo.FileName = "League of Legends.exe";
             startInfo.Arguments = string.Concat(new object[] { "\"8394\" \"LoLLauncher.exe\" \"\" \"", credentials.ServerIp, " ", credentials.ServerPort, " ", credentials.EncryptionKey, " ", credentials.SummonerId, "\"" });
             Logger.Push("Starting game", "info", username);
@@ -391,22 +392,28 @@ namespace HFL_Remastered
 
         private void handleEndOfGameStats(object message)
         {
-            updateSmurfInfo();
-            if (!smurf.groupMember)
-            {
-                this.joinQueue();
-            }
-            else
-            {
-                if (smurf.isHost)
+            try { 
+                updateSmurfInfo();
+                if (!smurf.groupMember)
                 {
-                    this.createLobby();
+                    this.joinQueue();
                 }
                 else
                 {
-                    Logger.Push("Requesting host to invite me.", "info", username);
-                    smurf.hostCallback.inviteMe(summonerId);
+                    if (smurf.isHost)
+                    {
+                        this.createLobby();
+                    }
+                    else
+                    {
+                        Logger.Push("Requesting host to invite me.", "info", username);
+                        smurf.hostCallback.inviteMe(summonerId);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 
@@ -425,6 +432,7 @@ namespace HFL_Remastered
             if (smurf.groupMember) {
                 Logger.Push("Recieved party from group host, accepting.", "info", username);
                 InvitationRequest req = message as InvitationRequest;
+                Thread.Sleep(3000);
                 await connection.AcceptInviteForMatchmakingGame(req.InvitationId);
             }
             else
@@ -433,9 +441,30 @@ namespace HFL_Remastered
             }
         }
 
-        private async void handleLobbyStatus(object message)
+        public void Dispose()
         {
-            LobbyStatus lobby = message as LobbyStatus;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!m_disposed)
+            {
+                if (disposing)
+                {
+                    // Dispose managed resources
+                    // here
+                }
+                // Dispose unmanaged resources
+                // here
+                m_disposed = true;
+            }
+        }
+
+        private async void handleLobbyStatus(object messageIn)
+        {
+            LobbyStatus lobby = messageIn as LobbyStatus;
             int totalMembers = (lobby.Invitees.FindAll(member => member.InviteeState == "ACCEPTED").Count + 1);
             Logger.Push("Lobby just updated, accepted members:" + totalMembers, "info", username);
             if (totalMembers == smurf.totalGroupLength)
@@ -459,7 +488,80 @@ namespace HFL_Remastered
                     matchParams.BotDifficulty = "MEDIUM";
                 }
                 matchParams.QueueIds = new Int32[1] { (int)queue };
-                await connection.attachTeamToQueue(matchParams);
+                SearchingForMatchNotification message = await connection.attachTeamToQueue(matchParams);
+                if (message.PlayerJoinFailures == null)
+                {
+                    Logger.Push("Group joined to queue", "info", username);
+                }
+                else
+                {
+                    dynamic failure = message.PlayerJoinFailures[0];
+                    foreach (QueueDodger current in message.PlayerJoinFailures)
+                    {
+
+                        if (current.ReasonFailed == "LEAVER_BUSTED")
+                        {
+                            m_accessToken = current.AccessToken;
+                            if (current.LeaverPenaltyMillisRemaining > this.m_leaverBustedPenalty)
+                            {
+                                this.m_leaverBustedPenalty = current.LeaverPenaltyMillisRemaining;
+                            }
+                        }
+
+                        if (current.ReasonFailed == "QUEUE_DODGER")
+                        {
+                            m_accessToken = current.AccessToken;
+                            if (current.DodgePenaltyRemainingTime > this.m_leaverBustedPenalty)
+                            {
+                                this.m_leaverBustedPenalty = current.DodgePenaltyRemainingTime;
+                            }
+                        }
+
+                        if (current.ReasonFailed == "LEAVER_BUSTER_TAINTED_WARNING")
+                        {
+                            Logger.Push("Login to your account using your real client and accept the popup you will see", "danger", username);
+                            connection.Disconnect();
+                            break;
+                        }
+
+                        if (current.ReasonFailed == "QUEUE_RESTRICTED")
+                        {
+                            Logger.Push("You are too far apart in ranked to queue together.", "danger", username);
+                            connection.Disconnect();
+                        }
+                        if (current.ReasonFailed == "QUEUE_PARTICIPANTS")
+                        {
+                            Logger.Push("Not enough players for this queue type.", "danger", username);
+                            connection.Disconnect();
+                        }
+                    }
+                    if (m_leaverBustedPenalty>0)
+                    {
+                        double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
+                        Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
+                        Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
+                        if (!m_disposed)
+                        {
+                            try
+                            {
+                                message = await connection.attachTeamToQueue(matchParams, this.m_accessToken);
+                                if (message.PlayerJoinFailures == null)
+                                {
+                                    Logger.Push("Succesfully joined lower priority queue!", "info", username);
+                                }
+                                else
+                                {
+                                    Logger.Push("There was an error in joining lower priority queue.Disconnecting...", "danger", username);
+                                    this.connection.Disconnect();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -470,7 +572,7 @@ namespace HFL_Remastered
             exeProcess.Exited -= exeProcess_Exited;
             exeProcess.Kill();
             Thread.Sleep(500);
-            if (exeProcess.Responding)
+            if (exeProcess.Responding && !m_disposed)
             {
                 Process.Start("taskkill /F /IM \"League of Legends.exe\"");
             }
@@ -627,7 +729,7 @@ namespace HFL_Remastered
                      }), DispatcherPriority.ContextIdle);
                 }
                 Thread.Sleep(3000);
-                if (App.Client.UserData.Settings.ManualInjection)
+                if (App.Client.UserData.Settings.ManualInjection && !m_disposed)
                 {
                     BasicInject.Inject(exeProcess, Properties.Settings.Default.bolPath.Split(new string[] { "lol.launcher.exe" }, StringSplitOptions.None)[0] + "agent.dll");
                 }
@@ -711,21 +813,23 @@ namespace HFL_Remastered
                     double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
                     Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
                     Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
-                    try { 
-                        message = await connection.AttachToLowPriorityQueue(matchParams, this.m_accessToken);
-                        if (message.PlayerJoinFailures == null)
-                        {
-                            Logger.Push("Succesfully joined lower priority queue!", "info", username);
+                    if (!m_disposed) { 
+                        try { 
+                            message = await connection.AttachToLowPriorityQueue(matchParams, this.m_accessToken);
+                            if (message.PlayerJoinFailures == null)
+                            {
+                                Logger.Push("Succesfully joined lower priority queue!", "info", username);
+                            }
+                            else
+                            {
+                                Logger.Push("There was an error in joining lower priority queue.Disconnecting...", "danger", username);
+                                this.connection.Disconnect();
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            Logger.Push("There was an error in joining lower priority queue.Disconnecting...", "danger", username);
-                            this.connection.Disconnect();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
 
+                        }
                     }
                 }
                 else
@@ -752,12 +856,16 @@ namespace HFL_Remastered
                         {
                             Logger.Push("Waiting out queue buster: " + minutes + " minutes!", "warning", username);
                             Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
-                            try { 
-                                this.joinQueue();
-                            }
-                            catch (Exception ex)
+                            if (!m_disposed)
                             {
+                                try
+                                {
+                                    this.joinQueue();
+                                }
+                                catch (Exception ex)
+                                {
 
+                                }
                             }
                         }
                     }
@@ -809,27 +917,41 @@ namespace HFL_Remastered
             cfg.AllowSpectators = "NONE";
             cfg.GameMode = StringEnum.GetStringValue(GameMode.TwistedTreeline);
             Thread.Sleep(TimeSpan.FromMilliseconds((double)1000 * 20));
-            GameDTO game = await connection.CreatePracticeGame(cfg);
-            if (game.Id == 0)
+            if (!m_disposed)
             {
-                Logger.Push("Game failed to create", "warning", username);
-            }
-            else
-            {
-                Logger.Push("Game (" + game.Id + ") created.","info",username);
+                GameDTO game = await connection.CreatePracticeGame(cfg);
+                if (game.Id == 0)
+                {
+                    Logger.Push("Game failed to create", "warning", username);
+                }
+                else
+                {
+                    Logger.Push("Game (" + game.Id + ") created.", "info", username);
+                }
             }
 
             
         }
         void exeProcess_Exited(object sender, EventArgs e)
         {
-            if (this.loginPacket.ReconnectInfo != null && this.loginPacket.ReconnectInfo.Game != null)
+            if (!m_disposed)
             {
-                this.connection_OnMessageReceived(sender, (object)this.loginPacket.ReconnectInfo.PlayerCredentials);
-            }
-            else
-            {
-                this.connection_OnMessageReceived(sender, (object)new EndOfGameStats());
+                App.gameContainer.gameEnded(username);
+                try
+                {
+                    if (this.loginPacket.ReconnectInfo != null && this.loginPacket.ReconnectInfo.Game != null)
+                    {
+                        this.connection_OnMessageReceived(sender, (object)this.loginPacket.ReconnectInfo.PlayerCredentials);
+                    }
+                    else
+                    {
+                        this.connection_OnMessageReceived(sender, (object)new EndOfGameStats());
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
         private async void createLobby()
@@ -860,17 +982,23 @@ namespace HFL_Remastered
             {
                 lobbyReady = true;
                 Logger.Push("Lobby created successfully", "info", username);
-                await connection.Invite(11422666.0);
                 lobbyInviteUpdate();
             }
         }
         private async void updateSmurfInfo()
         {
-            loginPacket = await connection.GetLoginDataPacketForUser();
-            smurf.currentrp = loginPacket.RpBalance;
-            smurf.currentLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
-            smurf.currentip = loginPacket.IpBalance;
-            smurf.updateSelfOnRemote();
+            try
+            {
+                loginPacket = await connection.GetLoginDataPacketForUser();
+                smurf.currentrp = loginPacket.RpBalance;
+                smurf.currentLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
+                smurf.currentip = loginPacket.IpBalance;
+                smurf.updateSelfOnRemote();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }
