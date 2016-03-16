@@ -9,6 +9,11 @@
 --
 editMode = false
 debugMode = false
+if WINDOW_H == 640 then
+	gpuDisabled = true
+else
+	gpuDisabled = false
+end
 --
 -- Global Vars
 --
@@ -20,10 +25,12 @@ else
 	MAPHFLNUMBER = "12"
 end
 TEAMNUMBER = myHero.team
-VERSION = 0.23
+VERSION = 0.25
 CLIENTVERSION = ""
+--
+--
+--
 VP = nil
-stackTable = {}
 --
 -- Class Objects
 --
@@ -77,6 +84,7 @@ STAGE_MOVE = 1
 STAGE_SHOOTING = 2
 RegisteredOnAttacked = {}
 EMPTYSLOT = 999999
+stackTable = {}
 local cba
 local min, max, cos, sin, pi, huge, ceil, floor, round, random, abs, deg, asin, acos = math.min, math.max, math.cos, math.sin, math.pi, math.huge, math.ceil, math.floor, math.round, math.random, math.abs, math.deg, math.asin, math.acos
 --
@@ -191,19 +199,27 @@ class 'init'
 					end
 				end
 				AddDrawCallback(function()
-					if self.filesFound then
+					if self.filesFound and not gpuDisabled then
 						self:drawInfo()
+					end
+					if gpuDisabled then
+						self:gpuNoDraw()
 					end
 				end)
 			end
 			self:loadSprite()
 
 			AddDrawCallback(function()
-				if self.filesFound then
+				if self.filesFound and not gpuDisabled then
 					self:drawSprite()
 				end
 			end)
 		end
+	end
+
+	function init:gpuNoDraw()
+		DrawRectangle(0, 0, 90, 20, ARGB(200,0,0,0))
+		DrawText("GPU DISABLED",14,5,3,ARGB(255,0,255,0))
 	end
 
 	function init:load()
@@ -277,6 +293,7 @@ class 'init'
 		self.sep:Draw(0,340,500)
 		DrawText("User: ".. Remote.user, 15, 20, 355, ARGB(255,0,255,0))
 		DrawText("Server Version: ".. Remote.version, 15, 20, 375, ARGB(255,0,255,0))
+		DrawText("GId: ".. Remote.gameId, 15, 140, 375, ARGB(255,0,255,0))
 		if Remote.loggedIn then
 			DrawText("Auth: Authenticated", 15, 180, 355, ARGB(255,0,255,0))
 		else
@@ -301,7 +318,9 @@ class 'init'
 class 'debugger'
 	function debugger:__init()
 		AddDrawCallback(function()
-			self:nodeManagerDraw()
+			if not gpuDisabled then
+				self:nodeManagerDraw()
+			end
 		end)
 
 		AddMsgCallback(function(e,t)
@@ -444,7 +463,9 @@ class 'editor'
 		end)
 
 		AddDrawCallback(function()
-			self:drawManager()
+			if not gpuDisabled then
+				self:drawManager()
+			end
 		end)
 
 		--Editor Locals
@@ -1678,7 +1699,7 @@ class '_Minions'
 		end)
 
 		AddDrawCallback(function ()
-			if debugMode then
+			if debugMode and not gpuDisabled then
 				self:drawManager()
 			end
 		end)
@@ -1812,6 +1833,7 @@ class '_Minions'
 					end
 				end
 			end
+
 			if farWave then
 				return farWave.pos
 			else
@@ -1934,9 +1956,9 @@ class '_Minions'
     function _Minions:WaitForCannon()
             local cans = {}
             for _, min in pairs(self.EnemyMinions.objects) do
-                    if Helper:GetDistance(min) <= 2000 and Data:IsCannonMinion(min) then
-                            table.insert(cans, min)
-                    end
+                if Helper:GetDistance(min) <= 2000 and Data:IsCannonMinion(min) then
+                    table.insert(cans, min)
+                end
             end
 
             for i, Cannon in pairs(cans) do
@@ -2610,7 +2632,7 @@ class '_PushLane'
 		end)
 	end
 
-	function _PushLane:check( )
+	function _PushLane:check()
 		local seemsValid = true
 		for i, enemy in pairs(Helper.EnemyTable) do
 			if enemy and not enemy.dead and GetDistance2D(myHero,enemy) < 2000  then
@@ -2785,7 +2807,9 @@ class '_Survive'
 
 		if (myHero.health * 100) / myHero.maxHealth < 65 then
 			if AutoItem:potExists() then
-				AutoItem:usePotion()
+				if GetDistance2D(_G.hflTasks[MAPNAME][TEAMNUMBER][1].point,myHero) > 450 then
+					AutoItem:usePotion()
+				end
 			end
 		end
 
@@ -2982,6 +3006,7 @@ class '_LaneSelect'
 
 	function _LaneSelect:selectLane()
 		local bottom, mid, top = self:getLaneChamps()
+
 		local enemybottom, enemymid, enemytop = self:getLaneChamps()
 		local massFight = false
 		if top > 2 or enemytop > 3 then
@@ -3234,7 +3259,7 @@ class '_RandomPath'
 		end)
 
 		AddDrawCallback(function (  )
-			if debugMode then
+			if debugMode and not gpuDisabled then
 				self:draw()
 			end
 		end)
@@ -4345,7 +4370,11 @@ class '_Helper'
             self:GetAllHeroes()
             self.DebugStrings = {}
             AddTickCallback(function() self:_OnTick() end)
-            AddDrawCallback(function() self:_OnDraw() end)
+            AddDrawCallback(function() 
+            	if not gpuDisabled then
+	            	self:_OnDraw() 
+	            end
+            end)
     end
 
     function _Helper:_OnTick()
@@ -4502,24 +4531,59 @@ class '_Remote'
 	    	self:status()
 	    end)
 	    
-	    AddRecvChatCallback(function (unit,text) 
-	    	self:chatRecieve(unit,text)
-	    end)
-
-	    AddChatCallback(function (text)
-	    	print(text)
-	    end)
+	    AddRecvChatCallback(function(unit, text) 
+	    	if self.authed and self.loggedIn then
+			 	self:chatRecieved(unit, text)
+			end
+		end)
+		AddChatCallback(function(text) 
+			if self.authed and self.loggedIn then
+			 	self:chatSend(text)
+			end
+		end)
 
 	    AddTickCallback(function() 
 	    	if self.aiSockstarted then 
 	    		self:AIsocketManager() 
 	    	end 
     	end)
+
+    	AddDrawCallback(function ()
+    		if not self.loggedIn then
+    			self:notAuthed()
+    		end
+    	end)
 	end
 
-	function _Remote:chatRecieve(unit,text)
-		print(unit.charName)
-		print(text)
+	function _Remote:notAuthed()
+		DrawRectangle(WINDOW_W/2-200, WINDOW_H/2-200, 400, 400, ARGB(200,0,0,0))
+		DrawText("Oops failed to authenticate you",24,WINDOW_W/2-150,WINDOW_H/2-180,ARGB(255,255,0,0))
+		DrawText("1. Add your BoL username to Remote Client",16,WINDOW_W/2-185,WINDOW_H/2-110,ARGB(255,255,255,255))
+		DrawText("2. Your BoL username is case sensetive!",16,WINDOW_W/2-185,WINDOW_H/2-80,ARGB(255,255,255,255))
+		DrawText("3. If you added your username, maybe something is broken",16,WINDOW_W/2-185,WINDOW_H/2-50,ARGB(255,255,255,255))
+		DrawText("4. Create a topic about the problem on forum",16,WINDOW_W/2-185,WINDOW_H/2-20,ARGB(255,255,255,255))
+		DrawText("Your BoL username is below, type it exactly to Remote",16,WINDOW_W/2-185,WINDOW_H/2+50,ARGB(255,255,255,255))
+		DrawText(GetUser(),22,WINDOW_W/2-65,WINDOW_H/2+100,ARGB(255,180,255,180))
+		SetClipboardText("test")
+		DrawText("Copied your BoL username for you, you can just paste to Remote",14,WINDOW_W/2-185,WINDOW_H/2+140,ARGB(255,255,175,175))
+		DrawText("http://remote.handsfreeleveler.com/ -> Account -> BoL Account",14,WINDOW_W/2-180,WINDOW_H/2+170,ARGB(255,255,175,175))
+	end
+
+	function _Remote:chatRecieved(unit, text)
+		if not unit.isMe then
+			local team = (myHero.team==unit.team and "ally" or "enemy")
+			local packet = table.concat({"chatRecieve",unit.charName,unit.name,team,text}, "|")
+			self.Socket:send(packet)
+		end
+	end
+
+	function _Remote:chatSend(text)
+		local packet = table.concat({"chatSent",myHero.charName,"You","ally",text}, "|")
+		self.Socket:send(packet)
+	end
+
+	function _Remote:pushchat(text)
+		SendChat(text)
 	end
 
 	function _Remote:generateGameId()
@@ -4580,7 +4644,6 @@ class '_Remote'
 				PrintSystemMessage(cmd[2])
 				self.loggedIn = true
 				self:getAI()
-				--self:auth()
 			else
 				PrintSystemMessage(cmd[2])
 				self.loggedIn = false
@@ -4588,6 +4651,9 @@ class '_Remote'
 		end
 		if cmd[1] == "pong" then
 			self.lastUpdate = GetInGameTimer()
+		end
+		if cmd[1] == "pushchat" then
+			self:pushchat(cmd[2])
 		end
 	end
 
@@ -6411,10 +6477,13 @@ function easyMethods()
 	end
 
 	function GetDistance2D( o1, o2 )
-	    local c = "z"
-	    if o1.z == nil or o2.z == nil then c = "y" end
-	    return math.sqrt(math.pow(o1.x - o2.x, 2) + math.pow(o1[c] - o2[c], 2))
+		if o2 and o1 then
+			local c = "z"
+		    if o1.z == nil or o2.z == nil then c = "y" end
+		    return math.sqrt(math.pow(o1.x - o2.x, 2) + math.pow(o1[c] - o2[c], 2))
+		end
 	end
+
 
 	function getHitBoxRadius(target)
 		return GetDistance2D(target.minBBox, target.maxBBox)/2
@@ -6535,12 +6604,4 @@ function  OnLoad()
 	end, 5)
 	Update()
 	checkModification()
-end
-
-function OnChat(test,unit)
-	--print("test")
-end
-
-function OnRecvChat(username,text)
-	--print(text)
 end
