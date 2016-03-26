@@ -94,6 +94,8 @@ namespace HFL_Remastered
         static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        [DllImport("user32.dll")]
+        static extern int SetWindowText(IntPtr hWnd, string text);
 
         //Dynamic Variables
         public bool firstTimeInQueuePop = true;
@@ -151,10 +153,6 @@ namespace HFL_Remastered
             {
                 connection.Disconnect();
             }
-            else if (error.Message.Contains("The given key was not present in the dictionary."))
-            {
-                // TODO Solve this error
-            }
             else if (error.Message.Contains("Game was not found!"))
             {
                 Logger.Push("Somebody broke the game queue.", "info", username);
@@ -166,6 +164,8 @@ namespace HFL_Remastered
             else
             {
                 Logger.Push("Unhandled error message recieved from server:" + error.Message, "warning", username);
+                Logger.Push("Restarting smurf in hard mode:" + error.Message, "warning", username);
+                smurf.restartHard();
             }
         }
         #endregion
@@ -299,7 +299,7 @@ namespace HFL_Remastered
                         else { 
                             if (queue != QueueTypes.ARAM)
                             {
-                                int randomAdc = availableChampsArray.First(champ => (champ.Owned || champ.FreeToPlay) && (champ.ChampionId == 22 || champ.ChampionId == 51 || champ.ChampionId == 42 || champ.ChampionId == 119 || champ.ChampionId == 81 || champ.ChampionId == 104 || champ.ChampionId == 222 || champ.ChampionId == 429 || champ.ChampionId == 96 || champ.ChampionId == 236 || champ.ChampionId == 21 || champ.ChampionId == 133 || champ.ChampionId == 15 || champ.ChampionId == 18 || champ.ChampionId == 29 || champ.ChampionId == 110 || champ.ChampionId == 67)).ChampionId;
+                                var randomAdc = availableChampsArray.Where(champ => (champ.Owned || champ.FreeToPlay) && (champ.ChampionId == 22 || champ.ChampionId == 51 || champ.ChampionId == 42 || champ.ChampionId == 119 || champ.ChampionId == 81 || champ.ChampionId == 104 || champ.ChampionId == 222 || champ.ChampionId == 429 || champ.ChampionId == 96 || champ.ChampionId == 236 || champ.ChampionId == 21 || champ.ChampionId == 133 || champ.ChampionId == 15 || champ.ChampionId == 18 || champ.ChampionId == 29 || champ.ChampionId == 110 || champ.ChampionId == 67)).OrderBy(x => Guid.NewGuid()).First().ChampionId;
                                 await connection.SelectChampion(randomAdc);
                             }
                             else
@@ -432,7 +432,7 @@ namespace HFL_Remastered
             if (smurf.groupMember) {
                 Logger.Push("Recieved party from group host, accepting.", "info", username);
                 InvitationRequest req = message as InvitationRequest;
-                Thread.Sleep(3000);
+                Thread.Sleep(1000);
                 await connection.AcceptInviteForMatchmakingGame(req.InvitationId);
             }
             else
@@ -488,6 +488,8 @@ namespace HFL_Remastered
                     matchParams.BotDifficulty = "MEDIUM";
                 }
                 matchParams.QueueIds = new Int32[1] { (int)queue };
+                matchParams.InvitationId = lobby.InvitationID;
+                matchParams.Team = lobby.Invitees.Select(member => Convert.ToInt32(member.SummonerId)).ToList();
                 SearchingForMatchNotification message = await connection.attachTeamToQueue(matchParams);
                 if (message.PlayerJoinFailures == null)
                 {
@@ -598,7 +600,9 @@ namespace HFL_Remastered
             }
             else
             {
-                this.joinQueue();
+                if (!groupMember) { 
+                    this.joinQueue();
+                }
             }
             if (rpBalance == 400.0 && App.Client.UserData.Settings.BuyBoost)
             {
@@ -723,15 +727,17 @@ namespace HFL_Remastered
                 exeProcess.EnableRaisingEvents = true;
                 if (App.Client.UserData.Settings.DisableGpu)
                 {
-                     App.gameContainer.Dispatcher.Invoke(new Action(() =>
-                     {
-                         App.gameContainer.addWindow(exeProcess, username);
-                     }), DispatcherPriority.ContextIdle);
+                    App.gameContainer.Dispatcher.Invoke(new Action(() =>
+                    {
+                        App.gameContainer.addWindow(exeProcess, username, this.region.ToString());
+                    }), DispatcherPriority.ContextIdle);
                 }
+                SetWindowText(exeProcess.MainWindowHandle, username);
                 Thread.Sleep(3000);
-                if (App.Client.UserData.Settings.ManualInjection && !m_disposed)
+                if (App.Client.UserData.Settings.ManualInjection && !m_disposed && false)
                 {
-                    BasicInject.Inject(exeProcess, Properties.Settings.Default.bolPath.Split(new string[] { "lol.launcher.exe" }, StringSplitOptions.None)[0] + "agent.dll");
+                    string dllPath = Properties.Settings.Default.bolPath.Split(new string[] { "BoL Studio.exe" }, StringSplitOptions.None)[0] + "agent.dll";
+                    BasicInject.Inject(exeProcess, dllPath);
                 }
             }));
             processStarter.Start();
@@ -823,7 +829,7 @@ namespace HFL_Remastered
                             else
                             {
                                 Logger.Push("There was an error in joining lower priority queue.Disconnecting...", "danger", username);
-                                this.connection.Disconnect();
+                                smurf.restart();
                             }
                         }
                         catch (Exception ex)

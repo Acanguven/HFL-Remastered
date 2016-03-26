@@ -34,7 +34,7 @@ angular.module('sbAdminApp')
     .directive('chathero', function() {
     return {
         restrict : 'E',
-        template : '<img class="img-circle" src="http://ddragon.leagueoflegends.com/cdn/6.5.1/img/champion/{{name}}.png" style="margin-bottom:10px;cursor:pointer;" height="50px"/>',
+        template : '<img class="img-circle" src="http://ddragon.leagueoflegends.com/cdn/6.6.1/img/champion/{{name}}.png" style="margin-bottom:10px;cursor:pointer;" height="50px"/>',
         scope: {
             name: "=",
         },

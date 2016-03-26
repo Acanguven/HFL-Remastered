@@ -25,6 +25,11 @@
             </div>
             <div class="panel-body">
                 <div class="list-group">
+                <a class="list-group-item">
+			            <i class="fa fa-user fa-fw"></i> Account Name
+			            <span class="pull-right text-muted small"><em>{{selectedRemote.data[10]}}</em>
+			            </span>
+			        </a>
 			        <a class="list-group-item">
 			            <i class="fa fa-clock-o fa-fw"></i> Game Time
 			            <span class="pull-right text-muted small"><em>{{secondsConverter(selectedRemote.data[0])}}</em>
@@ -77,9 +82,9 @@
             </div>
             <div class="panel-body">
                 <div style="position:relative;">
-                  	<img ng-if="selectedRemote.data[9] == 'summonerRift'" id="currentmap" src="http://ddragon.leagueoflegends.com/cdn/6.5.1/img/map/map11.png" width="100%" id="currentmap"/>
+                  	<img ng-if="selectedRemote.data[9] == 'summonerRift'" id="currentmap" src="http://ddragon.leagueoflegends.com/cdn/6.6.1/img/map/map11.png" width="100%" id="currentmap"/>
 
-                  	<img ng-if="selectedRemote.data[9] == 'howlingAbyss'" id="currentmap" src="http://ddragon.leagueoflegends.com/cdn/6.5.1/img/map/map12.png" width="100%" id="currentmap"/>
+                  	<img ng-if="selectedRemote.data[9] == 'howlingAbyss'" id="currentmap" src="http://ddragon.leagueoflegends.com/cdn/6.6.1/img/map/map12.png" width="100%" id="currentmap"/>
                   	<!--<img src="/img/aram.png" width="100%" id="currentmap"/>-->
                   	<img class="img-circle" id="heroMarker" src="/img/champions/{{selectedRemote.champion}}.png" style="margin-bottom:10px;position:absolute;" height="25px;"/>
                 </div>

@@ -18,26 +18,32 @@ var User = require("../models/user.js");
 router.post('/gotPaymentHolyFuckYes', function(req,res,next){
     if(req.body.payment_status){
       if (req.body.payment_status == 'Completed') {
-        if(req.body.custom){
+        if(req.body.custom.replace(".","")){
           if(req.body.mc_gross == "50.00"){
-            User.update({_id: req.body.custom}, {
+            User.update({_id: req.body.custom}, {$set:{
               type: 2, 
-            }, function(err, numberAffected, rawResponse) {
-              console.log(err);
+            }}, function(err, numberAffected, rawResponse) {
+              if(!err){
+                console.log("INCOME:"+ req.body.mc_gross+" Multi smurf");
+              }
             })
           }
           if(req.body.mc_gross == "35.00"){
-            User.update({_id: req.body.custom}, {
+            User.update({_id: req.body.custom}, {$set:{
               type: 1, 
-            }, function(err, numberAffected, rawResponse) {
-              console.log(err);
+            }}, function(err, numberAffected, rawResponse) {
+              if(!err){
+                console.log("INCOME:"+ req.body.mc_gross+" Single smurf");
+              }
             })
           }
           if(req.body.mc_gross == "15.00"){
-            User.update({_id: req.body.custom}, {
+            User.update({_id: req.body.custom}, {$set:{
               trial: Date.now()+2592000000, 
-            }, function(err, numberAffected, rawResponse) {
-              console.log(err);
+            }}, function(err, numberAffected, rawResponse) {
+              if(!err){
+                console.log("INCOME:"+ req.body.mc_gross+" Monthly");
+              }
             })
           }
         }
@@ -47,7 +53,7 @@ router.post('/gotPaymentHolyFuckYes', function(req,res,next){
 });
 
 router.get("/getScriptAI/:bolid/:champ", function(req,res,next){
-    User.findOne({bol:req.params.bolid}, {ai:1} ,function(err, user){
+    User.findOne({ "bol" : { $regex : new RegExp(req.params.bolid, "i") } }, {ai:1} ,function(err, user){
         if (req.params.champ == "monkeyking"){
           req.params.champ = "wukong";
         }

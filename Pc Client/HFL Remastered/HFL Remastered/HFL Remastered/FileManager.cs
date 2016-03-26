@@ -95,5 +95,48 @@ namespace HFL_Remastered
                 }
             }
         }
+
+        public static void LockCamera()
+        {
+            try
+            {
+                var filePath = Path.GetDirectoryName(Properties.Settings.Default.lolPath) + "\\Config\\game.cfg";
+                var lines = File.ReadAllLines(filePath);
+                int index = 0;
+                int lockPos = 0;
+                int heightPos = 0;
+                int widthPos = 0;
+                int windowModeIndex = 0;
+                foreach (string line in lines)
+                {
+                    if (line.Contains("CameraLockMode="))
+                    {
+                        lockPos = index;
+                    }
+                    if (line.Contains("Height=") && !line.Contains("ItemShopPrevResize"))
+                    {
+                        heightPos = index;
+                    }
+                    if (line.Contains("Width=") && !line.Contains("ItemShopPrevResize"))
+                    {
+                        widthPos = index;
+                    }
+                    if (line.Contains("WindowMode"))
+                    {
+                        windowModeIndex = index;
+                    }
+                    index++;
+                }
+                lines[lockPos] = "CameraLockMode=1";
+                lines[heightPos] = "Height=480";
+                lines[widthPos] = "Width=640";
+                lines[windowModeIndex] = "WindowMode=1";
+                File.WriteAllLines(filePath, lines);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
     }
 }

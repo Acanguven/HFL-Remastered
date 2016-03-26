@@ -109,7 +109,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string NA {
             get {
                 return ((string)(this["NA"]));
@@ -121,7 +121,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string EUW {
             get {
                 return ((string)(this["EUW"]));
@@ -133,7 +133,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string EUN {
             get {
                 return ((string)(this["EUN"]));
@@ -145,7 +145,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string KR {
             get {
                 return ((string)(this["KR"]));
@@ -157,7 +157,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string BR {
             get {
                 return ((string)(this["BR"]));
@@ -169,7 +169,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string TR {
             get {
                 return ((string)(this["TR"]));
@@ -181,7 +181,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string RU {
             get {
                 return ((string)(this["RU"]));
@@ -193,7 +193,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string PBE {
             get {
                 return ((string)(this["PBE"]));
@@ -205,7 +205,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string SG {
             get {
                 return ((string)(this["SG"]));
@@ -217,7 +217,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string MY {
             get {
                 return ((string)(this["MY"]));
@@ -229,7 +229,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string SGMY {
             get {
                 return ((string)(this["SGMY"]));
@@ -241,7 +241,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string TW {
             get {
                 return ((string)(this["TW"]));
@@ -253,7 +253,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string TH {
             get {
                 return ((string)(this["TH"]));
@@ -265,7 +265,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string PH {
             get {
                 return ((string)(this["PH"]));
@@ -277,7 +277,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string VN {
             get {
                 return ((string)(this["VN"]));
@@ -289,7 +289,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string OCE {
             get {
                 return ((string)(this["OCE"]));
@@ -301,7 +301,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string LAN {
             get {
                 return ((string)(this["LAN"]));
@@ -313,7 +313,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string LAS {
             get {
                 return ((string)(this["LAS"]));
@@ -325,7 +325,7 @@ namespace HFL_Remastered.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6.5.16_03_04_23_12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.6.16_03_22_15_22")]
         public string EUNE {
             get {
                 return ((string)(this["EUNE"]));

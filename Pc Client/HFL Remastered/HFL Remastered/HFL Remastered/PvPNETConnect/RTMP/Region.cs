@@ -120,7 +120,13 @@ namespace LoLLauncher
         [LoginQueueValue("https://lq.eun1.lol.riotgames.com/")]
         [LocaleValue("en_GB")]
         [UseGarenaValue(false)]
-        EUNE
+        EUNE,
+
+        [ServerValue("prod.jp1.lol.riotgames.com")]
+        [LoginQueueValue("https://lq.jp1.lol.riotgames.jp")]
+        [LocaleValue("ja_JP")]
+        [UseGarenaValue(false)]
+        JP
     }
 
     public static class RegionInfo

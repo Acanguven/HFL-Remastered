@@ -64,7 +64,7 @@ namespace HFL_Remastered
 
         public static void addSmurf(Smurf newSmurf)
         {
-            bool containsSmurf = smurfs.Any(smurf => smurf.username == newSmurf.username);
+            bool containsSmurf = smurfs.Any(smurf => smurf.username == newSmurf.username && smurf.region == newSmurf.region);
             if (!containsSmurf)
             {
                 smurfs.Add(newSmurf);
@@ -83,7 +83,7 @@ namespace HFL_Remastered
         public static void stopSmurf(Smurf smurf)
         {
             try { 
-                Smurf containsSmurf = smurfs.First(pendSmurf => pendSmurf.username == smurf.username);
+                Smurf containsSmurf = smurfs.First(pendSmurf => pendSmurf.username == smurf.username && pendSmurf.region == smurf.region);
                 if (containsSmurf != null)
                 {
                     containsSmurf.stop();

@@ -24,61 +24,61 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="NA" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="EUW" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="EUN" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="KR" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="BR" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="TR" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="RU" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="PBE" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="SG" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="MY" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="SGMY" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="TW" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="TH" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="PH" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="VN" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="OCE" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="LAN" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="LAS" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="EUNE" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6.5.16_03_04_23_12</Value>
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
     </Setting>
     <Setting Name="packetSearch" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

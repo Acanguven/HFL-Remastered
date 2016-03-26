@@ -62,6 +62,12 @@ namespace HFL_Remastered
             start();
         }
 
+        public void restartHard()
+        {
+            App.gameContainer.terminateUserGame(this.username);
+            restart();
+        }
+
         public void start()
         {
             Logger.Push("Trying to start smurf.", "info", this.username);

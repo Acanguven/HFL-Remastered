@@ -24,6 +24,7 @@ namespace HFL_Remastered
         public  Login()
         {
             InitializeComponent();
+            Localization.SetLanguageDictionary(this);
         }
 
         public async Task<bool> storageLogin()

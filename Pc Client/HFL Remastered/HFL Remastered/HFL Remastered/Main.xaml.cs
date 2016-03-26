@@ -1,5 +1,4 @@
-﻿using Quobject.SocketIoClientDotNet.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,6 +48,7 @@ namespace HFL_Remastered
             if (App.Client.UserData.Settings.DisableGpu)
             {
                 App.gameContainer.Show();
+                FileManager.LockCamera();
             }
         }
 

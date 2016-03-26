@@ -49,13 +49,22 @@ namespace HFL_Remastered
         public static extern int WaveOutSetVolume(IntPtr hwo, uint dwVolume);
         [DllImport("winmm.dll", SetLastError = true)]
         public static extern bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);
+        [DllImport("user32.dll")]
+        static extern int SetWindowText(IntPtr hWnd, string text);
+        [DllImport("user32.dll")]
+        static extern bool UpdateWindow(IntPtr hWnd);
+        [DllImport("user32.dll", ExactSpelling = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr GetParent(IntPtr hWnd);
+
 
         private const int SW_SHOW = 5;
         private const int SW_HIDE = 0;
         public ObservableCollection<handle> smurfList = new ObservableCollection<handle>();
         CustomWindow fake = new CustomWindow();
         BackgroundWorker bw = new BackgroundWorker();
-
+        BackgroundWorker md = new BackgroundWorker();
+        BackgroundWorker antiSplat = new BackgroundWorker();
+        IntPtr windowHandle;
 
 
         public GameMask()
@@ -64,7 +73,13 @@ namespace HFL_Remastered
             this.DataContext = this;
             runningSmurfs.ItemsSource = smurfList;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
-            bw.RunWorkerAsync();
+            md.DoWork += new DoWorkEventHandler(modifier);
+            antiSplat.DoWork += new DoWorkEventHandler(antiBugsplat);
+
+            terminateAllGames();
+
+            md.RunWorkerAsync();
+            antiSplat.RunWorkerAsync();
         }
 
         public int runningCount()
@@ -75,6 +90,47 @@ namespace HFL_Remastered
         public void gameEnded(string username)
         {
 
+        }
+
+        private void antiBugsplat(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                while (true)
+                {
+                    Process[] anotherApps = Process.GetProcessesByName("League of Legends");
+                    foreach (Process game in anotherApps)
+                    {
+                        if (anotherApps != null)
+                        {
+                            List<System.IntPtr> allChildWindows = new WindowHandleInfo(game.MainWindowHandle).GetAllChildHandles();
+                            if (allChildWindows.Count != 0 && allChildWindows.Count < 10)
+                            {
+                                game.Kill();
+                            }
+                        }
+                    }
+                    Thread.Sleep(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void terminateAllGames()
+        {
+            while (Process.GetProcessesByName("League of Legends").Length > 0)
+            {
+                Process[] anotherApps = Process.GetProcessesByName("League of Legends");
+                foreach (Process game in anotherApps)
+                {
+                    game.Kill();
+                    Thread.Sleep(500);
+                }
+            }
+            bw.RunWorkerAsync();
         }
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
@@ -99,7 +155,7 @@ namespace HFL_Remastered
             }
         }
 
-        public void addWindow(Process exe, string smurfName)
+        public void addWindow(Process exe, string smurfName, string region)
         {
             handle existedSmurf = smurfList.FirstOrDefault(e => (e.smurfName == smurfName));
             if (existedSmurf != null)
@@ -108,11 +164,47 @@ namespace HFL_Remastered
             }
             else
             {
-                handle newSmurf = new handle(exe, smurfName);
+                handle newSmurf = new handle(exe, smurfName, region);
                 smurfList.Add(newSmurf);
             }
             modifyWindows();
         }
+
+        public void modifier(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                Random rnd = new Random();
+                while (true)
+                {
+                    if (windowHandle == (IntPtr)0)
+                    {
+                        windowHandle = new WindowInteropHelper(this).Handle;
+                    }
+                    else
+                    {
+                        foreach (handle smurf in smurfList)
+                        {
+
+                            if (GetParent(smurf.process.MainWindowHandle) != windowHandle)
+                            {
+                                SetParent(smurf.process.MainWindowHandle, windowHandle);
+                                MoveWindow(smurf.process.MainWindowHandle, 0, 0, 640, 480, true);
+                                SetWindowLong(smurf.process.MainWindowHandle, -16, 0x11800000);
+                            }
+                            UpdateWindow(smurf.process.MainWindowHandle);
+                        }
+                        SetWindowText(Process.GetProcessesByName("League of Legends")[0].MainWindowHandle, "Grey you are awesome!  " + rnd.Next(1, 50).ToString());
+                        Thread.Sleep(3000);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
 
         public void modifyWindows()
         {
@@ -131,12 +223,14 @@ namespace HFL_Remastered
         public class handle
         {
             public string smurfName { get; set; }
+            public string smurfRegion { get; set; }
             internal Process process;
 
-            public handle(Process _pro, string _smuf)
+            public handle(Process _pro, string _smuf, string _region)
             {
                 process = _pro;
                 smurfName = _smuf;
+                smurfRegion = _region;
             }
         }
 
@@ -175,6 +269,29 @@ namespace HFL_Remastered
                 {
 
                 }
+            }
+        }
+
+        public void terminateUserGame(string username)
+        {
+            try
+            {
+                Process toKill = null;
+                Process[] processes = Process.GetProcesses();
+                foreach (var process in processes)
+                {
+                    if (process.MainWindowTitle == username)
+                    {
+                        toKill = process;
+                    }
+                }
+                if (toKill != null)
+                {
+                    toKill.Kill();
+                }
+            }
+            catch (Exception ex)
+            {
             }
         }
     }

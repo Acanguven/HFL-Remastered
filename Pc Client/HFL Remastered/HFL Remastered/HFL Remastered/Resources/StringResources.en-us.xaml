@@ -1,0 +1,9 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="login_btn" xmlns="Login">Login</system:String>
+    <system:String x:Key="forum_btn" xmlns="Forum">Forum</system:String>
+    <system:String x:Key="login_tip" xmlns="Type your HFL forum username">Type your HFL forum username</system:String>
+</ResourceDictionary>

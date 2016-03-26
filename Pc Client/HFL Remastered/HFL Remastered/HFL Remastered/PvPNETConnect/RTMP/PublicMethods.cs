@@ -687,6 +687,13 @@ namespace LoLLauncher
             InvokeWithCallback("summonerTeamService", "kickPlayer", new object[] { summonerId, teamId.GetBaseTypedObject() }, cb);
         }
 
+        public void transferOwnership(Double summonerId)
+        {
+            Invoke("lcdsGameInvitationService", "transferOwnership", new object[] { summonerId });
+        }
+
+        
+
         public async Task<TeamDTO> KickPlayer(Double summonerId, TeamId teamId)
         {
             int Id = Invoke("summonerTeamService", "kickPlayer", new object[] { summonerId, teamId.GetBaseTypedObject() });

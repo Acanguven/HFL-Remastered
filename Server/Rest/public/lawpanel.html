@@ -1,0 +1,111 @@
+<html ng-app="panel">
+    <head>
+        <meta charset="utf-8">
+        <meta name="robots" content="noindex">
+        <title>LawPanel</title>
+        <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+        <style type="text/css">
+            .trash { color:rgb(209, 91, 71); }
+            .flag { color:rgb(248, 148, 6); }
+            .panel-body { padding:0px; }
+            .panel-footer .pagination { margin: 0; }
+            .panel .glyphicon,.list-group-item .glyphicon { margin-right:5px; }
+            .panel-body .radio, .checkbox { display:inline-block;margin:0px; }
+            .panel-body input[type=checkbox]:checked + label { text-decoration: line-through;color: rgb(128, 144, 160); }
+            .list-group-item:hover, a.list-group-item:focus {text-decoration: none;background-color: rgb(245, 245, 245);}
+            .list-group { margin-bottom:0px; }
+            .list-group-item label{
+                border-right: 1px solid #ccc;
+                padding-right: 5px;
+                margin-bottom: 0px;
+            }
+            .list-group-item div{
+                text-align: justify;
+            }
+        </style>
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+        <script src="javascripts/controller.js"></script>
+    </head>
+    <body ng-controller="main">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <span class="glyphicon glyphicon-list"></span>User list
+                    </div>
+                    <div class="panel-body">
+                        <div style="width:100%;">
+                            <input style="border-radius:0px;" type="text" class="form-control" placeholder="User info" ng-model="search"/>
+                        </div>
+                        <div style="height:30px;padding-top:5px;border-radius:0px;">
+                            <div class="col-md-2">
+                                ID
+                            </div>
+                            <div class="col-md-1">
+                                UID
+                            </div>
+                            <div class="col-md-1">
+                                TYPE
+                            </div>
+                            <div class="col-md-1">
+                                BOL
+                            </div>
+                            <div class="col-md-1">
+                                TRIAL REMAINS
+                            </div>
+                            <div class="col-md-2">
+                                HWID KEY
+                            </div>
+                            <div class="col-md-1">
+                                HWID REMAINS
+                            </div>
+                        </div>
+                        <ul class="list-group">
+                            <li class="list-group-item" style="height:30px;padding-top:5px;border-radius:0px;" ng-repeat="user in userList | filter:search">
+                                <div class="col-md-2">
+                                    {{user._id}}
+                                </div>
+                                <div class="col-md-1">
+                                    {{user.uid}}
+                                </div>
+                                <div class="col-md-1">
+                                    {{user.type}}
+                                </div>
+                                <div class="col-md-1">
+                                    {{user.bol}}
+                                </div>
+                                <div class="col-md-1">
+                                    {{trialRemains(user.trial)}}
+                                </div>
+                                <div class="col-md-2">
+                                    {{user.hwid}}
+                                </div>
+                                <div class="col-md-1">
+                                    {{hwidRemains(user.hwidCanChange)}}
+                                </div>
+                                <div class="pull-right action-buttons">
+                                    <a ng-click="act(user,1)"><span class="glyphicon glyphicon-user"></span></a>
+                                    <a ng-click="act(user,2)"><span class="glyphicon glyphicon-tasks"></span></a>
+                                    <a ng-click="act(user,3)"><span class="glyphicon glyphicon-time"></span></a>
+                                    <a ng-click="act(user,4)"><span class="glyphicon glyphicon-floppy-disk"></span></a>
+                                    <a ng-click="act(user,5)"><span class="glyphicon glyphicon-remove"></span></a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>
+                                    Total Count <span class="label label-info">{{userList.length}}</span>
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -136,6 +136,7 @@ namespace HFL_Remastered
                         if (App.Client.UserData.Settings.DisableGpu)
                         {
                             App.gameContainer.Show();
+                            FileManager.LockCamera();
                         }
                         else
                         {
@@ -163,11 +164,15 @@ namespace HFL_Remastered
                 break;
 
                 case "smurf":
+                    double remainingTrialSm = Math.Round((double)((App.Client.UserData.Trial - App.Client.Date) / 60000));
+                    bool valid = SmurfManager.smurfs.Count == 0 || App.Client.UserData.Type == (int)2 || (App.Client.UserData.Type == (int)0 && remainingTrialSm > 0);
                     if (msg.Value<string>("action") == "start")
                     {
-                        Smurf newSmurf = msg.Value<dynamic>("smurf").ToObject<Smurf>();
-                        SmurfManager.addSmurf(newSmurf);
-                        SmurfManager.updateStatus();
+                        if (valid) { 
+                            Smurf newSmurf = msg.Value<dynamic>("smurf").ToObject<Smurf>();
+                            SmurfManager.addSmurf(newSmurf);
+                            SmurfManager.updateStatus();
+                        }
                     }
                     else
                     {
@@ -177,19 +182,23 @@ namespace HFL_Remastered
                     }
                 break;
                 case "group":
-                    if (msg.Value<string>("action") == "start")
+                    double remainingTrialGm = Math.Round((double)((App.Client.UserData.Trial - App.Client.Date) / 60000));
+                    if (App.Client.UserData.Type == (int)2 || (App.Client.UserData.Type == (int)0 && remainingTrialGm > 0))
                     {
-                        Group newGroup = msg.Value<dynamic>("group").ToObject<Group>();
-                        var list = msg.Value<dynamic>("group");
+                        if (msg.Value<string>("action") == "start")
+                        {
+                            Group newGroup = msg.Value<dynamic>("group").ToObject<Group>();
+                            var list = msg.Value<dynamic>("group");
 
-                        SmurfManager.addGroup(newGroup);
-                        SmurfManager.updateStatus();
-                    }
-                    else
-                    {
-                        Group newGroup = msg.Value<dynamic>("group").ToObject<Group>();
-                        SmurfManager.stopGroup(newGroup);
-                        SmurfManager.updateStatus();
+                            SmurfManager.addGroup(newGroup);
+                            SmurfManager.updateStatus();
+                        }
+                        else
+                        {
+                            Group newGroup = msg.Value<dynamic>("group").ToObject<Group>();
+                            SmurfManager.stopGroup(newGroup);
+                            SmurfManager.updateStatus();
+                        }
                     }
                 break;
             }

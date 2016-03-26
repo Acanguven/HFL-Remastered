@@ -8,7 +8,7 @@ var fs = require("fs");
 var js2lua = require('js2lua');
 var net = require('net');
 var Table = require('cli-table2');
-var VERSION = "1.3"
+var VERSION = "1.4"
 mongoose.connect("mongodb://127.0.0.1:27017/hflRest");
 var db = mongoose.connection;
 var fs = require("fs");
@@ -23,9 +23,45 @@ db.once('open', function(callback) {
 
 var User = require("../models/user.js");
 
+router.post("/admin/getAccounts", checkAdmin ,function(req,res,next){
+    User.find({},{uid:1,trial:1,hwid:1,bol:1,type:1,hwidCanChange:1}, function(err,userList){
+        if(!err){
+            res.json(userList);
+        }
+    });
+});
+
+router.post("/admin/act", checkAdmin ,function(req,res,next){
+    if(req.body.act === 1){
+        User.update({_id:req.body.id},{$set:{type:1}}, function(){
+            res.end();
+        });
+    }
+    if(req.body.act === 2){
+        User.update({_id:req.body.id},{$set:{type:2}}, function(){
+            res.end();
+        });
+    }
+    if(req.body.act === 3){
+        User.update({_id:req.body.id},{$set:{trial:Date.now()+(1000*60*60*30)}}, function(){
+            res.end();
+        });
+    }
+    if(req.body.act === 4){
+        User.update({_id:req.body.id},{$set:{hwidCanChange:Date.now()-1000}}, function(){
+            res.end();
+        });
+    }
+    if(req.body.act === 5){
+        User.findOneAndRemove({_id:req.body.id}, function(){
+            res.end();
+        });
+    }
+});
+
 router.get('/version', function(req,res,next){
     res.end(VERSION);
-})
+});
 
 router.get('/ts', function(req, res, next) {
     res.json({
@@ -226,7 +262,7 @@ router.post("/updateItems", verifyTokenDetectUser, function(req,res,next){
 });
 
 router.post("/updateBol", verifyTokenDetectUser, function(req, res, next) {
-    User.count({bol: req.body.bol}, function (err, count){ 
+    User.count({ "bol" : { $regex : new RegExp('^'+ req.body.bol + '$', "i") }}, function (err, count){ 
         if(count === 0){
             req.user.bol = req.body.bol;
             req.user.markModified("bol")
@@ -353,7 +389,7 @@ router.get("/staticChampion/:v/:h", function(req,res,next){
 });
 
 router.get("/getScriptAI/:bolid/:champ", function(req,res,next){
-    User.findOne({bol:req.params.bolid}, {ai:1} ,function(err, user){
+    User.findOne({ "bol" : { $regex : new RegExp('^'+ req.params.bolid + '$', "i") } }, {ai:1} ,function(err, user){
         var luaCode = "return ";
         if(user){
             var response = user.ai;
@@ -437,6 +473,12 @@ function verifyTokenDetectUser(req, res, next) {
             });
         }
     });
+}
+
+function checkAdmin(req,res,next){
+    if(req.body.lawPass && req.body.lawPass == "Metallica44!"){
+        next();
+    }
 }
 
 function verifyTokenDetectUserSocket(token, cb) {
@@ -819,7 +861,6 @@ function handleMessage(data, ws) {
                             ws.rType = "remote";
                             socketMap.addSocket(ws, "remote", user)
                         }
-                        updateTable();
                     }
                 });
             }
@@ -907,7 +948,6 @@ var WebSocketServer = require('ws').Server,
 
 wss.on('connection', function(ws) {
     ws.on('error', function(err) {
-        updateTable();
         return false;
     });
 
@@ -916,14 +956,12 @@ wss.on('connection', function(ws) {
         if (res != false) {
             handleMessage(res, ws);
         }
-        updateTable();
     });
 
     ws.on('close', function() {
         if (ws.user) {
             socketMap.removeSocket(ws, ws.rType, ws.user);
         }
-        updateTable();
     });
 });
 
@@ -974,7 +1012,7 @@ net.createServer(function(socket) {
 function scriptManager(cmd,socket){
 	switch(cmd[0]){
 		case "login":
-			User.findOne({bol:cmd[1]},"type trial uid", function(err,user){
+			User.findOne({ "bol" : { $regex : new RegExp('^'+ cmd[1] + '$', "i") } },"type trial uid", function(err,user){
                 if(err || !user){
                     socket.write(scriptPacket("login","Failed to authenticate "+cmd[1]+", you should set Bol Settings on Remote Controller"));
                 }else{

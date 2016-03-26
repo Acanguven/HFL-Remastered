@@ -12,7 +12,7 @@ angular.module('sbAdminApp').controller('login', function(Websocket,$scope,$http
 	}
 	$scope.errMsg = "";
 	$scope.login = function(username,password){
-		if(username.length > 3 && password.length > 3){
+		if(username.length > 2 && password.length > 2){
 			$http.post("http://handsfreeleveler.com:4446/api/remotelogin",{username:username,password:password}).then(function(res){
 				if(res.data.message){
 					$scope.errMsg = res.data.message;
