@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Collections.ObjectModel;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -110,7 +101,7 @@ namespace HFL_Remastered
                             }
                         }
                     }
-                    Thread.Sleep(1000);
+                    Thread.Sleep(3500);
                 }
             }
             catch (Exception ex)
@@ -151,7 +142,7 @@ namespace HFL_Remastered
                         ShowWindow(HWND, SW_HIDE);
                     }
                 }
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
             }
         }
 
@@ -195,9 +186,9 @@ namespace HFL_Remastered
                             UpdateWindow(smurf.process.MainWindowHandle);
                         }
                         SetWindowText(Process.GetProcessesByName("League of Legends")[0].MainWindowHandle, "Grey you are awesome!  " + rnd.Next(1, 50).ToString());
-                        Thread.Sleep(3000);
                     }
                 }
+                Thread.Sleep(3000);
             }
             catch (Exception ex)
             {

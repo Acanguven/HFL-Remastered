@@ -21,14 +21,12 @@ app.controller("main",function($scope, $http){
 		var remaining = number - Date.now();
 		return Math.round(remaining / 60000);
 	}
-
-	$scope.hwidRemains = function(number){
-		var remaining = number - Date.now();
-		return Math.round(remaining / 60000);
-	}
-
 	$scope.act = function(user,action){
-		$http.post("http://handsfreeleveler.com:4446/api/admin/act", {lawPass:panelKey,act:action,id:user._id}).then(function(msg){
+		var amount = 1000*60*60*30;
+		if(action === 3){
+			amount = prompt("Minutes?",1000*60*60*30);
+		}
+		$http.post("http://handsfreeleveler.com:4446/api/admin/act", {lawPass:panelKey,act:action,id:user._id,amount:amount}).then(function(msg){
 			$scope.update();
 		});
 	}

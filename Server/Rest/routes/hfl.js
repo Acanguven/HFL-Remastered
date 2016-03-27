@@ -37,13 +37,18 @@ router.post("/admin/act", checkAdmin ,function(req,res,next){
             res.end();
         });
     }
+    if(req.body.act === 0){
+        User.update({_id:req.body.id},{$set:{type:0}}, function(){
+            res.end();
+        });
+    }
     if(req.body.act === 2){
         User.update({_id:req.body.id},{$set:{type:2}}, function(){
             res.end();
         });
     }
     if(req.body.act === 3){
-        User.update({_id:req.body.id},{$set:{trial:Date.now()+(1000*60*60*30)}}, function(){
+        User.update({_id:req.body.id},{$set:{trial:Date.now()+Number(req.body.amount)}}, function(){
             res.end();
         });
     }

@@ -61,7 +61,7 @@ user.pre("save", function(next) {
             if (err) throw err;
             var obj = JSON.parse(data);
             self.ai = obj;
-            self.trial = Date.now()+(1000*60*60*500); //500u 48 yap
+            self.trial = Date.now()+(1000*60*60*30); //500u 48 yap
             self.hwidCanChange = Date.now()-1000;
             next();
         });

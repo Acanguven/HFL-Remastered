@@ -7,7 +7,7 @@
 <!-- /.row -->
 <div class="row">
 	<div class="col-lg-12">
-		<img ng-repeat="script in liveData.remote" class="img-circle" src="/img/champions/{{script.champion}}.png" style="margin-bottom:10px;cursor:pointer;" height="100px" ng-click="selectR(script.gameid)"/>
+		<img ng-repeat="script in liveData.remote" class="img-circle" src="/img/champions/{{script.champion}}.png" style="margin-bottom:10px;cursor:pointer;margin-left:10px;" height="100px" ng-click="selectR(script.gameid)"/>
 	</div>
 </div>
 <hr ng-if="liveData.remote.length != 0">

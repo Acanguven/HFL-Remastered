@@ -1,17 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Xml.Linq;
-using System.Collections.ObjectModel;
-using System.Xml.Serialization;
-using System.Collections.Specialized;
 using System.IO;
-using System.Net;
 using System.Windows.Threading;
 
 namespace HFL_Remastered
@@ -22,9 +12,9 @@ namespace HFL_Remastered
         public static User Client;
         public static Main mainwindow;
         public Login loginWindow = new Login();
-        public static string version = "2.3";
+        public static string version = "2.4";
         public static GameMask gameContainer = new GameMask();
-
+        
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs dispatcherUnhandledExceptionEventArgs)
         {
             MessageBox.Show("Wide dispatcher exception is sent to Law, program will continue");
@@ -56,7 +46,6 @@ namespace HFL_Remastered
             }
             this.Resources.MergedDictionaries.Add(dict);
         }
-
 
 
         private async void igniter(object sender, StartupEventArgs e)

@@ -66,7 +66,7 @@ namespace HFL_Remastered
 
         //Summoner Group Values
         public bool groupMember { get; set; }
-        public double smurfGroup {get;set;}
+        public double smurfGroup { get; set; }
         public bool isHost { get; set; }
 
         // Summoner Dynamic Values
@@ -117,7 +117,7 @@ namespace HFL_Remastered
             region = _region;
             queue = _queue;
             smurf = _smurf;
-            smurfGroup = smurfGroup;
+            isHost = _smurf.isHost;
 
             connection.OnConnect += new LoLConnection.OnConnectHandler(connection_OnConnect);
             connection.OnDisconnect += new LoLConnection.OnDisconnectHandler(connection_OnDisconnect);
@@ -148,7 +148,7 @@ namespace HFL_Remastered
         #region OnError
         private void connection_OnError(object sender, LoLLauncher.Error error)
         {
-            
+
             if (error.Message.Contains("Wrong client version for server"))
             {
                 connection.Disconnect();
@@ -200,7 +200,8 @@ namespace HFL_Remastered
                 if (currentLevel >= desiredLevel)
                 {
                     Logger.Push("Smurfing is done, smurf is level: " + (int)currentLevel, "success", this.username);
-                    if (!smurf.groupMember) { 
+                    if (!smurf.groupMember)
+                    {
                         connection.Disconnect();
                     }
                 }
@@ -234,7 +235,8 @@ namespace HFL_Remastered
                     }
                     else
                     {
-                        if (smurf.isHost) { 
+                        if (smurf.isHost)
+                        {
                             this.createLobby();
                         }
                         else
@@ -243,7 +245,7 @@ namespace HFL_Remastered
                             smurf.hostCallback.inviteMe(summonerId);
                         }
                     }
-                    
+
                 }
             })).Start();
 
@@ -265,7 +267,8 @@ namespace HFL_Remastered
         #region OnMessage
         public async void connection_OnMessageReceived(object sender, object message)
         {
-            if (!m_disposed) { 
+            if (!m_disposed)
+            {
                 if (message is GameDTO) { handleGameDTO(message); return; }
                 if (message is PlayerCredentialsDto) { handlePlayerCredentialsDto(message); return; }
                 if (message is EndOfGameStats) { handleEndOfGameStats(message); return; }
@@ -296,7 +299,7 @@ namespace HFL_Remastered
                             Logger.Push("Till level 6 we are not allowed to pick from free champions so I will select Ashe", "info", this.username);
                             await connection.SelectChampion(22);
                         }
-                        else { 
+                        else {
                             if (queue != QueueTypes.ARAM)
                             {
                                 var randomAdc = availableChampsArray.Where(champ => (champ.Owned || champ.FreeToPlay) && (champ.ChampionId == 22 || champ.ChampionId == 51 || champ.ChampionId == 42 || champ.ChampionId == 119 || champ.ChampionId == 81 || champ.ChampionId == 104 || champ.ChampionId == 222 || champ.ChampionId == 429 || champ.ChampionId == 96 || champ.ChampionId == 236 || champ.ChampionId == 21 || champ.ChampionId == 133 || champ.ChampionId == 15 || champ.ChampionId == 18 || champ.ChampionId == 29 || champ.ChampionId == 110 || champ.ChampionId == 67)).OrderBy(x => Guid.NewGuid()).First().ChampionId;
@@ -392,7 +395,8 @@ namespace HFL_Remastered
 
         private void handleEndOfGameStats(object message)
         {
-            try { 
+            try
+            {
                 updateSmurfInfo();
                 if (!smurf.groupMember)
                 {
@@ -429,7 +433,8 @@ namespace HFL_Remastered
 
         private async void handleInvitationRequest(object message)
         {
-            if (smurf.groupMember) {
+            if (smurf.groupMember)
+            {
                 Logger.Push("Recieved party from group host, accepting.", "info", username);
                 InvitationRequest req = message as InvitationRequest;
                 Thread.Sleep(1000);
@@ -467,8 +472,9 @@ namespace HFL_Remastered
             LobbyStatus lobby = messageIn as LobbyStatus;
             int totalMembers = (lobby.Invitees.FindAll(member => member.InviteeState == "ACCEPTED").Count + 1);
             Logger.Push("Lobby just updated, accepted members:" + totalMembers, "info", username);
-            if (totalMembers == smurf.totalGroupLength)
+            if (totalMembers == smurf.totalGroupLength && isHost)
             {
+                Thread.Sleep(2000);
                 Logger.Push("We have enough members to join queue, joining queue", "info", username);
                 lobbyReady = false;
                 lobbyInviteQuery.Clear();
@@ -537,7 +543,7 @@ namespace HFL_Remastered
                             connection.Disconnect();
                         }
                     }
-                    if (m_leaverBustedPenalty>0)
+                    if (m_leaverBustedPenalty > 0)
                     {
                         double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
                         Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
@@ -600,7 +606,8 @@ namespace HFL_Remastered
             }
             else
             {
-                if (!groupMember) { 
+                if (!groupMember)
+                {
                     this.joinQueue();
                 }
             }
@@ -819,8 +826,10 @@ namespace HFL_Remastered
                     double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
                     Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
                     Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
-                    if (!m_disposed) { 
-                        try { 
+                    if (!m_disposed)
+                    {
+                        try
+                        {
                             message = await connection.AttachToLowPriorityQueue(matchParams, this.m_accessToken);
                             if (message.PlayerJoinFailures == null)
                             {
@@ -841,17 +850,18 @@ namespace HFL_Remastered
                 else
                 {
                     if (!taintedWarning)
-                    { 
+                    {
                         double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
                         if (minutes <= 0)
                         {
-                            try { 
+                            try
+                            {
                                 exeProcess.Exited -= exeProcess_Exited;
                                 exeProcess.Kill();
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
-                                
+
                             }
                             if (lastStarter != null)
                             {
@@ -881,10 +891,14 @@ namespace HFL_Remastered
         }
         public async void lobbyInviteUpdate()
         {
-            try {
+            try
+            {
+                Thread.Sleep(1000);
                 List<double> ls = new List<double>();
-                if (lobbyReady){
-                    foreach(double sumId in lobbyInviteQuery){
+                if (lobbyReady)
+                {
+                    foreach (double sumId in lobbyInviteQuery)
+                    {
                         await connection.Invite(sumId);
                         ls.Add(sumId);
                     }
@@ -893,6 +907,7 @@ namespace HFL_Remastered
                         lobbyInviteQuery.Remove(sumId);
                     }
                 }
+                ls = null;
             }
             catch (Exception ex)
             {
@@ -936,7 +951,7 @@ namespace HFL_Remastered
                 }
             }
 
-            
+
         }
         void exeProcess_Exited(object sender, EventArgs e)
         {
