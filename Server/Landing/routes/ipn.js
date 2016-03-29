@@ -46,6 +46,16 @@ router.post('/gotPaymentHolyFuckYes', function(req,res,next){
               }
             })
           }
+          if(req.body.mc_gross == "16.00"){
+            User.findOne({_id: req.body.custom}, {type:1}, function(err,user){
+              if(!err && user){
+                if(user.type === 1){
+                  user.type = 2;
+                  user.save();
+                }
+              }
+            });
+          }
         }
       }
     }

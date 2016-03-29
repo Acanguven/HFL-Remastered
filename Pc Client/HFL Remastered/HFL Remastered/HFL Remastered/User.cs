@@ -19,8 +19,8 @@ namespace HFL_Remastered
         public userData UserData { get; set; } 
 
         User(){
-            this.Token = "";
-            this.Hwid = HWID.Generate();
+            Token = "";
+            Hwid = HWID.Generate();
         }
     }
 

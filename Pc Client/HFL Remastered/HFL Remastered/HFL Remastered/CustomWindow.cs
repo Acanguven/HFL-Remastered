@@ -69,7 +69,6 @@ namespace HFL_Remastered
 
         private const int ERROR_CLASS_ALREADY_EXISTS = 1410;
 
-        private bool m_disposed;
         private IntPtr m_hwnd;
 
         public void Dispose()
@@ -80,27 +79,22 @@ namespace HFL_Remastered
 
         private void Dispose(bool disposing)
         {
-            if (!m_disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    // Dispose managed resources
-                }
+                // Dispose managed resources
+            }
 
-                // Dispose unmanaged resources
-                if (m_hwnd != IntPtr.Zero)
-                {
-                    DestroyWindow(m_hwnd);
-                    m_hwnd = IntPtr.Zero;
-                }
+            // Dispose unmanaged resources
+            if (m_hwnd != IntPtr.Zero)
+            {
+                DestroyWindow(m_hwnd);
+                m_hwnd = IntPtr.Zero;
             }
         }
 
         public CustomWindow()
         {
             string class_name = "RiotWindowClass";
-            if (class_name == null) throw new System.Exception("class_name is null");
-            if (class_name == String.Empty) throw new System.Exception("class_name is empty");
 
             m_wnd_proc_delegate = CustomWndProc;
 
@@ -112,11 +106,6 @@ namespace HFL_Remastered
             UInt16 class_atom = RegisterClassW(ref wind_class);
 
             int last_error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-
-            if (class_atom == 0 && last_error != ERROR_CLASS_ALREADY_EXISTS)
-            {
-                throw new System.Exception("Could not register window class");
-            }
 
             // Create window
             m_hwnd = CreateWindowExW(
@@ -149,7 +138,7 @@ namespace HFL_Remastered
             return DefWindowProcW(hWnd, msg, wParam, lParam);
         }
 
-        
+
 
         private WndProc m_wnd_proc_delegate;
     }

@@ -85,11 +85,12 @@ namespace HFL_Remastered
 
         private void antiBugsplat(object sender, DoWorkEventArgs e)
         {
-            try
+            while (true)
             {
-                while (true)
+                try
                 {
                     Process[] anotherApps = Process.GetProcessesByName("League of Legends");
+                    //Check based on window pattern
                     foreach (Process game in anotherApps)
                     {
                         if (anotherApps != null)
@@ -99,14 +100,22 @@ namespace HFL_Remastered
                             {
                                 game.Kill();
                             }
+
+                            uint pid = 0;
+                            IntPtr hndle = Win32.Functions.FindWindow("#32770", null);
+                            Win32.Functions.GetWindowThreadProcessId(hndle, out pid);
+                            if (pid != 0 && game.Id == pid)
+                            {
+                                game.Kill();
+                            }
                         }
                     }
-                    Thread.Sleep(3500);
+                    Thread.Sleep(1500);
                 }
-            }
-            catch (Exception ex)
-            {
+                catch (Exception ex)
+                {
 
+                }
             }
         }
 
@@ -165,7 +174,6 @@ namespace HFL_Remastered
         {
             try
             {
-                Random rnd = new Random();
                 while (true)
                 {
                     if (windowHandle == (IntPtr)0)
@@ -185,10 +193,9 @@ namespace HFL_Remastered
                             }
                             UpdateWindow(smurf.process.MainWindowHandle);
                         }
-                        SetWindowText(Process.GetProcessesByName("League of Legends")[0].MainWindowHandle, "Grey you are awesome!  " + rnd.Next(1, 50).ToString());
                     }
+                    Thread.Sleep(3000);
                 }
-                Thread.Sleep(3000);
             }
             catch (Exception ex)
             {

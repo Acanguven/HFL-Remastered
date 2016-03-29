@@ -696,7 +696,8 @@ namespace LoLLauncher
                     pendingInvokes.Remove(id);
 
                     // Rethrow
-                    throw e;
+                    //throw e;
+                    return 0;
                 }
             }
         }

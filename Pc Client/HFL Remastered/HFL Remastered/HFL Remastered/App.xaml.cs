@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows;
 using System.IO;
 using System.Windows.Threading;
+using System.Security.Principal;
 
 namespace HFL_Remastered
 {
@@ -12,7 +13,7 @@ namespace HFL_Remastered
         public static User Client;
         public static Main mainwindow;
         public Login loginWindow = new Login();
-        public static string version = "2.4";
+        public static string version = "2.51";
         public static GameMask gameContainer = new GameMask();
         
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs dispatcherUnhandledExceptionEventArgs)
@@ -44,7 +45,27 @@ namespace HFL_Remastered
                     dict.Source = new Uri("..\\Resources\\StringResources.tr-tr.xaml", UriKind.Relative);
                     break;
             }
-            this.Resources.MergedDictionaries.Add(dict);
+            Resources.MergedDictionaries.Add(dict);
+        }
+
+        public bool IsUserAdministrator()
+        {
+            bool isAdmin;
+            try
+            {
+                WindowsIdentity user = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(user);
+                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                isAdmin = false;
+            }
+            catch (Exception ex)
+            {
+                isAdmin = false;
+            }
+            return isAdmin;
         }
 
 
@@ -54,6 +75,11 @@ namespace HFL_Remastered
             Application.Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             Dispatcher.UnhandledException += DispatcherOnUnhandledException;
+
+            if (!IsUserAdministrator())
+            {
+                MessageBox.Show("Maybe you should provide me admin access to prevent errors? Please run me as administrator.");
+            }
 
             if (File.Exists("HFL Remasteredold.exe"))
             {

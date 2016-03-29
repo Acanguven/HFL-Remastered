@@ -13,4 +13,13 @@
     <header-notification></header-notification>
 
     <sidebar></sidebar>
+    <div class="alertOwner" style="position:fixed;right:20px;top:60px;width:300px;">
+            <div class="alert ng-isolate-scope alert-alert.type alert-dismissable" role="alert" ng-repeat="alert in alerts" type="alert.type" ng-class="['alert-' + (alert.type || 'warning'), closeable ? 'alert-dismissable' : null]" close="closeAlert($index)">
+            <button type="button" class="close" ng-click="closeAlert($index)">
+                <span aria-hidden="true">×</span>
+                <span class="sr-only">Close</span>
+            </button>
+            <div><span class="ng-scope ng-binding">{{alert.msg}}</span></div>
+        </div>
+    </div>
 </nav>

@@ -17,7 +17,7 @@ namespace HFL_Remastered
     public partial class Main : Window
     {
        
-        private System.Windows.Forms.NotifyIcon m_notifyIcon;
+        private WinForms.NotifyIcon m_notifyIcon;
         public Network net = new Network();
         private double remainingTrial { get; set; }
         public string text { get; set; }

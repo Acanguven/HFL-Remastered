@@ -21,36 +21,46 @@ namespace HFL_Remastered
         private static List<string> sendqueue = new List<string>();
         private CommandManager cmd;
         private bool underRecon = false;
-        public static bool socketLive {get; set;}
+        public static bool socketLive { get; set; }
         private bool underSettingsNotify = false;
         private DateTime lastSend = DateTime.Now;
 
-        private void sendManager(){
-            while (true) { 
-                DateTime tLast = lastSend;
-                tLast = tLast.AddMilliseconds(200);
-                if (tLast < DateTime.Now)
+        private void sendManager()
+        {
+            while (true)
+            {
+                try
                 {
-                    string msg = sendqueue.FirstOrDefault();
-                    if (msg != null)
+                    DateTime tLast = lastSend;
+                    tLast = tLast.AddMilliseconds(200);
+                    if (tLast < DateTime.Now)
                     {
-                        lastSend = DateTime.Now;
-                        websocket.Send(msg);
-                        sendqueue.RemoveAt(0);
+                        string msg = sendqueue.FirstOrDefault();
+                        if (msg != null)
+                        {
+                            lastSend = DateTime.Now;
+                            websocket.Send(msg);
+                            sendqueue.RemoveAt(0);
+                        }
                     }
+                    Thread.Sleep(200);
                 }
-                Thread.Sleep(200);
+                catch (Exception ex)
+                {
+
+                }
             }
         }
 
-        public void init(double remainingTrial,int type)
+        public void init(double remainingTrial, int type)
         {
             socketLive = false;
             if (remainingTrial > 0 || type != (int)0)
             {
                 cmd = new CommandManager();
                 injectCallbacks();
-                if (websocket.State != WebSocketState.Open) { 
+                if (websocket.State != WebSocketState.Open)
+                {
                     websocket.Open();
                 }
             }
@@ -102,12 +112,12 @@ namespace HFL_Remastered
                     Remotes = "Remote Controllers: " + remoteCount;
                     SystemSounds.Exclamation.Play();
                     SmurfManager.updateStatus();
-                break;
+                    break;
 
                 case "cmdWrite":
                     string input = msg.Value<string>("text");
                     cmd.writeLine(input);
-                break;
+                    break;
 
                 case "updateSettings":
                     Logger.Push("Settings Updated", "info");
@@ -140,11 +150,12 @@ namespace HFL_Remastered
                             }
                         }
                     }), DispatcherPriority.ContextIdle);
-                    
-                    
-                    
+
+
+
                     SystemSounds.Asterisk.Play();
-                    if (!underSettingsNotify) {
+                    if (!underSettingsNotify)
+                    {
                         underSettingsNotify = true;
                         string _text = Text;
                         Text = _text + ", Settings updated.";
@@ -155,14 +166,15 @@ namespace HFL_Remastered
                         }
                         underSettingsNotify = false;
                     }
-                break;
+                    break;
 
                 case "smurf":
                     double remainingTrialSm = Math.Round((double)((App.Client.UserData.Trial - App.Client.Date) / 60000));
                     bool valid = SmurfManager.smurfs.Count == 0 || App.Client.UserData.Type == (int)2 || (App.Client.UserData.Type == (int)0 && remainingTrialSm > 0);
                     if (msg.Value<string>("action") == "start")
                     {
-                        if (valid) { 
+                        if (valid)
+                        {
                             Smurf newSmurf = msg.Value<dynamic>("smurf").ToObject<Smurf>();
                             SmurfManager.addSmurf(newSmurf);
                             SmurfManager.updateStatus();
@@ -174,7 +186,7 @@ namespace HFL_Remastered
                         SmurfManager.stopSmurf(oldSmurf);
                         SmurfManager.updateStatus();
                     }
-                break;
+                    break;
                 case "group":
                     double remainingTrialGm = Math.Round((double)((App.Client.UserData.Trial - App.Client.Date) / 60000));
                     if (App.Client.UserData.Type == (int)2 || (App.Client.UserData.Type == (int)0 && remainingTrialGm > 0))
@@ -194,11 +206,12 @@ namespace HFL_Remastered
                             SmurfManager.updateStatus();
                         }
                     }
-                break;
+                    break;
             }
         }
 
-        public static void upateSmurfs(List<Smurf> smurfList,List<Group> groupList){
+        public static void upateSmurfs(List<Smurf> smurfList, List<Group> groupList)
+        {
             dynamic smurfPacket = new JObject();
             smurfPacket.type = "smurfupdate";
             smurfPacket.token = App.Client.Token;
@@ -234,7 +247,8 @@ namespace HFL_Remastered
             }
         }
 
-        public void sendLog(string buffer){
+        public void sendLog(string buffer)
+        {
             if (socketLive)
             {
                 sendqueue.Add(buffer);
@@ -280,7 +294,7 @@ namespace HFL_Remastered
             try
             {
                 res = JToken.Parse(e.Message);
-                if (IsPropertyExists(res,"type"))
+                if (IsPropertyExists(res, "type"))
                 {
                     messageHandler(res);
                 }

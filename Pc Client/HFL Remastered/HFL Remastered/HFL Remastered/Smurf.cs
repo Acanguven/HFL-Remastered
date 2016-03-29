@@ -77,10 +77,6 @@ namespace HFL_Remastered
             {
                 if (thread != null)
                 {
-                    if (thread.connection.IsConnected())
-                    {
-                        thread.connection.Disconnect();
-                    }
                     thread.Dispose();
                     thread = null;
                 }

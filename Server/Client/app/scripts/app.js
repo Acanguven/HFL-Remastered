@@ -69,6 +69,35 @@ angular
             return items.slice().reverse();
         };
     })
+    .factory('alertService', function($rootScope,$timeout) {
+        var alertService = {};
+
+        // create an array of alerts available globally
+        $rootScope.alerts = [];
+
+        alertService.add = function(type, msg) {
+            var num = Math.floor((Math.random() * 10000) + 1);
+            $rootScope.alerts.push({type: type, msg: msg,num:num});
+            $timeout(function() {
+                var index = -1;
+                for(var x = 0; x < $rootScope.alerts.length; x++){
+                    if($rootScope.alerts[x].num == num){
+                        index = x;
+                    }
+                }
+                if(index > -1){
+                    $rootScope.alerts.splice(index,1)
+                }
+            }, 2000);
+        };
+
+        alertService.closeAlert = function(index) {
+            $rootScope.alerts.splice(index, 1);
+        };
+        $rootScope.closeAlert = alertService.closeAlert;
+
+        return alertService;
+    })
     .config(['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', "$httpProvider" , function($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $httpProvider) {
         
         $httpProvider.interceptors.push('httpRequestInterceptor');

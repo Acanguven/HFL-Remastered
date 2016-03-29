@@ -6,7 +6,7 @@
  * # MainCtrl
  * Controller of the sbAdminApp
  */
-angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootScope, Websocket) {
+angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootScope, Websocket, alertService) {
 	if(!$scope.user){
 		return false;
 	}
@@ -97,30 +97,20 @@ angular.module('sbAdminApp').controller('smurfs', function($scope,$http,$rootSco
 	},true);
 
 
-	$scope.$watch(function(){
-		return $scope.user.userData
-	}, function(newValue, oldValue){
-	  	var difFound = false;
-	    for(var x in $scope.user.userData){
-	    	if(x != "logs"){
-	    		if (oldValue[x] != newValue[x]){
-	    			difFound = true;
-	    		}
-	    	}
-	    }
-	    if (difFound){
-			$scope.user.userData.smurfs.forEach(function(smurf){
-				if (smurf.group > -1 && smurf.group != null){
-					smurf.group = smurf.group.toString();
-				}
-			});
-			var tempData = angular.copy($scope.user.userData);
-			tempData.logs = [];
-			$http.post("http://handsfreeleveler.com:4446/api/updateSmurfs", {userData:tempData}).then(function(res){
-				//console.log(res.data);
-			});
-		}
-	},true);
+	$scope.saveChanges = function(){
+		$scope.user.userData.smurfs.forEach(function(smurf){
+			if (smurf.group > -1 && smurf.group != null){
+				smurf.group = smurf.group.toString();
+			}
+		});
+		var tempData = angular.copy($scope.user.userData);
+		tempData.logs = [];
+		$http.post("http://handsfreeleveler.com:4446/api/updateSmurfs", {userData:tempData}).then(function(res){
+			alertService.add("success","Smurfs saved");
+		}, function(err){
+			alertService.add("danger","Failed to save smurfs");
+		});
+	}
 
 	$scope.showSmurfAction = function(smurf,type){
 		if($rootScope.controller){
