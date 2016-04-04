@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace HFL_Remastered
@@ -8,6 +9,8 @@ namespace HFL_Remastered
     {
         public static List<Smurf> smurfs = new List<Smurf>();
         public static List<Group> groups = new List<Group>();
+        public static List<Smurf> recoverySmurfs = new List<Smurf>();
+        public static List<Group> recoveryGroups = new List<Group>();
 
         public static void addGroup(Group group)
         {
@@ -34,6 +37,23 @@ namespace HFL_Remastered
                     smurf.totalGroupLength = group.smurfs.Count;
                     smurf.loadSelf();
                     smurf.start();
+                }
+            }
+        }
+        
+        public static void recover()
+        {
+            if (File.Exists("smurfs.recovery")) {
+                foreach(Smurf smurf in FileManager.DeSerializeObject<List<Smurf>>("smurfs.recovery"))
+                {
+                    addSmurf(smurf);
+                }
+            }
+            if (File.Exists("groups.recovery"))
+            {
+                foreach(Group group in FileManager.DeSerializeObject<List<Group>>("groups.recovery"))
+                {
+                    addGroup(group);
                 }
             }
         }
@@ -73,7 +93,7 @@ namespace HFL_Remastered
                 Logger.Push("Smurf " + newSmurf.username + " already registered to system!", "info");
                 newSmurf.start();
             }
-            SmurfManager.updateStatus();
+            updateStatus();
         }
 
         public static void stopSmurf(Smurf smurf)
@@ -82,10 +102,13 @@ namespace HFL_Remastered
                 Smurf containsSmurf = smurfs.First(pendSmurf => pendSmurf.username == smurf.username && pendSmurf.region == smurf.region);
                 if (containsSmurf != null)
                 {
-                    containsSmurf.stop();
-                    smurfs.Remove(containsSmurf);
+                    
+                    int indexNum = smurfs.IndexOf(containsSmurf);
+                    containsSmurf.Dispose();
+                    smurfs.RemoveAt(indexNum);
+                    
                 }
-                SmurfManager.updateStatus();
+                updateStatus();
             }catch(Exception ex){
 
             }

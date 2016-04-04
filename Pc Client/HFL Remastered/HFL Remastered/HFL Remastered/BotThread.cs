@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.Net.Http;
 using System.Windows.Threading;
 
+
 namespace HFL_Remastered
 {
     public class BotThread : IDisposable
@@ -82,8 +83,13 @@ namespace HFL_Remastered
         public ProcessStartInfo lastStarter = null;
         private bool m_disposed = false;
 
+        //Timer Checker
+        
+
+
         public void init(string _username, string _password, int _desiredLevel, Region _region, QueueTypes _queue, Smurf _smurf)
         {
+            //Init
             username = _username;
             password = _password;
             desiredLevel = _desiredLevel;
@@ -92,13 +98,21 @@ namespace HFL_Remastered
             smurf = _smurf;
             isHost = _smurf.isHost;
 
+
+
+            //Listeners
             connection.OnConnect += new LoLConnection.OnConnectHandler(connection_OnConnect);
             connection.OnDisconnect += new LoLConnection.OnDisconnectHandler(connection_OnDisconnect);
             connection.OnError += new LoLConnection.OnErrorHandler(connection_OnError);
             connection.OnLogin += new LoLConnection.OnLoginHandler(connection_OnLogin);
             connection.OnLoginQueueUpdate += new LoLConnection.OnLoginQueueUpdateHandler(connection_OnLoginQueueUpdate);
             connection.OnMessageReceived += new LoLConnection.OnMessageReceivedHandler(connection_OnMessageReceived);
+
+            //Disposal
+            m_disposed = false;
         }
+
+
 
         public async void start()
         {
@@ -115,7 +129,7 @@ namespace HFL_Remastered
         #region OnDisconnect
         public async void connection_OnDisconnect(object sender, object message)
         {
-            SmurfManager.stopSmurf(smurf);
+            
         }
         #endregion
         #region OnError
@@ -148,6 +162,7 @@ namespace HFL_Remastered
         private void connection_OnLogin(object sender, string username, string ipAddress)
         {
             Logger.Push("Smurf logged in, ready to queue", "info", this.username);
+            smurf.updateTimer(15);
 
             new Thread((ThreadStart)(async () =>
             {
@@ -218,6 +233,7 @@ namespace HFL_Remastered
                         {
                             Logger.Push("Requesting host to invite me.", "info", this.username);
                             smurf.hostCallback.inviteMe(summonerId);
+                            smurf.updateTimer(15);
                         }
                     }
 
@@ -236,6 +252,7 @@ namespace HFL_Remastered
             else
             {
                 Logger.Push("Position to login: " + positionInLine, "info", this.username);
+                smurf.updateTimer(15);
             }
         }
         #endregion
@@ -259,6 +276,7 @@ namespace HFL_Remastered
         {
             GameDTO game = message as GameDTO;
             await connection.SetClientReceivedGameMessage(game.Id, "CHAMP_SELECT_CLIENT");
+            smurf.updateTimer(150);
             switch (game.GameState)
             {
                 case "TEAM_SELECT":
@@ -337,6 +355,7 @@ namespace HFL_Remastered
                     break;
                 case "TERMINATED":
                     Logger.Push("Re entering to queue.", "info", username);
+                    smurf.updateTimer(60 * 5);
                     this.firstTimeInQueuePop = true;
                     break;
                 case "JOINING_CHAMP_SELECT":
@@ -387,6 +406,7 @@ namespace HFL_Remastered
                     {
                         Logger.Push("Requesting host to invite me.", "info", username);
                         smurf.hostCallback.inviteMe(summonerId);
+                        smurf.updateTimer(15);
                     }
                 }
             }
@@ -414,6 +434,7 @@ namespace HFL_Remastered
                 InvitationRequest req = message as InvitationRequest;
                 Thread.Sleep(1000);
                 await connection.AcceptInviteForMatchmakingGame(req.InvitationId);
+                smurf.updateTimer(100);
             }
             else
             {
@@ -522,8 +543,10 @@ namespace HFL_Remastered
                     if (m_leaverBustedPenalty > 0)
                     {
                         double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
+                        smurf.updateTimer(Convert.ToInt32(Math.Round(minutes)+2)*60);
                         Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
                         Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
+                        
                         if (!m_disposed)
                         {
                             try
@@ -532,11 +555,12 @@ namespace HFL_Remastered
                                 if (message.PlayerJoinFailures == null)
                                 {
                                     Logger.Push("Succesfully joined lower priority queue!", "info", username);
+                                    smurf.updateTimer(150);
                                 }
                                 else
                                 {
                                     Logger.Push("There was an error in joining lower priority queue.Disconnecting...", "danger", username);
-                                    this.connection.Disconnect();
+                                    smurf.restartHard();
                                 }
                             }
                             catch (Exception ex)
@@ -567,6 +591,7 @@ namespace HFL_Remastered
             {
                 levelUp();
             }
+            smurf.updateTimer(15);
         }
         #endregion
 
@@ -586,6 +611,7 @@ namespace HFL_Remastered
                 {
                     this.joinQueue();
                 }
+                smurf.updateTimer(50);
             }
             if (rpBalance == 400.0 && App.Client.UserData.Settings.BuyBoost)
             {
@@ -724,6 +750,7 @@ namespace HFL_Remastered
                 }
             }));
             processStarter.Start();
+            smurf.updateTimer(60 * 60);
         }
         private async void joinQueue()
         {
@@ -763,6 +790,7 @@ namespace HFL_Remastered
             if (message.PlayerJoinFailures == null)
             {
                 Logger.Push("In Queue: " + mustQueue.ToString(), "info", username);
+                smurf.updateTimer(60 * 5);
             }
             else
             {
@@ -800,6 +828,7 @@ namespace HFL_Remastered
                 if (!string.IsNullOrEmpty(this.m_accessToken))
                 {
                     double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
+                    smurf.updateTimer(Convert.ToInt32(Math.Round(minutes) + 2) * 60);
                     Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
                     Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
                     if (!m_disposed)
@@ -847,6 +876,7 @@ namespace HFL_Remastered
                         else
                         {
                             Logger.Push("Waiting out queue buster: " + minutes + " minutes!", "warning", username);
+                            smurf.updateTimer(Convert.ToInt32(Math.Round((double)m_leaverBustedPenalty) + 2) * 60);
                             Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
                             if (!m_disposed)
                             {
@@ -980,6 +1010,7 @@ namespace HFL_Remastered
                 lobbyReady = true;
                 Logger.Push("Lobby created successfully", "info", username);
                 lobbyInviteUpdate();
+                smurf.updateTimer(20);
             }
         }
         private async void updateSmurfInfo()

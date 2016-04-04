@@ -40,6 +40,19 @@ namespace HFL_Remastered
                 App.gameContainer.Show();
                 FileManager.LockCamera();
             }
+            if (FileManager.checkRecovery())
+            {
+                Logger.Push("Recovering smurfs from crash", "warning");
+                SmurfManager.recover();
+                if (File.Exists("groups.recovery"))
+                {
+                    File.Delete("groups.recovery");
+                }
+                if (File.Exists("smurfs.recovery"))
+                {
+                    File.Delete("smurfs.recovery");
+                }
+            }
         }
 
         private WindowState m_storedWindowState = WindowState.Normal;
@@ -116,6 +129,7 @@ namespace HFL_Remastered
         private void Menu_Close(object sender, RoutedEventArgs e)
         {
             try {
+                App.gameContainer.terminateAllGames(true);
                 m_notifyIcon.Visible = false;
                 Process.GetCurrentProcess().Kill();
             }
@@ -161,7 +175,7 @@ namespace HFL_Remastered
             this.DataContext = net;
             this.Visibility = Visibility.Visible;
             this.trial.Visibility = Visibility.Hidden;
-            m_notifyIcon = new System.Windows.Forms.NotifyIcon();
+            m_notifyIcon = new WinForms.NotifyIcon();
             m_notifyIcon.BalloonTipText = "HFL has been minimized. Click the tray icon to show.";
             m_notifyIcon.BalloonTipTitle = "Hands Free Leveler";
             m_notifyIcon.Text = "Hands Free Leveler";
@@ -213,12 +227,12 @@ namespace HFL_Remastered
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://remote.handsfreeleveler.com/");
+            Process.Start("http://remote.handsfreeleveler.com/");
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://forum.handsfreeleveler.com/");
+            Process.Start("http://forum.handsfreeleveler.com/");
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -257,7 +271,7 @@ namespace HFL_Remastered
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://forum.handsfreeleveler.com/topic/24/how-to-buy-payment-methods");
+            Process.Start("http://forum.handsfreeleveler.com/topic/24/how-to-buy-payment-methods");
         }
 
         private void logging_Checked(object sender, RoutedEventArgs e)

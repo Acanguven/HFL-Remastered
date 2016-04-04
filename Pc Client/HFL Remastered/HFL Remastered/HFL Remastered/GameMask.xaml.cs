@@ -67,7 +67,7 @@ namespace HFL_Remastered
             md.DoWork += new DoWorkEventHandler(modifier);
             antiSplat.DoWork += new DoWorkEventHandler(antiBugsplat);
 
-            terminateAllGames();
+            
 
             md.RunWorkerAsync();
             antiSplat.RunWorkerAsync();
@@ -119,7 +119,7 @@ namespace HFL_Remastered
             }
         }
 
-        private void terminateAllGames()
+        public void terminateAllGames(bool outsider)
         {
             while (Process.GetProcessesByName("League of Legends").Length > 0)
             {
@@ -130,7 +130,9 @@ namespace HFL_Remastered
                     Thread.Sleep(500);
                 }
             }
-            bw.RunWorkerAsync();
+            if (!outsider) { 
+                bw.RunWorkerAsync();
+            }
         }
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)

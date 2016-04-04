@@ -4,6 +4,7 @@ using System.Windows;
 using System.IO;
 using System.Windows.Threading;
 using System.Security.Principal;
+using System.Collections.Generic;
 
 namespace HFL_Remastered
 {
@@ -13,23 +14,33 @@ namespace HFL_Remastered
         public static User Client;
         public static Main mainwindow;
         public Login loginWindow = new Login();
-        public static string version = "2.51";
+        public static string version = "2.9";
         public static GameMask gameContainer = new GameMask();
-        
+        public static Dictionary<string, string> startArgs = new Dictionary<string, string>();
+
         private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs dispatcherUnhandledExceptionEventArgs)
         {
-            MessageBox.Show("Wide dispatcher exception is sent to Law, program will continue");
             dispatcherUnhandledExceptionEventArgs.Handled = true;
         }
 
         private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
         {
-            MessageBox.Show("Domain exception is sent to Law, program will continue");
+            if (SmurfManager.smurfs.Count > 0)
+            {
+                FileManager.SerializeObject(SmurfManager.smurfs, "smurfs.recovery");
+            }
+            if (SmurfManager.groups.Count > 0)
+            {
+                FileManager.SerializeObject(SmurfManager.groups, "groups.recovery");
+            }
+            System.Diagnostics.Process.Start(
+            System.Reflection.Assembly.GetEntryAssembly().Location,
+            string.Join(" ", Environment.GetCommandLineArgs()));
+            Environment.Exit(1);
         }
 
         private void CurrentOnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs dispatcherUnhandledExceptionEventArgs)
         {
-            MessageBox.Show("Current Dispatcher exception is sent to Law, program will continue");
             dispatcherUnhandledExceptionEventArgs.Handled = true;
         }
 
@@ -68,15 +79,15 @@ namespace HFL_Remastered
             return isAdmin;
         }
 
-
         private async void igniter(object sender, StartupEventArgs e)
         {
+            gameContainer.terminateAllGames(false);
             SetLanguageDictionary();
-            Application.Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
+            Current.DispatcherUnhandledException += CurrentOnDispatcherUnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             Dispatcher.UnhandledException += DispatcherOnUnhandledException;
 
-            if (!IsUserAdministrator())
+            if (!IsUserAdministrator() && !FileManager.checkRecovery())
             {
                 MessageBox.Show("Maybe you should provide me admin access to prevent errors? Please run me as administrator.");
             }

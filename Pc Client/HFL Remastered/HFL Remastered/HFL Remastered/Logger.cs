@@ -10,15 +10,22 @@ namespace HFL_Remastered
         {
             if (Properties.Settings.Default.logging)
             {
-                dynamic logPacket = new JObject();
-                logPacket.date = String.Format("{0:G}", DateTime.Now);
-                logPacket.smurf = smurf;
-                logPacket.text = text;
-                logPacket.code = code;
-                logPacket.token = App.Client.Token;
-                logPacket.type = "log";
-                string buffer = logPacket.ToString(Formatting.None);
-                App.mainwindow.net.sendLog(buffer);
+                try
+                {
+                    dynamic logPacket = new JObject();
+                    logPacket.date = String.Format("{0:G}", DateTime.Now);
+                    logPacket.smurf = smurf;
+                    logPacket.text = text;
+                    logPacket.code = code;
+                    logPacket.token = App.Client.Token;
+                    logPacket.type = "log";
+                    string buffer = logPacket.ToString(Formatting.None);
+                    App.mainwindow.net.sendLog(buffer);
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
         }
 

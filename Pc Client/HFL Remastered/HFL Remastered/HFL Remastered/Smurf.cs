@@ -2,10 +2,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Timers;
 
 namespace HFL_Remastered
 {
-    public class Smurf
+    public class Smurf : IDisposable
     {
         [JsonProperty("username")]
         public string username { get; set; }
@@ -37,8 +39,24 @@ namespace HFL_Remastered
         public int totalGroupLength { get; set; }
         public Smurf hostCallback { get; set; }
 
+        public Timer liveTimer = new Timer();
+        private int errorTimer = 10;
+        private volatile bool _requestStop = false;
+
         public string regionVersion = "6.3.16_02_03_18_43";
         internal BotThread thread = new BotThread();
+
+        public Smurf()
+        {
+
+        }
+
+        public void updateTimer(int amount)
+        {
+            if(amount > errorTimer) { 
+                errorTimer = amount;
+            }
+        }
 
         public async void inviteMe(double summonerId){
             thread.lobbyInviteQuery.Add(summonerId);
@@ -48,6 +66,10 @@ namespace HFL_Remastered
         public void loadSelf()
         {
             Logger.Push("Loading components...", "info", username);
+            liveTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            liveTimer.Interval = 1000;
+            liveTimer.Enabled = true;
+            liveTimer.Start();
             thread.init(username, password, desiredLevel, region, queue, this);
         }
 
@@ -85,12 +107,41 @@ namespace HFL_Remastered
             {
 
             }
-            Logger.Push("Stopping smurf", "warning", this.username);
         }
 
         public void updateSelfOnRemote()
         {
             Network.updateSmurfData(this);
+        }
+
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            if (!_requestStop)
+            {
+                errorTimer--;
+                if (errorTimer <= 0)
+                {
+                    Smurf containsSmurf = SmurfManager.smurfs.First(pendSmurf => pendSmurf.username == username && pendSmurf.region == region);
+                    if (containsSmurf != null)
+                    {
+                        Logger.Push("Restarting smurf because didn't recieve any message for a long time!", "warning", username);
+                        errorTimer = 15;
+                        restartHard();
+                    }
+                }
+            }
+        }
+
+        public void removeTimer()
+        {
+            _requestStop = true;
+            liveTimer.Stop();
+        }
+
+        public void Dispose()
+        {
+            removeTimer();
+            GC.SuppressFinalize(this);
         }
     }
 }

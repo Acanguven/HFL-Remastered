@@ -95,5 +95,8 @@
     <Setting Name="manualInjection" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="JP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">6.6.16_03_22_15_22</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -123,8 +123,8 @@ namespace LoLLauncher
         EUNE,
 
         [ServerValue("prod.jp1.lol.riotgames.com")]
-        [LoginQueueValue("https://lq.jp1.lol.riotgames.jp")]
-        [LocaleValue("ja_JP")]
+        [LoginQueueValue("https://lq.jp1.lol.riotgames.jp/")]
+        [LocaleValue("jp_JP")]
         [UseGarenaValue(false)]
         JP
     }
