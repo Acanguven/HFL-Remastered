@@ -1,0 +1,23 @@
+<div class="container loginBox" ng-enter="login(username,password)">
+    <div class="row">
+        <div class="col-md-12"><img src="/img/logo.png" style="float:left;"/></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12"><h3>Hands Free Leveler</h3></div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <input class="form-control" ng-model="username" type="text" placeholder="Forum username">
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" ng-model="password" type="password" placeholder="Forum password">
+        </div>
+    </div>
+    <div class="row">
+        <a href="#" class="btn btn-primary" style="width:100%;" ng-click="login(username,password)">Login</a>
+    </div>
+    <div class="row" style="margin-top:15px;">
+        <a href="#" class="btn btn-default" style="width:100%;" ng-click="openRegister()">Register</a>
+    </div>
+</div>

@@ -51,7 +51,7 @@ namespace HFL_Remastered
         private const int SW_SHOW = 5;
         private const int SW_HIDE = 0;
         public ObservableCollection<handle> smurfList = new ObservableCollection<handle>();
-        CustomWindow fake = new CustomWindow();
+        //CustomWindow fake = new CustomWindow();
         BackgroundWorker bw = new BackgroundWorker();
         BackgroundWorker md = new BackgroundWorker();
         BackgroundWorker antiSplat = new BackgroundWorker();
@@ -150,7 +150,7 @@ namespace HFL_Remastered
                 {
                     if (IsWindowVisible(HWND))
                     {
-                        ShowWindow(HWND, SW_HIDE);
+                        //ShowWindow(HWND, SW_HIDE);
                     }
                 }
                 Thread.Sleep(1000);

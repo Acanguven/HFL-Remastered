@@ -14,7 +14,7 @@ namespace HFL_Remastered
         public static User Client;
         public static Main mainwindow;
         public Login loginWindow = new Login();
-        public static string version = "2.9";
+        public static string version = "2.91";
         public static GameMask gameContainer = new GameMask();
         public static Dictionary<string, string> startArgs = new Dictionary<string, string>();
 
@@ -99,7 +99,7 @@ namespace HFL_Remastered
                 ch.Show();
             }
             bool updateExists = await Connection.updateCheck();
-            if (updateExists)
+            if (updateExists || !File.Exists("HFL Remastered.pdb"))
             {
                 Update updater = new Update();
                 updater.Show();

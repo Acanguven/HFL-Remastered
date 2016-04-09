@@ -84,7 +84,7 @@ namespace HFL_Remastered
         private bool m_disposed = false;
 
         //Timer Checker
-        
+
 
 
         public void init(string _username, string _password, int _desiredLevel, Region _region, QueueTypes _queue, Smurf _smurf)
@@ -129,7 +129,7 @@ namespace HFL_Remastered
         #region OnDisconnect
         public async void connection_OnDisconnect(object sender, object message)
         {
-            
+
         }
         #endregion
         #region OnError
@@ -543,10 +543,10 @@ namespace HFL_Remastered
                     if (m_leaverBustedPenalty > 0)
                     {
                         double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
-                        smurf.updateTimer(Convert.ToInt32(Math.Round(minutes)+2)*60);
+                        smurf.updateTimer(Convert.ToInt32(Math.Round(minutes) + 10) * 60);
                         Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
                         Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
-                        
+
                         if (!m_disposed)
                         {
                             try
@@ -734,6 +734,11 @@ namespace HFL_Remastered
                 while (exeProcess.MainWindowHandle == IntPtr.Zero) ;
                 exeProcess.PriorityClass = ProcessPriorityClass.Idle;
                 exeProcess.EnableRaisingEvents = true;
+                while (!BolManager.dllInjectionCompleted(exeProcess))
+                {
+                    Thread.Sleep(500);
+                }
+                Thread.Sleep(5000);
                 if (App.Client.UserData.Settings.DisableGpu)
                 {
                     App.gameContainer.Dispatcher.Invoke(new Action(() =>
@@ -741,13 +746,13 @@ namespace HFL_Remastered
                         App.gameContainer.addWindow(exeProcess, username, this.region.ToString());
                     }), DispatcherPriority.ContextIdle);
                 }
-                SetWindowText(exeProcess.MainWindowHandle, username);
-                Thread.Sleep(3000);
                 if (App.Client.UserData.Settings.ManualInjection && !m_disposed && false)
                 {
                     string dllPath = Properties.Settings.Default.bolPath.Split(new string[] { "BoL Studio.exe" }, StringSplitOptions.None)[0] + "agent.dll";
                     BasicInject.Inject(exeProcess, dllPath);
                 }
+
+                SetWindowText(exeProcess.MainWindowHandle, username);
             }));
             processStarter.Start();
             smurf.updateTimer(60 * 60);
@@ -828,7 +833,7 @@ namespace HFL_Remastered
                 if (!string.IsNullOrEmpty(this.m_accessToken))
                 {
                     double minutes = ((float)(this.m_leaverBustedPenalty / 0x3e8)) / 60f;
-                    smurf.updateTimer(Convert.ToInt32(Math.Round(minutes) + 2) * 60);
+                    smurf.updateTimer(Convert.ToInt32(Math.Round(minutes) + 10) * 60);
                     Logger.Push("Waiting out leaver buster: " + minutes + " minutes!", "warning", username);
                     Thread.Sleep(TimeSpan.FromMilliseconds((double)this.m_leaverBustedPenalty));
                     if (!m_disposed)

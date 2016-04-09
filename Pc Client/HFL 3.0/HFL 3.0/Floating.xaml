@@ -1,0 +1,20 @@
+﻿<Window x:Class="HFL_3._0.Floating"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Floating" 
+				Height="100" 
+				Width="100" 
+				WindowStyle="None" 
+				AllowsTransparency="true" 
+				IsHitTestVisible="True" 
+				ResizeMode="NoResize" 
+				Background="Transparent" 
+				Topmost="True"
+				Loaded="Window_Loaded" Icon="favicon.ico"
+				>
+	<Grid>
+		<Image Source="Resources/logo.png" MouseLeftButtonDown="Image_MouseLeftButtonDown" MouseLeftButtonUp="Image_MouseLeftButtonUp"/>
+		<Ellipse Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="25"  Stroke="Black" VerticalAlignment="Top" Width="25"/>
+		<TextBlock HorizontalAlignment="Left" Margin="5,4,0,0" TextWrapping="Wrap" TextAlignment="Center" Text="15" VerticalAlignment="Top" Height="16" Width="15"/>
+	</Grid>
+</Window>

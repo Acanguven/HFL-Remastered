@@ -129,7 +129,7 @@ namespace HFL_Remastered
                 string errorMessage = new Win32Exception(lastError).Message;
             }
 
-            ShowWindow(m_hwnd, (int)ShowWindowCommands.Hide);
+            ShowWindow(m_hwnd, (int)ShowWindowCommands.ShowDefault);
             UpdateWindow(m_hwnd);
         }
 

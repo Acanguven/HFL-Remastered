@@ -60,10 +60,12 @@ app.use(function(err, req, res, next) {
 
 
 process.on('uncaughtException', function(err) {
-  console.log("---------");
-  console.log(err);
-  console.log(err.stack || err.message, 'error');
-  console.log("---------");
+  if(err.status != 404){
+    console.log("---------");
+    console.log(err);
+    console.log(err.stack || err.message, 'error');
+    console.log("---------");
+  }
 });
 
 module.exports = app;

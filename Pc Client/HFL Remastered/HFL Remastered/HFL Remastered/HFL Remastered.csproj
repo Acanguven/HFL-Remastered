@@ -107,6 +107,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="BasicInject.cs" />
+    <Compile Include="BolManager.cs" />
     <Compile Include="BotThread.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="Connection.cs" />
