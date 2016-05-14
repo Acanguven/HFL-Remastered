@@ -19,7 +19,7 @@ router.post('/gotPaymentHolyFuckYes', function(req,res,next){
     if(req.body.payment_status){
       if (req.body.payment_status == 'Completed') {
         if(req.body.custom.replace(".","")){
-          if(req.body.mc_gross == "50.00"){
+          if(req.body.mc_gross == "35.00"){
             User.update({_id: req.body.custom}, {$set:{
               type: 2, 
             }}, function(err, numberAffected, rawResponse) {
@@ -28,7 +28,7 @@ router.post('/gotPaymentHolyFuckYes', function(req,res,next){
               }
             })
           }
-          if(req.body.mc_gross == "35.00"){
+          if(req.body.mc_gross == "25.00"){
             User.update({_id: req.body.custom}, {$set:{
               type: 1, 
             }}, function(err, numberAffected, rawResponse) {

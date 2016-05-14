@@ -271,7 +271,7 @@ namespace HFL_Remastered
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            Process.Start("http://forum.handsfreeleveler.com/topic/24/how-to-buy-payment-methods");
+						Process.Start("http://forum.handsfreeleveler.com/topic/7/how-to-buy-hands-free-leveler");
         }
 
         private void logging_Checked(object sender, RoutedEventArgs e)
