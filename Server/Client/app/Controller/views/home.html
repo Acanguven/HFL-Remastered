@@ -1,0 +1,128 @@
+<div class="container home">
+
+    <div class="row" style="margin-top:10px;">
+        <stats number="5" comments="Smurfs Count" colour="primary" type="user"></stats>
+        <stats number="5" comments="Total Games" colour="success" type="gamepad"></stats>
+        <stats number="5" comments="Total Wins" colour="warning" type="trophy"></stats>
+        <stats number="5" comments="Forum Posts" colour="danger" type="comment"></stats>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-tasks fa-fw"></i>
+                    Bot Status
+                </div>
+                <div class="panel-body"  >
+                    <div class="list-group overflowablechilds">
+                        <a class="list-group-item">
+                            <i class="fa fa-user fa-fw"></i> Bot Status
+                            <span class="pull-right text-warning small" ng-if="status['paused']"><em>Paused</em></span>
+                            <span class="pull-right text-success small" ng-if="status['running'] && !status['paused']"><em>Running</em></span>
+                            <span class="pull-right text-muted small" ng-if="!status['running'] && !status['done']"><em>Idle</em></span>
+                            <span class="pull-right text-success small" ng-if="status['done']"><em>Completed</em></span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-user fa-fw"></i> Session Time
+                            <span class="pull-right text-muted small"><em>{{sessionTime}}</em></span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-user fa-fw"></i> Logs Generated
+                            <span class="pull-right text-muted small"><em>00</em></span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-user fa-fw"></i> Script Status
+                            <span class="pull-right text-muted small"><em>Updated</em></span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-user fa-fw"></i> BoL Status
+                            <span class="pull-right text-success small" ng-if="bolRunning"><em>Running</em></span>
+                            <span class="pull-right text-danger small" ng-if="!bolRunning"><em>Not Running</em></span>
+                        </a>
+                        <a class="list-group-item" >
+                            <i class="fa fa-user fa-fw"></i> <span>Gpu Disabling</span>
+                            <button class="btn btn-info pull-right btn-sm" style="margin-top:-5px;" ng-click="showGames()">Show Games</button>
+                        </a>
+                    </div>
+                    <button class="btn btn-warning" ng-click="action(0)" ng-if="!status['paused'] && status['running']">Pause</button>
+                    <button class="btn btn-danger" ng-click="action(1)" ng-if="status['running']">Stop</button>
+                    <div class="input-group" style="width: 215px;float: left;" ng-show="!status['running']">
+                        <div class="input-group-btn" >
+                            <button class="btn btn-success" ng-click="action(2)">Start</button>
+                        </div>
+                        <input type="text" class="form-control" ng-model="repeatTimes">
+                    </div>
+                    <button class="btn btn-success" ng-click="action(3)" ng-if="status['paused']">Resume</button>
+                    <button class="btn btn-info" ng-click="showSessions()">Show Sessions</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i>
+                    Live Stats
+                </div>
+                <div class="panel-body">
+                    <div class="list-group overflowablechilds">
+                        <a class="list-group-item">
+                            <i class="fa fa-user fa-fw"></i> Bol Username
+                            <span class="pull-right text-muted small" ng-if="user.userData.bol != ''"><em>{{user.userData.bol}}</em></span>
+                            <span class="pull-right text-danger small" ng-if="user.userData.bol == ''"><em>Not Set</em></span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-bolt fa-fw"></i> Client Controller
+                            <span class="pull-right text-muted small" ng-if="controller">
+                                <em>Running</em>
+                                <span class="pull-right text-danger small" ng-if="!controller">
+                                    <em>Not Running</em>
+                                </span>
+                            </span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-key fa-fw"></i> Client IP Address
+                            <span class="pull-right text-muted small" ng-if="controller">
+                                <em>{{controller.ip}}</em>
+                            </span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-users fa-fw"></i> Total Smurfs Count
+                            <span class="pull-right text-muted small">
+                                <em>{{user.userData.smurfs.length}}</em>
+                            </span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-key fa-fw"></i> Client Hwid Status
+                            <span class="pull-right text-muted small">
+                                <em ng-if="user.userData.hwidCanChange - user.date > 0" class="text-danger">{{hwidRemains()}}</em>
+                                <em ng-if="user.userData.hwidCanChange - user.date <= 0" class="text-success">Available</em>
+                            </span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-shield fa-fw"></i> Account Type
+                            <span class="pull-right text-muted small" ng-if="user.userData.type == 2">
+                                <em>Multi Smurf</em>
+                            </span>
+                            <span class="pull-right text-muted small" ng-if="user.userData.type == 1">
+                                <em>Single Smurf</em>
+                            </span>
+                            <span class="pull-right text-muted small" ng-if="user.userData.type == 0">
+                                <em>Trial:</em>
+                                <em ng-if="user.userData.trial - user.date  <= 0" class="text-danger">Expired</em>
+                                <em ng-if="user.userData.trial - user.date > 0" class="text-warning">{{trialRemains()}}</em>
+                            </span>
+                        </a>
+                        <a class="list-group-item">
+                            <i class="fa fa-check fa-fw"></i> User Email Confirmation
+                            <span class="pull-right text-muted small">
+                                <em ng-if="user.forumData['email:confirmed']" class="text-success">Confirmed</em>
+                                <em ng-if="!user.forumData['email:confirmed']" class="text-danger">Not Confirmed</em>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

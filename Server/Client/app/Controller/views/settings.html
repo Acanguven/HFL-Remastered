@@ -1,0 +1,143 @@
+<div class="container" style="margin-top:10px;">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Theme
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <select class="form-control" ng-model="mySelect['theme']" ng-change="updateTheme()">
+                                    <option value="default">No Theme</option>
+                                    <option ng-repeat="o in templateList" ng-selected="{{o==currentTemplate}}" value="{{o}}">
+                                        {{o}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Language
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <select class="form-control" ng-model="mySelect['language']">
+                                    <option>English</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Client Packet Search
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="packetSearch" id="norender" ng-value="1" ng-model="mySelect['cPacketSearch']">Search client packets for more security (3-5 minutes before each start)
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="packetSearch" id="render" ng-value="0" ng-model="mySelect['cPacketSearch']">Use the existing settings
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Client Packet Search
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="packetSearch" id="norender" ng-value="1" ng-model="mySelect['cPacketSearch']">Search client packets for more security (3-5 minutes before each start)
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="packetSearch" id="render" ng-value="0" ng-model="mySelect['cPacketSearch']">Use the existing settings
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Client Packet Search
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="packetSearch" id="norender" ng-value="1" ng-model="user.userData.settings.packetSearch">Search client packets for more security (3-5 minutes before each start)
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="packetSearch" id="render" ng-value="0" ng-model="user.userData.settings.packetSearch">Use the existing settings
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Client Packet Search
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="packetSearch" id="norender" ng-value="1" ng-model="user.userData.settings.packetSearch">Search client packets for more security (3-5 minutes before each start)
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="packetSearch" id="render" ng-value="0" ng-model="user.userData.settings.packetSearch">Use the existing settings
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

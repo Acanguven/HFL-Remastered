@@ -1,0 +1,122 @@
+﻿<div class="container">
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="javascript:void(0)" class="list-group-item" ng-repeat="session in sessions | reverse" ng-click="selectSession(session)">
+                        {{session.startTime}}
+                        <span class="pull-right text-muted small"><em>{{session.smurfs.length}}</em></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9" ng-if="selectedSession != false">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <h3>Session Information<small class="pull-right text-muted" ng-if="selectedSession.state == 'PAUSED'">{{selectedSession.state}}</small><small class="pull-right text-primary" ng-if="selectedSession.state == 'RUNNING'">{{selectedSession.state}}</small><small class="pull-right text-danger" ng-if="selectedSession.state == 'FAILED'">{{selectedSession.state}}</small><small class="pull-right text-success" ng-if="selectedSession.state == 'COMPLETED'">{{selectedSession.state}}</small><small class="pull-right text-warning" ng-if="selectedSession.state == 'STOPPED'">{{selectedSession.state}}</small></h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>Rotations Count : {{selectedSession.rotations}}</p>
+                        <p>Smurfs Count : {{selectedSession.smurfs.length}}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>Started : {{selectedSession.startTime}}</p>
+                        <p>End : {{selectedSession.endTime}}</p>
+                    </div>
+                </div>
+
+                <p class="text-success" ng-if="selectedSession.errorText == null">Session completed without any errors.</p>
+                <p class="text-danger" ng-if="selectedSession.errorText != null">{{selectedSession.errorText}}</p>
+
+            </div>
+        </div>
+
+        <div class="row" ng-if="selectedSession.smurfs.length > 0">
+            <div class="col-md-6">
+                <h3>Session Started</h3>
+            </div>
+            <div class="col-md-6">
+                <h3>Session Ended</h3>
+            </div>
+        </div>
+
+        <hr ng-if="selectedSession.smurfs.length > 0"/>
+
+        <div class="row" ng-repeat="smurf in selectedSession.smurfs">
+            <div class="col-md-6">
+
+                <div class="panel panel-default" id="l">
+                    <div class="panel-heading">
+                        <i class="fa fa-user fa-fw"></i>
+                        {{smurf.username}}<small class="pull-right">{{smurf.region}}</small>
+                    </div>
+                    <div class="panel-body">
+                        <div class="list-group">
+                            <a href="javascript:void(0)" class="list-group-item">
+                                Level
+                                <span class="pull-right text-muted small"><em>{{smurf.startLevel}}</em></span>
+                            </a>
+                            <a href="javascript:void(0)" class="list-group-item">
+                                XP
+                                <span class="pull-right text-muted small"><em>{{smurf.startXp}}</em></span>
+                            </a>
+                            <a href="javascript:void(0)" class="list-group-item">
+                                IP
+                                <span class="pull-right text-muted small"><em>{{smurf.startIp}}</em></span>
+                            </a>
+                            <a href="javascript:void(0)" class="list-group-item">
+                                {{smurf.startXpToNextLevel}} Remains
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="70"
+                                         aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                                        <span class="sr-only">70% Complete</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+
+                <div class="panel panel-default" id="r">
+                    <div class="panel-heading">
+                        <i class="fa fa-user fa-fw"></i>
+                        {{smurf.username}}<small class="pull-right">{{smurf.region}}</small>
+                    </div>
+                    <div class="panel-body">
+                        <div class="list-group">
+                            <a href="javascript:void(0)" class="list-group-item">
+                                Level
+                                <span class="pull-right text-muted small"><em>{{smurf.endLevel}}</em></span>
+                            </a>
+                            <a href="javascript:void(0)" class="list-group-item">
+                                XP
+                                <span class="pull-right text-muted small"><em>{{smurf.endXp}}</em></span>
+                            </a>
+                            <a href="javascript:void(0)" class="list-group-item">
+                                IP
+                                <span class="pull-right text-muted small"><em>{{smurf.endIp}}</em></span>
+                            </a>
+                            <a href="javascript:void(0)" class="list-group-item">
+                                {{smurf.endXpToNextLevel}} Remains
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="70"
+                                         aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                                        <span class="sr-only">% Complete</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

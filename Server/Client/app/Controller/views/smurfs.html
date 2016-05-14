@@ -1,0 +1,139 @@
+<div class="container smurfs">
+    <div class="row" style="margin-top:10px;">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="well">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Username</label>
+                                    <input class="form-control" value="" placeholder="Username" ng-model="newSmurf.username" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input class="form-control" value="" placeholder="Password" ng-model="newSmurf.password" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Desired Level</label>
+                                    <select class="form-control" ng-model="newSmurf.desiredLevel">
+                                        <option ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]" value="{{n}}">{{n>30?'Unlimited':n}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Queue Type</label>
+                                    <select class="form-control" ng-model="newSmurf.queue">
+                                        <option value="2">Summoners Rift</option>
+                                        <option value="8">Twisted Treeline</option>
+                                        <option value="65">Aram</option>
+                                        <option value="31">AI Intro</option>
+                                        <option value="32">AI Beginner</option>
+                                        <option value="33">AI Intermediate</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Region</label>
+                                    <select class="form-control" ng-model="newSmurf.region">
+                                        <option value="EUW">EUW</option>
+                                        <option value="TR">TR</option>
+                                        <option value="EUNE">EUNE</option>
+                                        <option value="NA">NA</option>
+                                        <option value="KR">KR</option>
+                                        <option value="BR">BR</option>
+                                        <option value="OCE">OCE</option>
+                                        <option value="RU">RU</option>
+                                        <option value="LAS">LAS</option>
+                                        <option value="LAN">LAN</option>
+                                        <option value="JP">JP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success btn-lg btn-block" ng-click="add(newSmurf)">Add Smurf</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" style="height:190px;">
+                <!-- /.panel-heading -->
+                <div class="panel-body" style="height: 100%;text-align: center;cursor:pointer;padding-top:0px;" ng-click="loadFromFile()">
+                    <h3 class="text-primary" id="fileDropped"><i class="fa fa-file-o" aria-hidden="true">&nbsp;&nbsp;&nbsp;Click Here To Select</i></h3>
+                    <p class="text-info">USERNAME|PASSWORD|REGION|QUEUE TYPE|MAX LEVEL</p>
+                    <p class="text-muted"><small class="text-primary">Map Numbers:</small><small>Summoners Rift - 2 | Twisted Treeline - 8 | Aram - 65 | AI Intro - 31 | AI Beginner - 32 | AI Intermediate - 33</small></p>
+                    <p class="text-muted"><small class="text-primary">Region Values:</small><small>EUW|TR|EUNE|NA|KR|BR|OCE|RU|LAS|LAN|JP</small></p>
+                    <p class="text-muted"><small class="text-primary">Example Record:</small><small>testUsername|testPassword|EUW|65|30</small></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Password</th>
+                                <th>Region</th>
+                                <th>IP</th>
+                                <th>Level</th>
+                                <th>Max Level</th>
+                                <th>Queue</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="smurf in smurfs track by $index">
+                                <th scope="row">{{$index+1}}</th>
+                                <td><input class="form-control" ng-model="smurf.username"></td>
+                                <td><input class="form-control" ng-model="smurf.password"></td>
+                                <td>
+                                    <select class="form-control" ng-model="smurf.region">
+                                        <option value="EUW">EUW</option>
+                                        <option value="TR">TR</option>
+                                        <option value="EUNE">EUNE</option>
+                                        <option value="NA">NA</option>
+                                        <option value="KR">KR</option>
+                                        <option value="BR">BR</option>
+                                        <option value="OCE">OCE</option>
+                                        <option value="RU">RU</option>
+                                        <option value="LAS">LAS</option>
+                                        <option value="LAN">LAN</option>
+                                    </select>
+                                </td>
+                                <td>{{smurf.currentip}}</td>
+                                <td>{{smurf.currentLevel}}</td>
+                                <td>
+                                    <select class="form-control" ng-model="smurf.desiredLevel">
+                                        <option ng-repeat="n in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]" value="{{n}}" ng-selected="{{smurf.desiredLevel == n}}">{{n>30?'Unlimited':n}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control" ng-model="smurf.queue">
+                                        <option value="2">Summoners Rift</option>
+                                        <option value="8">Twisted Treeline</option>
+                                        <option value="65">Aram</option>
+                                        <option value="31">AI Intro</option>
+                                        <option value="32">AI Beginner</option>
+                                        <option value="33">AI Intermediate</option>
+                                    </select>
+                                </td>
+                                <td><button class="btn btn-danger" ng-click="removeSmurf(smurf)"><i class="fa fa-times"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

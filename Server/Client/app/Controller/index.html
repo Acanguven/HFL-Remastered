@@ -1,90 +1,159 @@
-<!doctype html>
-<html class="no-js">
-  	<head>
-	    <meta charset="utf-8">
-	    <title>Hands Free Leveler | Controller</title>
-	    <meta name="description" content="">
-	    <meta name="viewport" content="width=device-width">
-	    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
-	    <link rel="stylesheet" href="../bower_components/metisMenu/dist/metisMenu.min.css">
-	    <link rel="stylesheet" href="../bower_components/angular-loading-bar/build/loading-bar.min.css">
-	    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css" type="text/css">
-	    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
-	    <script src="../bower_components/angular/angular.min.js"></script>
-	    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	    <script src="../bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-	    <script src="../bower_components/json3/lib/json3.min.js"></script>
-	    <script src="../bower_components/oclazyload/dist/ocLazyLoad.min.js"></script>
-	    <script src="../bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
-	    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-	    <script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
-	    <script src="../bower_components/Chart.js/Chart.min.js"></script>
-	    <script src="../bower_components/angular-clipboard/angular-clipboard.js"></script>
-	    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-	    <script src="../bower_components/angular-websocket/angular-websocket.js"></script>
+﻿<!doctype html>
+<html class="no-js" ng-app="controller">
+<head>
+    <meta charset="utf-8">
+    <title>Hands Free Leveler | Controller</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../bower_components/metisMenu/dist/metisMenu.min.css">
+    <link rel="stylesheet" href="../bower_components/angular-loading-bar/build/loading-bar.min.css">
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css" type="text/css">
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="../bower_components/json3/lib/json3.min.js"></script>
+    <script src="../bower_components/oclazyload/dist/ocLazyLoad.min.js"></script>
+    <script src="../bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
+    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+    <script src="../bower_components/Chart.js/Chart.min.js"></script>
+    <script src="../bower_components/angular-clipboard/angular-clipboard.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="../bower_components/angular-websocket/angular-websocket.js"></script>
+    <script src="scripts/jsplumb.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/socket.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.js"></script>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.css">
+    <link rel="stylesheet" id="cerulean" href="styles/Templates/cerulean.css" disabled />
+    <link rel="stylesheet" id="cosmo" href="styles/Templates/cosmo.css" disabled />
+    <link rel="stylesheet" id="cyborg" href="styles/Templates/cyborg.css" disabled />
+    <link rel="stylesheet" id="darkly" href="styles/Templates/darkly.css" disabled />
+    <link rel="stylesheet" id="flatly" href="styles/Templates/flatly.css" disabled />
+    <link rel="stylesheet" id="journal" href="styles/Templates/journal.css" disabled />
+    <link rel="stylesheet" id="lumen" href="styles/Templates/lumen.css" disabled />
+    <link rel="stylesheet" id="paper" href="styles/Templates/paper.css" disabled />
+    <link rel="stylesheet" id="readable" href="styles/Templates/readable.css" disabled />
+    <link rel="stylesheet" id="sandstone" href="styles/Templates/sandstone.css" disabled />
+    <link rel="stylesheet" id="simplex" href="styles/Templates/simplex.css" disabled />
+    <link rel="stylesheet" id="slate" href="styles/Templates/slate.css" disabled />
+    <link rel="stylesheet" id="spacelab" href="styles/Templates/spacelab.css" disabled />
+    <link rel="stylesheet" id="superhero" href="styles/Templates/superhero.css" disabled />
+    <link rel="stylesheet" id="united" href="styles/Templates/united.css" disabled />
+    <link rel="stylesheet" id="yeti" href="styles/Templates/yeti.css" disabled />
+    <script type="text/javascript" src="https://www.youtube.com/player_api"></script>
 
-	    <script src="scripts/app.js"></script>
-	    <script src="scripts/socket.js"></script>
-
-	    <link rel="stylesheet" href="Styles/style.css" />
-	    <link rel="stylesheet" id="cerulean" href="Styles/Templates/cerulean.css" disabled/>
-	    <link rel="stylesheet" id="cosmo" href="Styles/Templates/cosmo.css" disabled/>
-	    <link rel="stylesheet" id="cyborg" href="Styles/Templates/cyborg.css" disabled/>
-	    <link rel="stylesheet" id="darkly" href="Styles/Templates/darkly.css" disabled/>
-	    <link rel="stylesheet" id="flatly" href="Styles/Templates/flatly.css" disabled/>
-	    <link rel="stylesheet" id="journal" href="Styles/Templates/journal.css" disabled/>
-	    <link rel="stylesheet" id="lumen" href="Styles/Templates/lumen.css" disabled/>
-	    <link rel="stylesheet" id="paper" href="Styles/Templates/paper.css" disabled/>
-	    <link rel="stylesheet" id="readable" href="Styles/Templates/readable.css" disabled/>
-	    <link rel="stylesheet" id="sandstone" href="Styles/Templates/sandstone.css" disabled/>
-	    <link rel="stylesheet" id="simplex" href="Styles/Templates/simplex.css" disabled/>
-	    <link rel="stylesheet" id="slate" href="Styles/Templates/slate.css" disabled/>
-	    <link rel="stylesheet" id="spacelab" href="Styles/Templates/spacelab.css" disabled/>
-	    <link rel="stylesheet" id="superhero" href="Styles/Templates/superhero.css" disabled/>
-	    <link rel="stylesheet" id="united" href="Styles/Templates/united.css" disabled/>
-	    <link rel="stylesheet" id="yeti" href="Styles/Templates/yeti.css" disabled/>
+    <link rel="stylesheet" href="styles/style.css"/>
 
 
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+	      	m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-64489729-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+    <script>
+        NET.resize(320, 600);
+    </script>
 
 
-	    <script>
-	      	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	      	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	      	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	      	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <style type="text/css">
+        body {
+            overflow-x: hidden;
+            height: 100%;
+        }
+        .qtip{
+            max-width:500px;
+        }
+    </style>
 
-	      	ga('create', 'UA-64489729-1', 'auto');
-	      	ga('send', 'pageview');
-	    </script>
+    <script>
+        var templateList = ["cerulean", "cosmo", "cyborg", "darkly", "flatly", "journal", "lumen", "paper", "readable", "sandstone", "simplex", "slate", "spacelab", "superhero", "united", "yeti"];
+        var currentTemplate = NET.loadSettings().theme;
+        function changeTemplate(cssId) {
+            var elem = document.getElementById(currentTemplate);
+            if(elem){
+                elem.disabled = true;
+            }
+            currentTemplate = cssId;
+            if (document.getElementById(cssId)) {
+                document.getElementById(cssId).disabled = false;
+            }
+        }
+        changeTemplate(currentTemplate);
+    </script>
+</head>
 
-	    <script>
-	    	NET.resize(320,600);
-	    </script>
+<body>
+    <div style="height:100%;" ng-if="authenticated">
+        <nav class="navbar navbar-default loggedIn">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="javascript:return false;"><img class="forum-logo" src="http://forum.handsfreeleveler.com/uploads/system/site-logo.png"> Hands Free Leveler</a>
+                </div>
 
-	    <style type="text/css">
-			body {
-			    overflow-x:hidden;
-			    height: 100%;
-			}
-		</style>
-
-		<script>
-			var templateList = ["cerulean","cosmo","cyborg","darkly","flatly","journal","lumen","paper","readable","sandstone","simplex","slate","spacelab","superhero","united","yeti","clear"];
-			var currentTemplate = "darkly";
-			function changeTemplate(cssId){
-				document.getElementById(currentTemplate).disabled = true;
-				if(document.getElementById(cssId)){
-					document.getElementById(cssId).disabled = false;
-				}
-				currentTemplate = cssId;
-			}
-			changeTemplate(currentTemplate);
-		</script>
-    </head>
-
-    <body>
-	    <div ng-app="controller" style="height:100%;">
-	        <div ui-view style="height:100%;"></div>
-	    </div>
-    </body>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#/home">Home</a></li>
+                        <li class="dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Smurfs<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#/smurfs">Smurfs</a></li>
+                                <li><a href="#/groups">Groups</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#/rotations">Rotations</a></li>
+                        <li class="dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">AI <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Plugins</a></li>
+                                <li><a href="#">Items</a></li>
+                                <li><a href="#">Emotes</a></li>
+                                <li><a href="#">Chat</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Import & Export</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Auto Queue <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Champions</a></li>
+                                <li><a href="#">Summoner Spells</a></li>
+                                <li><a href="#">Masteries</a></li>
+                                <li><a href="#">Runes</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#/sessions">Sessions</a></li>
+                        <li><a href="#/settings">Settings</a></li>
+                        
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#/smurfs">Buy & Upgrade</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div ui-view ></div>
+    <div ng-if="disableMove" class="movementNotification alert alert-danger" style="margin:0px;position:fixed;bottom: 5px;left: 5px;height: 25px;padding: 3px;">
+        Window movement disabled
+    </div>
+    <button ng-if="helpVideo" q-Tip class="btn btn-xs btn-info" style="margin:0px;position:fixed;bottom: 5px;right: 5px;"><i class="fa fa-question fa-fw"></i></button>
+</body>
 </html>

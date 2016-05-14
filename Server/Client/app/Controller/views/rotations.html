@@ -1,0 +1,106 @@
+<div class="rotations">
+    <div id="diagramContainer" class="col-xs-9">
+        <div class="item" ng-repeat="rotation in rotationList" id="{{rotation['id']}}" on-finish-render="ngRepeatFinished" on-Smurf-Dropped>
+            <div class="panel panel-default" ng-if="rotation['type'] == 'task'">
+                <div class="panel-heading">
+                    <i class="fa fa-tasks fa-fw"></i>
+                    {{rotation.name}}
+                    <span class="pull-right text-danger">{{rotation.queuePos}}</span>
+                </div>
+                <div class="panel-body">
+                    <label>Solo Smurfs</label>
+                    <div class="list-group">
+                        <a href="javascript:void(0)" class="list-group-item" ng-repeat="smurf in rotation.smurfs" ng-click="removeSmurf(smurf,rotation)">
+                            {{smurf.username}}
+                            <span class="pull-right text-muted small regInfo" style="margin-left:10px"><em>{{smurf.region}}</em></span>
+                        </a>
+                    </div>
+                    <hr />
+                    <label>Groups</label>
+                    <div class="list-group">
+                        <a href="javascript:void(0)" class="list-group-item" ng-repeat="gr in rotation.groups" ng-click="removeGroup(gr,rotation)">
+                            {{gr.name}}
+                            <span class="pull-right text-muted small regInfo" style="margin-left:10px"><em>Size:{{gr.smurfs.length}}</em></span>
+                        </a>
+                    </div>
+                    <hr />
+                    <label>Rotation End Type</label>
+                    <select class="form-control" ng-model="rotation['endType']">
+                        <option value="level">Smurfs reach levels</option>
+                        <option value="timer">Run for minutes</option>
+                    </select>
+                    <label ng-if="rotation['endType'] == 'timer'">Minutes</label>
+                    <input class="form-control" type="number" ng-model="rotation['waittime']" placeholder="60" ng-if="rotation['endType'] == 'timer'" />
+                    <hr />
+                    <button class="btn btn-danger" ng-click="deleteRotation(rotation)">Delete</button>
+                </div>
+            </div>
+            <div class="panel panel-default" ng-if="rotation['type'] == 'wait'">
+                <div class="panel-heading">
+                    <i class="fa fa-clock-o fa-fw"></i>
+                    Sleep Task
+                    <span class="pull-right text-danger">{{rotation.queuePos}}</span>
+                </div>
+                <div class="panel-body">
+                    <label>Waiting minutes</label>
+                    <input class="form-control" type="number" ng-model="rotation['waittime']" placeholder="60" />
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="rotation['pcsleep']">PC Sleep</label>
+                    </div>
+                    <hr />
+                    <button class="btn btn-danger" ng-click="deleteRotation(rotation)">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <div>
+            <label>Rotation Type</label>
+            <select class="form-control" ng-model="newRotation['type']" ng-init="newRotation['type'] = 'wait'">
+                <option value="wait">Wait & Sleep</option>
+                <option value="task">Smurfing Task</option>
+                <option value="shutdown">Shutdown</option>
+            </select>
+        </div>
+        <hr ng-if="newRotation['type'] != 'shutdown'" />
+        <div ng-if="newRotation['type'] == 'task'">
+            <label>Task Name</label>
+            <input type="text" class="form-control" placeholder="My Smurfs" ng-model="newRotation['name']" />
+            <hr />
+            <label>Smurfs</label>
+            <p class="text-info">You can drag and drop to existed rotations</p>
+            <div class="list-group">
+                <a href="javascript:void(0)" class="list-group-item smurfDrag" ng-repeat="smurf in smurfs" region="{{smurf.region}}" username="{{smurf.username}}" ng-class="smurf.selected ?'list-group-item-success':''" ng-click="selectTaskObj(smurf)" type="smurf" rotation-Job-Draggable>
+                    {{smurf.username}}
+                    <span class="pull-right text-muted small regInfo" style="margin-left:10px"><em>{{smurf.region}}</em></span>
+                </a>
+            </div>
+            <hr />
+            <label>Groups</label>
+            <p class="text-info">You can drag and drop to existed rotations</p>
+            <div class="list-group">
+                <a href="javascript:void(0)" class="list-group-item smurfDrag" ng-repeat="group in groups" id="{{group.id}}" ng-class="group.selected ? 'list-group-item-success':''" ng-click="selectTaskObj(group)" type="group" rotation-Job-Draggable>
+                    {{group.name}}
+                    <span class="pull-right text-muted small regInfo" style="margin-left:10px"><em>Size:{{group.smurfs.length}}</em></span>
+                </a>
+            </div>
+            <hr />
+            <label>Rotation End Type</label>
+            <select class="form-control" ng-model="newRotation['endType']" ng-init="newRotation['endType'] = 'timer'">
+                <option value="level">Smurfs reach levels</option>
+                <option value="timer">Run for minutes</option>
+            </select>
+            <label ng-if="newRotation['endType'] == 'timer'">Minutes</label>
+            <input class="form-control" type="number" value="60" placeholder="60" ng-if="newRotation['endType'] == 'timer'" ng-model="newRotation['waittime']" ng-init="newRotation['waittime'] = 120" />
+        </div>
+        <div ng-if="newRotation['type'] == 'wait'">
+            <label>Minutes to wait</label>
+            <input type="number" class="form-control" placeholder="30" ng-model="newRotation['waittime']" ng-init="newRotation['waittime'] = 30" />
+            <div class="checkbox">
+                <label><input type="checkbox" ng-model="newRotation['pcsleep']">PC Sleep while waiting</label>
+            </div>
+        </div>
+        <hr />
+        <button class="btn btn-success" ng-click="addConnections(newRotation)">Add Rotation</button>
+    </div>
+</div>
